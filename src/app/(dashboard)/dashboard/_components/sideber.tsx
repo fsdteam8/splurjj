@@ -1305,7 +1305,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props} className="w-[280px]">
       <SidebarHeader className="pb-5">
-        <SidebarMenu>
+        <SidebarMenu className="pl-3">
           <SidebarMenuItem>
             <div className="flex items-center">
               <Link href="/" className="transition-opacity hover:opacity-80">
@@ -1325,25 +1325,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               </Link>
             </div>
           </SidebarMenuItem>
-          {/* <SidebarMenuItem className="mt-5">
-            <SidebarMenuButton
-              asChild
-              isActive={isRouteActive("/dashboard")}
-              tooltip="Dashboard"
-            >
-              <Link href="/dashboard">
-                <Image
-                  src="/assets/dashboard/dashboard.png"
-                  alt="dashboard"
-                  width={20}
-                  height={20}
-                />
-                <span className="text-lg font-bold leading-[120%] font-poppins text-[#131313] dark:text-white">
-                  Dashboard
-                </span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem> */}
         </SidebarMenu>
       </SidebarHeader>
 

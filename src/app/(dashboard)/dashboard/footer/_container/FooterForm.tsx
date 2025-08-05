@@ -31,6 +31,13 @@ const formSchema = z.object({
     .refine((val) => !val || z.string().url().safeParse(val).success, {
       message: "Please enter a valid Facebook URL.",
     }),
+  youtube_link: z
+    .string()
+    .trim()
+    .optional()
+    .refine((val) => !val || z.string().url().safeParse(val).success, {
+      message: "Please enter a valid YouTube URL.",
+    }),
   instagram_link: z
     .string()
     .trim()
@@ -89,6 +96,7 @@ export type FooterApiResponse = {
   data: {
     footer_links: FooterLink[];
     facebook_link: string;
+    youtube_link: string;
     instagram_link: string;
     linkedin_link: string;
     twitter_link: string;
@@ -123,6 +131,7 @@ export function FooterForm() {
     defaultValues: {
       facebook_link: "",
       instagram_link: "",
+      youtube_link: "",
       linkedin_link: "",
       twitter_link: "",
       google_play_link: "",
@@ -139,6 +148,7 @@ export function FooterForm() {
       form.reset({
         facebook_link: data?.data?.facebook_link || "",
         instagram_link: data?.data?.instagram_link || "",
+        youtube_link: data?.data?.youtube_link || "",
         linkedin_link: data?.data?.linkedin_link || "",
         twitter_link: data?.data?.twitter_link || "",
         google_play_link: data?.data?.google_play_link || "",
@@ -284,6 +294,28 @@ export function FooterForm() {
                           {...field}
                           className="h-[51px] border border-[#595959] placeholder:text-[#595959] text-[#212121]  font-normal text-base tracking-[0%] rounded-[8px]"
                           placeholder="https://www.facebook.com/your-profile"
+                          type="url"
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500 text-sm font-medium" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="">
+                <FormField
+                  control={form.control}
+                  name="youtube_link"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-semibold  leading-[120%] tracking-[0%] text-[#212121]">
+                        Youtube Url Link
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          className="h-[51px] border border-[#595959] placeholder:text-[#595959] text-[#212121]  font-normal text-base tracking-[0%] rounded-[8px]"
+                          placeholder="https://www.youtube.com/your-profile"
                           type="url"
                         />
                       </FormControl>
