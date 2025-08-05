@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Instagram, Facebook, Linkedin, Twitter, Minus } from "lucide-react";
+// import { Instagram, Facebook, Linkedin, Twitter, Minus, Youtube } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
@@ -8,6 +8,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import NewsLetterForm from "./NewsLetterForm";
 import { FooterSectionDataType } from "@/components/types/FooterSectionDataType";
+import { FaXTwitter } from "react-icons/fa6";
+import { FaFacebookF } from "react-icons/fa";
+import { FaLinkedinIn } from "react-icons/fa";
+import { IoLogoInstagram } from "react-icons/io5";
+import { FaYoutube } from "react-icons/fa6";
+import { Minus } from "lucide-react";
 
 interface Category {
   id: number;
@@ -54,6 +60,7 @@ export type FooterData = {
     facebook_link: string;
     instagram_link: string;
     linkedin_link: string;
+    youtube_link: string;
     twitter_link: string;
     app_store_link: string;
     google_play_link: string;
@@ -353,36 +360,50 @@ const Footer = () => {
                   footerbg?.data?.twitter_link ||
                   "https://x.com/splurjj?lang=ar-x-fm"
                 }
-                className="bg-[#E6EEFE] p-3 rounded-full hover:bg-[#d1e7fd] transition-colors"
+                className="bg-black p-3 rounded-full"
               >
-                <Twitter className="text-primary w-8 h-8 cursor-pointer" />
+                {/* <Twitter className="text-white w-8 h-8 cursor-pointer" /> */}
+                <FaXTwitter className="text-white w-8 h-8 cursor-pointer"/>
               </Link>
               <Link
                 href={
                   footerbg?.data?.instagram_link ||
                   "https://www.instagram.com/accounts/login/?next=%2Fsplurjj%2F&source=omni_redirect"
                 }
-                className="bg-[#E6EEFE] p-3 rounded-full hover:bg-[#d1e7fd] transition-colors"
+                className="bg-black p-3 rounded-full"
               >
-                <Instagram className="text-primary w-8 h-8 cursor-pointer" />
+                {/* <Instagram className="text-white w-8 h-8 cursor-pointer" /> */}
+                <IoLogoInstagram className="text-white w-8 h-8 cursor-pointer"/>
+              </Link>
+              <Link
+                href={
+                  footerbg?.data?.youtube_link ||
+                  "https://www.youtube.com/c/SSGSplurge"
+                }
+                className="bg-black p-3 rounded-full"
+              >
+                {/* <Youtube className="text-white w-8 h-8 cursor-pointer" /> */}
+                <FaYoutube className="text-white w-8 h-8 cursor-pointer"/>
               </Link>
               <Link
                 href={
                   footerbg?.data?.linkedin_link ||
                   "https://www.linkedin.com/in/sharif-dyson-795b62132"
                 }
-                className="bg-[#E6EEFE] p-3 rounded-full hover:bg-[#d1e7fd] transition-colors"
+                className="bg-black p-3 rounded-full"
               >
-                <Linkedin className="text-primary w-8 h-8 cursor-pointer" />
+                {/* <Linkedin className="text-white w-8 h-8 cursor-pointer" /> */}
+                <FaLinkedinIn className="text-white w-8 h-8 cursor-pointer"/>
               </Link>
               <Link
                 href={
                   footerbg?.data?.facebook_link ||
                   "https://www.facebook.com/splurjj/"
                 }
-                className="bg-[#E6EEFE] p-3 rounded-full hover:bg-[#d1e7fd] transition-colors"
+                className="bg-black p-3 rounded-full"
               >
-                <Facebook className="text-primary w-8 h-8 cursor-pointer" />
+                {/* <Facebook className="text-white w-8 h-8 cursor-pointer" /> */}
+                <FaFacebookF className="text-white w-8 h-8 cursor-pointer"/>
               </Link>
             </div>
             <div
