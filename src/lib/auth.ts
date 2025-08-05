@@ -71,14 +71,13 @@ export const authOptions: NextAuthOptions = {
         try {
           if (account.provider === "google") {
             const res = await fetch(
-              `${process.env.NEXT_PUBLIC_API_URL}/api/auth/third-party/jwt-process`,
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/google/auth/jwt-process`,
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                   name: profile?.name,
                   email: profile?.email,
-                  // googleAuthentication: profile?.email_verified ,
                   googleAuthentication: (profile as { email_verified: boolean })
                     ?.email_verified,
                 }),
@@ -101,7 +100,7 @@ export const authOptions: NextAuthOptions = {
             user.token = data.token;
           } else if (account.provider === "facebook") {
             const res = await fetch(
-              `${process.env.NEXT_PUBLIC_API_URL}/api/auth/third-party/jwt-process`,
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/google/auth/jwt-process`,
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
