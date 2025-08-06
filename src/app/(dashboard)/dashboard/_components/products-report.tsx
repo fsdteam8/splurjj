@@ -14,7 +14,7 @@ export function ProductsReport({
   data = { thisDay: 30, thisWeek: 60, thisMonth: 85 },
 }: ProductsReportProps) {
   return (
-    <div className="bg-white rounded-lg p-6 shadow-sm">
+    <div className="bg-white dark:bg-gray-500 rounded-lg p-6 shadow-sm">
       <h2 className="text-lg font-semibold text-gray-900 dark:text-black mb-6">{title}</h2>
 
       <div className="flex items-start justify-between ">
