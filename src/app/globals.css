@@ -220,6 +220,8 @@ iframe {
   display: block;
 }
 
+
+
 h1 {
   @apply text-[#131313] dark:text-white;
 }
@@ -244,6 +246,9 @@ p {
 li {
   @apply text-[#131313] dark:text-white;
 }
+
+
+
 /* Link{
   @apply text-[#131313] dark:text-white
 } */
@@ -367,12 +372,7 @@ Textarea {
   @apply border border-gray-200 rounded-md px-2 py-1 text-sm bg-white;
 }
 
-/* @layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-} */
+/* styles.css */
+
+
 

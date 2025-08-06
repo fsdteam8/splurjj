@@ -57,7 +57,7 @@ const RecentArticles = () => {
     return <div>{error?.message || "Somethings went wrong"}</div>;
   }
   return (
-    <div className="bg-white rounded-lg p-6 shadow-sm">
+    <div className="bg-white dark:bg-gray-500 rounded-lg p-6 shadow-sm">
       <div className="w-full flex items-center justify-between">
         <h2 className="text-lg font-light text-gray-900 dark:text-black mb-6">
           Recent Articles
@@ -95,12 +95,9 @@ const RecentArticles = () => {
                           className="w-[120px] h-[60px] rounded-[8px] object-cover"
                         />
                       </div>
-                      <Link
-                        className=""
-                        href={`/dashboard/${content?.id}`}
-                      >
+                      <Link className="" href={`/dashboard/${content?.id}`}>
                         <p
-                          className="text-black dark:text-black black__text"
+                          className="text-black dark:text-white"
                           dangerouslySetInnerHTML={{
                             __html: content?.heading.slice(0, 50),
                           }}
