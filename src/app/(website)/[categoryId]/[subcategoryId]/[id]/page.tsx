@@ -1,5 +1,4 @@
 "use client";
-
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import React from "react";
@@ -15,7 +14,8 @@ import Vertical from "@/components/adds/vertical";
 import Horizontal from "@/components/adds/horizontal";
 import RelatedContent from "@/app/(website)/_components/RalatedBlog/RalatedBlog";
 import ContentsDetailsCarousel from "./_components/contentsDetailsCarousel";
- import DOMPurify from "dompurify";
+
+import DOMPurify from "dompurify";
 
 interface BlogData {
   status: boolean;
@@ -68,7 +68,6 @@ const ContentBlogDetails = ({
   // Improved cleanTags function to handle malformed JSON strings
   const cleanTags = (tags: string[]): string[] => {
     if (!tags || !Array.isArray(tags)) return [];
-
     if (tags.length === 1 && tags[0].startsWith("[")) {
       try {
         const parsedTags = JSON.parse(tags[0].replace(/\\"/g, '"'));
@@ -77,7 +76,6 @@ const ContentBlogDetails = ({
         // Fallback to string cleaning
       }
     }
-
     return tags
       .map((tag) =>
         tag
@@ -89,32 +87,33 @@ const ContentBlogDetails = ({
       .filter((tag) => tag.length > 0);
   };
 
-
-
-const sanitizeHTML = (html: string): string => {
-  // Step 1: Remove <pre> tags and decode HTML entities if necessary
-  const cleanedHtml = html
-    .replace(/<pre>/gi, "") // Remove opening <pre> tag
-    .replace(/<\/pre>/gi, "") // Remove closing </pre> tag
-    .replace(/&lt;/g, "<") // Decode HTML entities
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&amp;/g, "&");
-
-  // Step 2: Sanitize the cleaned HTML with DOMPurify
-  return DOMPurify.sanitize(cleanedHtml, {
-    ADD_TAGS: ["iframe"], // Allow iframe tags
-    ADD_ATTR: [
-      "allow",
-      "allowfullscreen",
-      "frameborder",
-      "src",
-      "title",
-      "referrerpolicy",
-    ], // Allow specific iframe attributes
-    ALLOWED_URI_REGEXP: /^(?:(?:https?:)?\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/.+$/, // Restrict to YouTube domains
-  });
-};
+  const sanitizeHTML = (html: string): string => {
+    // Step 1: Remove <pre> tags and decode HTML entities if necessary
+    const cleanedHtml = html
+      .replace(/<pre>/gi, "") // Remove opening <pre> tag
+      .replace(/<\/pre>/gi, "") // Remove closing </pre> tag
+      .replace(/&lt;/g, "<") // Decode HTML entities
+      .replace(/&gt;/g, ">")
+      .replace(/&quot;/g, '"')
+      .replace(/&amp;/g, "&");
+    // Step 2: Sanitize the cleaned HTML with DOMPurify
+    return DOMPurify.sanitize(cleanedHtml, {
+      ADD_TAGS: ["iframe", "a"], // Allow iframe and a tags
+      ADD_ATTR: [
+        "allow",
+        "allowfullscreen",
+        "frameborder",
+        "src",
+        "title",
+        "referrerpolicy",
+        "href", // Allow href attribute for <a> tags
+        "target", // Allow target attribute for <a> tags
+        "rel", // Allow rel attribute for <a> tags
+      ],
+      // Removed ALLOWED_URI_REGEXP to allow general links for <a> tags.
+      // This will also make iframe src attributes more permissive.
+    });
+  };
 
   const { data, isLoading, error, isError } = useQuery<BlogData>({
     queryKey: ["all-content", categoryId, subcategoryId, id],
@@ -126,7 +125,7 @@ const sanitizeHTML = (html: string): string => {
 
   const blogData = data?.data || null;
 
-const getImageUrl = (path: string | null): string => {
+  const getImageUrl = (path: string | null): string => {
     if (!path) return "/fallback-image.jpg";
     if (path.startsWith("http")) return path;
     return `${process.env.NEXT_PUBLIC_BACKEND_URL}/${path.replace(/^\/+/, "")}`;
@@ -263,6 +262,7 @@ const getImageUrl = (path: string | null): string => {
       </div>
     );
   }
+
   if (!blogData) {
     return (
       <div className="flex items-center justify-center  bg-black  h-screen">
@@ -286,9 +286,6 @@ const getImageUrl = (path: string | null): string => {
   }
 
   const cleanedTags = cleanTags(blogData.tags || []);
-
-
-
 
   return (
     <div className="">
@@ -485,7 +482,6 @@ const getImageUrl = (path: string | null): string => {
                   </p>
                 </div>
               )}
-
               {commentAccess && (
                 <div className="">
                   <section id="comment" className="py-5">
@@ -494,7 +490,6 @@ const getImageUrl = (path: string | null): string => {
                 </div>
               )}
             </div>
-
             <div>
               <ContentComments blogId={id} />
             </div>
