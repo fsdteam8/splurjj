@@ -137,7 +137,7 @@ export function LeaveAComment({ UserEmail, blogId }: LeaveACommentProps) {
                 type="submit"
                 disabled={mutation.isPending}
               >
-                {mutation.isPending ? "Submitting..." : "Submit"}
+                {mutation.isPending ? "Commenting..." : "Comment"}
               </Button>
             </div>
           </form>
