@@ -235,19 +235,19 @@ export default function Header() {
   //       res.json()
   //     ),
   // });
-    // footer section
-    const {
-      data: footerbg,
-      isLoading,
-      isError,
-      error,
-    } = useQuery<FooterSectionDataType>({
-      queryKey: ["footer-section"],
-      queryFn: () =>
-        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/footer`).then(
-          (res) => res.json()
-        ),
-    });
+  // footer section
+  const {
+    data: footerbg,
+    isLoading,
+    isError,
+    error,
+  } = useQuery<FooterSectionDataType>({
+    queryKey: ["footer-section"],
+    queryFn: () =>
+      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/footer`).then((res) =>
+        res.json()
+      ),
+  });
 
   const SkeletonLoader = () => (
     <div className="animate-pulse">
@@ -287,26 +287,21 @@ export default function Header() {
       </div>
     );
 
-    if(isLoading){
-      return <div>loading...</div>
-    }
-    if(isError){
-      return <div>{error?.message}</div>
-    }
+  if (isLoading) {
+    return <div>loading...</div>;
+  }
+  if (isError) {
+    return <div>{error?.message}</div>;
+  }
 
   return (
     <>
       <div
         className="h-[16px] sticky top-0 z-50"
         style={{ backgroundColor: footerbg?.data?.bg_color || "#C9C3C3" }}
-        // style={
-        //   footerbg?.data?.bg_color
-        //     ? { backgroundColor: footerbg.data.bg_color }
-        //     : undefined
-        // }
       />
       <header
-        className="sticky top-0 z-50 w-full border-b bg-white backdrop-blur supports-[backdrop-filter]:bg-background/60"
+        className="sticky top-0 z-50 w-full  bg-white backdrop-blur supports-[backdrop-filter]:bg-background/60"
         style={{ backgroundColor: header?.bg_color || "#ffffff" }}
       >
         <div className="container">
@@ -319,7 +314,6 @@ export default function Header() {
                     alt="Logo"
                     width={50}
                     height={30}
-                    // className="h-[35px] md:h-[40px] w-[70px] md:w-[90px]"
                     className="w-[90px] h-[55px] object-contain"
                   />
                 </Link>
@@ -394,7 +388,7 @@ export default function Header() {
                         >
                           <Link
                             href={`/blogs/${category.category_name}`}
-                            className="text-sm font-medium transition-colors hover:text-primary"
+                            className="text-sm lg:text-sm font-medium transition-colors hover:text-primary"
                             style={{
                               color:
                                 isActive ||
@@ -445,6 +439,7 @@ export default function Header() {
                 })}
               </nav>
             </div>
+
             {/* Right Actions */}
             <div className="flex items-center justify-end space-x-2">
               {/* Search */}
@@ -461,7 +456,7 @@ export default function Header() {
                       value={searchQuery}
                       onChange={handleSearchChange}
                       onKeyDown={handleKeyDown}
-                      className="w-full ml-2 bg-transparent text-sm focus:outline-none focus:border-0 border-0 outline-none ring-0 placeholder:text-gray-400 dark:text-black"
+                      className="w-full ml-2 bg-transparent text-sm focus:ring-0 focus:outline-none focus:border-0 border-0 outline-none ring-0 placeholder:text-gray-400 dark:text-black"
                       autoFocus
                       aria-label="Search content"
                     />

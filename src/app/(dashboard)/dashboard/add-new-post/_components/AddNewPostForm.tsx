@@ -320,10 +320,10 @@ export default function AddNewPostForm() {
                             value={String(field.value)}
                             onValueChange={field.onChange}
                           >
-                            <SelectTrigger className="text-black bg-white border border-gray-300 rounded-lg px-3 py-5">
+                            <SelectTrigger className="text-black dark:text-black bg-white border border-gray-300 rounded-lg px-3 py-5">
                               <SelectValue placeholder="Select a category" />
                             </SelectTrigger>
-                            <SelectContent className="bg-white">
+                            <SelectContent className="bg-white dark:text-black">
                               {data?.data?.map((cat, index) => {
                                 return (
                                   <SelectItem
@@ -356,10 +356,10 @@ export default function AddNewPostForm() {
                             onValueChange={field.onChange}
                             disabled={!selectedCategory} // Disable if no category selected
                           >
-                            <SelectTrigger className="text-black bg-white border border-gray-300 rounded-lg px-3 py-5">
+                            <SelectTrigger className="text-black dark:text-black bg-white border border-gray-300 rounded-lg px-3 py-5">
                               <SelectValue placeholder="Select a subcategory" />
                             </SelectTrigger>
-                            <SelectContent className="bg-white">
+                            <SelectContent className="bg-white dark:text-black">
                               {subCategory?.map((subCat, index) => (
                                 <SelectItem
                                   key={index}

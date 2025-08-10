@@ -92,7 +92,7 @@ export default function GearCarousel({
                             backgroundPosition: "center",
                             backgroundSize: "cover",
                           }}
-                          className="flex items-center justify-center "
+                          className="flex items-center justify-center object-contain"
                         >
                           <div className="text-center max-w-[1000px] mx-auto px-4">
                             <motion.p
