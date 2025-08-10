@@ -68,7 +68,7 @@ const DashboardOverviewContainer = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-8">
         {/* first div  */}
         {!isAuthor && (
-          <div className="flex items-center justify-between bg-white bg-white dark:bg-gray-500 rounded-[6px] shadow-md p-8">
+          <div className="flex items-center justify-between bg-white dark:bg-blue-500 rounded-[6px] shadow-md p-8">
             <div>
               <h3 className="text-xl font-bold text-[#131313] dark:text-black leading-[120%] tracking-[0%]">
                 Total Revenue
@@ -89,7 +89,7 @@ const DashboardOverviewContainer = () => {
         )}
 
         {/* second div  */}
-        <div className="flex items-center justify-between bg-white bg-white dark:bg-gray-500 rounded-[6px] shadow-md p-8">
+        <div className="flex items-center justify-between bg-white dark:bg-blue-500 rounded-[6px] shadow-md p-8">
           <div>
             <h3 className="text-xl font-bold text-[#131313] dark:text-black leading-[120%] tracking-[0%]">
               Total Articles
@@ -109,7 +109,7 @@ const DashboardOverviewContainer = () => {
           </div>
         </div>
         {/* third div  */}
-        <div className="flex items-center justify-between bg-white bg-white dark:bg-gray-500 rounded-[6px] shadow-md p-8">
+        <div className="flex items-center justify-between bg-white dark:bg-blue-500 rounded-[6px] shadow-md p-8">
           <div>
             <h3 className="text-xl font-bold text-[#131313] dark:text-black leading-[120%] tracking-[0%]">
               Pending Approvals
@@ -131,7 +131,7 @@ const DashboardOverviewContainer = () => {
 
         {/* fourth div  */}
         {!isAuthor && (
-          <div className="flex items-center justify-between bg-white bg-white dark:bg-gray-500 rounded-[6px] shadow-md p-8">
+          <div className="flex items-center justify-between bg-white dark:bg-blue-500 rounded-[6px] shadow-md p-8">
             <div>
               <h3 className="text-xl font-bold text-[#131313] dark:text-black leading-[120%] tracking-[0%]">
                 Total Author
@@ -152,7 +152,7 @@ const DashboardOverviewContainer = () => {
           </div>
         )}
         {!isAuthor && (
-          <div className="flex items-center justify-between bg-white bg-white dark:bg-gray-500 rounded-[6px] shadow-md p-8">
+          <div className="flex items-center justify-between bg-white dark:bg-blue-500 rounded-[6px] shadow-md p-8">
             <div>
               <h3 className="text-xl font-bold text-[#131313] dark:text-black leading-[120%] tracking-[0%]">
                 Total User
@@ -173,7 +173,7 @@ const DashboardOverviewContainer = () => {
           </div>
         )}
         {!isAuthor && (
-          <div className="flex items-center justify-between bg-white bg-white dark:bg-gray-500 rounded-[6px] shadow-md p-8">
+          <div className="flex items-center justify-between bg-white dark:bg-blue-500 rounded-[6px] shadow-md p-8">
             <div>
               <h3 className="text-xl font-bold text-[#131313] dark:text-black leading-[120%] tracking-[0%]">
                 Subscribers

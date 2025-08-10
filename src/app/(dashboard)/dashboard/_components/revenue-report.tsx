@@ -62,7 +62,7 @@ export function RevenueReport() {
   };
 
   return (
-    <Card className="w-full bg-white dark:bg-gray-500 shadow-sm">
+    <Card className="w-full bg-white dark:bg-blue-500 shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-8">
         <div className="flex items-center space-x-4">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-black">
