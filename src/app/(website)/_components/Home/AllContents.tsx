@@ -26,6 +26,8 @@ interface ContentItem {
   author: string;
   date: string;
   sub_heading: string;
+  meta_title: string;
+  meta_description: string;
   body1: string;
   image1: string | null;
   image2?: string | string[] | null;
@@ -52,11 +54,15 @@ interface ApiResponse {
   };
 }
 
+
+
 const AllContents: React.FC = () => {
   const [contents, setContents] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [showShareMenu, setShowShareMenu] = useState<number | null>(null);
+
+  console.log("home data", contents);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -221,8 +227,6 @@ const AllContents: React.FC = () => {
   const thirdPost = contents[2];
   const fourthPost = contents[3];
   // const otherPosts = contents.slice(1); // All posts except the first
-
-
 
   return (
     <div className="">
@@ -589,13 +593,13 @@ const AllContents: React.FC = () => {
               <Link
                 href={`/${fourthPost.category_id}/${fourthPost.subcategory_id}/${fourthPost.id}`}
               >
-              <motion.p
-                dangerouslySetInnerHTML={{ __html: fourthPost.heading }}
-                className="text-2xl font-medium "
-                whileHover={{
-                  scale: 1.05,
-                  fontWeight: 900,
-                  transition: { duration: 0.3 },
+                <motion.p
+                  dangerouslySetInnerHTML={{ __html: fourthPost.heading }}
+                  className="text-2xl font-medium "
+                  whileHover={{
+                    scale: 1.05,
+                    fontWeight: 900,
+                    transition: { duration: 0.3 },
                   }}
                 />
               </Link>
