@@ -32,6 +32,8 @@ export default function ContentTable({
   const { data: session } = useSession();
   const userRole = session?.user?.role;
 
+  console.log("contents", contents);
+
   const isAuthor = userRole === "author";
   if (loading) {
     return (
