@@ -56,7 +56,7 @@ function MainHome() {
         <div className="grid grid-cols-8 gap-4 pt-16">
           {/* Main content */}
           <div className="col-span-8 md:col-span-6 pb-8 md:pb-14 lg:pb-16">
-            <AllContents />
+            <AllContents/>
           </div>
 
           {/* Sticky sidebar */}
