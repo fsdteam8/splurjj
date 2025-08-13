@@ -57,9 +57,9 @@ const RecentArticles = () => {
     return <div>{error?.message || "Somethings went wrong"}</div>;
   }
   return (
-    <div className="bg-white dark:bg-blue-500 rounded-lg p-6 shadow-sm">
+    <div className="bg-white dark:bg-[#1C1C1C] rounded-lg p-6 shadow-sm">
       <div className="w-full flex items-center justify-between">
-        <h2 className="text-lg font-light text-gray-900 dark:text-black mb-6">
+        <h2 className="text-lg font-light text-gray-900 dark:text-white mb-6">
           Recent Articles
         </h2>
         <div>

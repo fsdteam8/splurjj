@@ -62,20 +62,20 @@ export function RevenueReport() {
   };
 
   return (
-    <Card className="w-full bg-white dark:bg-blue-500 shadow-sm">
+    <Card className="w-full bg-white dark:bg-[#1C1C1C] shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-8">
         <div className="flex items-center space-x-4">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-black">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
             Revenue report
           </h2>
           <div className="flex items-center space-x-6">
             <div className="flex items-center space-x-2">
               <div className="w-3 h-3 rounded-full bg-violet-500"></div>
-              <span className="text-sm text-gray-600 dark:text-black">This Year</span>
+              <span className="text-sm text-gray-600 dark:text-white">This Year</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-3 h-3 rounded-full bg-pink-500"></div>
-              <span className="text-sm text-gray-600 dark:text-black">Last Year</span>
+              <span className="text-sm text-gray-600 dark:text-white">Last Year</span>
             </div>
           </div>
         </div>
@@ -87,7 +87,7 @@ export function RevenueReport() {
             className={
               selectedPeriod === "Month"
                 ? "bg-blue-600 hover:bg-blue-700 text-white"
-                : "bg-white dark:text-black text-gray-600 hover:bg-gray-50"
+                : "bg-white dark:text-white text-gray-600 hover:bg-gray-50"
             }
           >
             Month
@@ -99,7 +99,7 @@ export function RevenueReport() {
             className={
               selectedPeriod === "Year"
                 ? "bg-blue-600 hover:bg-blue-700 text-white"
-                : "bg-white dark:text-black text-gray-600 hover:bg-gray-50"
+                : "bg-white dark:text-white text-gray-600 hover:bg-gray-50"
             }
           >
             Year
