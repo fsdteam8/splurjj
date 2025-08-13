@@ -405,11 +405,11 @@ const ContentBlogDetails = ({categoryId, subcategoryId, id}: {categoryId: string
                     src={
                       blogData.user?.profilePic
                         ? `${blogData.user.profilePic}`
-                        : "/assets/images/no-images.jpg"
+                        : "/assets/images/no-user.png"
                     }
                     alt={blogData.user?.first_name || "Author"}
-                    width={180}
-                    height={180}
+                    width={120}
+                    height={120}
                     className="w-[180px] h-[180px] object-cover rounded-full border"
                   />
                 </div>
