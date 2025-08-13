@@ -47,6 +47,8 @@ interface Content {
   image2?: string[];
   tags?: string[];
   author: string;
+   meta_description?: string;
+  meta_title?: string;
   heading: string;
   sub_heading: string;
   body1: string;
@@ -69,6 +71,10 @@ const formSchema = z.object({
     .max(10, "Maximum 10 images allowed"),
   tags: z.array(z.string().min(1)).max(10, "Max 10 tags"),
   author: z.string().min(2, "Author must be at least 2 characters"),
+   meta_title: z.string().min(2, "Meta title must be at least 2 characters"),
+  meta_description: z
+    .string()
+    .min(2, "Meta description must be at least 2 characters"),
   heading: z.string().min(2, "Heading must be at least 2 characters"),
   sub_heading: z.string().min(2, "Sub Heading must be at least 2 characters"),
   body1: z.string().min(2, "Body must be at least 2 characters"),
@@ -88,6 +94,8 @@ interface FormData {
   date: Date;
   tags: string[];
   author: string;
+   meta_title: string;
+  meta_description: string;
   heading: string;
   sub_heading: string;
   body1: string;
@@ -115,13 +123,14 @@ export default function AddNewPostForm() {
   const token = (session?.data?.user as { token: string })?.token;
   const queryClient = useQueryClient();
 
-
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       image2: [],
       tags: [],
       author: "",
+      meta_title: "",
+      meta_description: "",
       date: new Date(),
       heading: "",
       sub_heading: "",
@@ -157,15 +166,22 @@ export default function AddNewPostForm() {
     const files = event.target.files;
     if (files && files.length > 0) {
       const validFiles = Array.from(files).filter((file) => {
-        const validType = ["image/png", "image/jpeg", "image/gif", "image/jpg", "image/webp", "image/avif"].includes(
-          file.type
-        );
+        const validType = [
+          "image/png",
+          "image/jpeg",
+          "image/gif",
+          "image/jpg",
+          "image/webp",
+          "image/avif",
+        ].includes(file.type);
         const validSize = file.size <= 10 * 1024 * 1024; // 10MB
         return validType && validSize;
       });
 
       if (validFiles.length === 0) {
-        toast.error("Invalid file type or size (max 10MB, PNG/JPG/GIF/WEBP/AVIF)");
+        toast.error(
+          "Invalid file type or size (max 10MB, PNG/JPG/GIF/WEBP/AVIF)"
+        );
         return;
       }
 
@@ -220,6 +236,8 @@ export default function AddNewPostForm() {
       formDataToSend.append("subcategory_id", formData.subcategory_id);
       formDataToSend.append("heading", formData.heading);
       formDataToSend.append("author", formData.author);
+      formDataToSend.append("meta_title", formData.meta_title);
+      formDataToSend.append("meta_description", formData.meta_description);
       formDataToSend.append("date", formData.date.toISOString().split("T")[0]);
       formDataToSend.append("sub_heading", formData.sub_heading);
       formDataToSend.append("body1", formData.body1);
@@ -560,6 +578,47 @@ export default function AddNewPostForm() {
                     ))}
                   </div>
                 </div>
+
+                {/* meta title */}
+                <FormField
+                  control={form.control}
+                  name="meta_title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-lg font-bold text-black">
+                        Meta Title
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          className="text-black bg-white border border-gray-300 rounded-lg p-4"
+                          placeholder="meta title"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* meta description */}
+                <FormField
+                  control={form.control}
+                  name="meta_description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-lg font-bold text-black">
+                        Meta Description
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          className="text-black bg-white border border-gray-300 rounded-lg p-4"
+                          placeholder="meta description"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 {/* Body Text */}
                 <FormField
