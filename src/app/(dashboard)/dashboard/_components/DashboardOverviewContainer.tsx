@@ -68,12 +68,12 @@ const DashboardOverviewContainer = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-8">
         {/* first div  */}
         {!isAuthor && (
-          <div className="flex items-center justify-between bg-white dark:bg-blue-500 rounded-[6px] shadow-md p-8">
+          <div className="flex items-center justify-between bg-white dark:bg-[#1C1C1C] rounded-[6px] shadow-md p-8">
             <div>
-              <h3 className="text-xl font-bold text-[#131313] dark:text-black leading-[120%] tracking-[0%]">
+              <h3 className="text-xl font-bold text-[#131313] dark:text-white leading-[120%] tracking-[0%]">
                 Total Revenue
               </h3>
-              <p className="flex items-center gap-1 text-lg font-medium text-[#424242] dark:text-black leading-[120%] tracking-[0%] pt-2">
+              <p className="flex items-center gap-1 text-lg font-medium text-[#424242] dark:text-white leading-[120%] tracking-[0%] pt-2">
                 <GoDotFill className="text-[#DDE067] w-5 h-5" /> 00000
               </p>
             </div>
@@ -89,12 +89,12 @@ const DashboardOverviewContainer = () => {
         )}
 
         {/* second div  */}
-        <div className="flex items-center justify-between bg-white dark:bg-blue-500 rounded-[6px] shadow-md p-8">
+        <div className="flex items-center justify-between bg-white dark:bg-[#1C1C1C] rounded-[6px] shadow-md p-8">
           <div>
-            <h3 className="text-xl font-bold text-[#131313] dark:text-black leading-[120%] tracking-[0%]">
+            <h3 className="text-xl font-bold text-[#131313] dark:text-white leading-[120%] tracking-[0%]">
               Total Articles
             </h3>
-            <p className="flex items-center gap-1 text-lg font-medium text-[#424242] dark:text-black leading-[120%] tracking-[0%] pt-2">
+            <p className="flex items-center gap-1 text-lg font-medium text-[#424242] dark:text-white leading-[120%] tracking-[0%] pt-2">
               <GoDotFill className="text-[#008000] w-5 h-5" />
               {data?.data?.total_content || 0}
             </p>
@@ -109,12 +109,12 @@ const DashboardOverviewContainer = () => {
           </div>
         </div>
         {/* third div  */}
-        <div className="flex items-center justify-between bg-white dark:bg-blue-500 rounded-[6px] shadow-md p-8">
+        <div className="flex items-center justify-between bg-white dark:bg-[#1C1C1C] rounded-[6px] shadow-md p-8">
           <div>
-            <h3 className="text-xl font-bold text-[#131313] dark:text-black leading-[120%] tracking-[0%]">
+            <h3 className="text-xl font-bold text-[#131313] dark:text-white leading-[120%] tracking-[0%]">
               Pending Approvals
             </h3>
-            <p className="flex items-center gap-1 text-lg font-medium text-[#424242] dark:text-black leading-[120%] tracking-[0%] pt-2">
+            <p className="flex items-center gap-1 text-lg font-medium text-[#424242] dark:text-white leading-[120%] tracking-[0%] pt-2">
               <GoDotFill className="text-[#008000] w-5 h-5" />
               {data?.data?.total_pending_content || 0}
             </p>
@@ -131,12 +131,12 @@ const DashboardOverviewContainer = () => {
 
         {/* fourth div  */}
         {!isAuthor && (
-          <div className="flex items-center justify-between bg-white dark:bg-blue-500 rounded-[6px] shadow-md p-8">
+          <div className="flex items-center justify-between bg-white dark:bg-[#1C1C1C] rounded-[6px] shadow-md p-8">
             <div>
-              <h3 className="text-xl font-bold text-[#131313] dark:text-black leading-[120%] tracking-[0%]">
+              <h3 className="text-xl font-bold text-[#131313] dark:text-white leading-[120%] tracking-[0%]">
                 Total Author
               </h3>
-              <p className="flex items-center gap-1 text-lg font-medium text-[#424242] dark:text-black leading-[120%] tracking-[0%] pt-2">
+              <p className="flex items-center gap-1 text-lg font-medium text-[#424242] dark:text-white leading-[120%] tracking-[0%] pt-2">
                 <GoDotFill className="text-[#DDE067] w-5 h-5" />
                 {data?.data?.total_author}
               </p>
@@ -152,12 +152,12 @@ const DashboardOverviewContainer = () => {
           </div>
         )}
         {!isAuthor && (
-          <div className="flex items-center justify-between bg-white dark:bg-blue-500 rounded-[6px] shadow-md p-8">
+          <div className="flex items-center justify-between bg-white dark:bg-[#1C1C1C] rounded-[6px] shadow-md p-8">
             <div>
-              <h3 className="text-xl font-bold text-[#131313] dark:text-black leading-[120%] tracking-[0%]">
+              <h3 className="text-xl font-bold text-[#131313] dark:text-white leading-[120%] tracking-[0%]">
                 Total User
               </h3>
-              <p className="flex items-center gap-1 text-lg font-medium text-[#424242] dark:text-black leading-[120%] tracking-[0%] pt-2">
+              <p className="flex items-center gap-1 text-lg font-medium text-[#424242] dark:text-white leading-[120%] tracking-[0%] pt-2">
                 <GoDotFill className="text-[#424242] w-5 h-5" />{" "}
                 {data?.data?.total_user}
               </p>
@@ -173,12 +173,12 @@ const DashboardOverviewContainer = () => {
           </div>
         )}
         {!isAuthor && (
-          <div className="flex items-center justify-between bg-white dark:bg-blue-500 rounded-[6px] shadow-md p-8">
+          <div className="flex items-center justify-between bg-white dark:bg-[#1C1C1C] rounded-[6px] shadow-md p-8">
             <div>
-              <h3 className="text-xl font-bold text-[#131313] dark:text-black leading-[120%] tracking-[0%]">
+              <h3 className="text-xl font-bold text-[#131313] dark:text-white leading-[120%] tracking-[0%]">
                 Subscribers
               </h3>
-              <p className="flex items-center  text-lg font-medium text-[#424242] dark:text-black leading-[120%] tracking-[0%] pt-2">
+              <p className="flex items-center  text-lg font-medium text-[#424242] dark:text-white leading-[120%] tracking-[0%] pt-2">
                 <GoDotFill className="text-[#424242] w-5 h-5" />
                 {data?.data?.total_subscriber}
               </p>
