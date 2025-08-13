@@ -546,7 +546,7 @@ export async function generateMetadata({
     return {
       title:
         typeof meta.meta_title === "string" && meta.meta_title.trim()
-          ? meta.meta_title
+          ? ` ${meta.meta_title} | Splurjj`
           : "Splurjj",
       description:
         typeof meta.meta_description === "string" &&
