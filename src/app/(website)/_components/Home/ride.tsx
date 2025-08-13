@@ -331,7 +331,7 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 {firstPost.author} - {firstPost.date}
               </p>
               <p
-                dangerouslySetInnerHTML={{ __html: firstPost.sub_heading }}
+                dangerouslySetInnerHTML={{ __html: firstPost.body1 }}
                 className="text-sm font-normal text-[#424242] line-clamp-3 text-end"
               />
             </div>
