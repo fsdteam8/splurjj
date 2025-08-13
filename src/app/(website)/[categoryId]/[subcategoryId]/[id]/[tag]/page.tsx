@@ -11,6 +11,14 @@ interface PageParams {
   };
 }
 
+export async function generateMetadata({ params }: PageParams) {
+  const tag = decodeURIComponent(params.tag);
+  return {
+    title: `${tag} | Splurjj`,
+    description: `${params.tag}`,
+  };
+}
+
 function Page({ params }: PageParams) {
   if (
     !params.categoryId ||

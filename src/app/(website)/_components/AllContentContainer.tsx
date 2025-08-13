@@ -131,7 +131,7 @@ const AllContentContainer = ({
 
   return (
     <div>
-      <div className="container grid grid-cols-8 gap-4 pt-16 pb-2 border-2 border-red-500">
+      <div className="container grid grid-cols-8 gap-4 pt-16 pb-2">
         <div className="col-span-8 md:col-span-3 lg:col-span-2">
           <div className="sticky top-[120px] mb-2">
             <Vertical />
