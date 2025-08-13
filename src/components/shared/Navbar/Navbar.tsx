@@ -535,7 +535,7 @@ export default function Header() {
                 ) : (
                   <Link
                     href="/login"
-                    className="p-1 rounded text-white px-4 py-2 bg-[#0253F7] hover:bg-[#0253F7] mr-2"
+                    className="p-1 rounded text-white px-4 py-2 bg-black hover:bg-white hover:text-black my-2"
                   >
                     Sign In
                   </Link>
@@ -697,7 +697,7 @@ export default function Header() {
                   ) : (
                     <Link
                       href="/sign-up"
-                      className="block p-2 rounded text-white bg-[#0253F7] text-center mt-2"
+                      className="block p-2 rounded text-white bg-black text-center mt-2"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Sign In

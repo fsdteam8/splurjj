@@ -246,8 +246,8 @@ const QuitCalm: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 <Image
                   src={getImageUrl(firstPost.image2?.[0] || "")}
                   alt={firstPost.heading || "Blog Image"}
-                  width={600}
-                  height={455}
+                  width={1000}
+                  height={600}
                   className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
                   priority
                 />
@@ -364,8 +364,8 @@ const QuitCalm: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   <Image
                     src={getImageUrl(thirdPost.image2?.[0] || "")}
                     alt={thirdPost.heading || "Blog Image"}
-                    width={400}
-                    height={455}
+                    width={1000}
+                    height={800}
                     className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
                     priority
                   />
@@ -476,8 +476,8 @@ const QuitCalm: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   <Image
                     src={getImageUrl(fourthPost.image2?.[0] || "")}
                     alt={fourthPost.heading || "Blog Image"}
-                    width={400}
-                    height={455}
+                    width={1000}
+                    height={800}
                     className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
                     priority
                   />
@@ -588,8 +588,8 @@ const QuitCalm: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 <Image
                   src={getImageUrl(fifthPost.image2?.[0] || "")}
                   alt={fifthPost.heading || "Blog Image"}
-                  width={400}
-                  height={455}
+                  width={1000}
+                  height={800}
                   className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
                   priority
                 />

@@ -95,7 +95,7 @@ function Horizontal() {
             alt="Advertisement"
             className="w-full h-[300px]"
             width={2600}
-            height={300}
+            height={600}
           />
         </a>
       ) : (

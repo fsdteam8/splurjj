@@ -265,7 +265,7 @@ function Contents({ initialSearchQuery }: ContentsProps) {
                 alt={post.heading}
                 width={400}
                 height={300}
-                className="w-full h-[300px] object-cover object-contain hover:scale-150 transition-all duration-500 ease-in-out"
+                className="w-full h-[300px] object-contain hover:scale-150 transition-all duration-500 ease-in-out"
                 priority
               />
             </div>

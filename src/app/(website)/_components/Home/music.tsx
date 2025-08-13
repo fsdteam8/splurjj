@@ -304,10 +304,8 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                     firstPost.image2?.[0] || ""
                   )})`,
                   height: "433px",
-                  backgroundPosition: "center",
-                  backgroundSize: "cover",
                 }}
-                className="flex items-center justify-center aspect-[1.5/1] w-full duration-500 ease-in-out hover:scale-110 "
+                className="flex items-center justify-center bg-contain bg-no-repeat bg-center aspect-[1.5/1] w-full duration-500 ease-in-out hover:scale-110 "
               >
                 <div className=" px-4">
                   <motion.p
