@@ -1,18 +1,19 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import React from "react";
-import { FaInstagram } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaInstagram, FaTwitter, FaFacebook, FaLinkedin } from "react-icons/fa";
+import { RiShareForwardLine } from "react-icons/ri";
 import { FiTwitter } from "react-icons/fi";
 import { LuFacebook } from "react-icons/lu";
 import { PiYoutubeLogoLight } from "react-icons/pi";
+import { TbTargetArrow } from "react-icons/tb";
 import Link from "next/link";
 import { LeaveAComment } from "@/app/(website)/_components/LeaveAComment/LeaveAComment";
 import { useSession } from "next-auth/react";
 import Vertical from "@/components/adds/vertical";
 import Horizontal from "@/components/adds/horizontal";
 import RelatedContent from "@/app/(website)/_components/RalatedBlog/RalatedBlog";
-
 import DOMPurify from "dompurify";
 import ContentsDetailsCarousel from "./contentsDetailsCarousel";
 import ContentComments from "./upvoteDownvoteAllComments";
@@ -55,17 +56,28 @@ interface BlogData {
   };
 }
 
-// {
-//   params,
-// }: {
-//   params: { id: number; categoryId: string; subcategoryId: string };
-
-
-const ContentBlogDetails = ({categoryId, subcategoryId, id}: {categoryId: string, subcategoryId: string, id: string}) => {
-//   const { id, categoryId, subcategoryId } = params;
+const ContentBlogDetails = ({
+  categoryId,
+  subcategoryId,
+  id,
+}: {
+  categoryId: string;
+  subcategoryId: string;
+  id: string;
+}) => {
   const { data: session } = useSession();
   const commentAccess = session?.user?.role;
   const userEmail = session?.user?.email;
+  const [showShareMenu, setShowShareMenu] = useState<number | null>(null);
+
+  // Generate share URL
+  const getShareUrl = (
+    categoryId: number,
+    subcategoryId: number,
+    id: number
+  ): string => {
+    return `${window.location.origin}/${categoryId}/${subcategoryId}/${id}`;
+  };
 
   // Improved cleanTags function to handle malformed JSON strings
   const cleanTags = (tags: string[]): string[] => {
@@ -90,17 +102,15 @@ const ContentBlogDetails = ({categoryId, subcategoryId, id}: {categoryId: string
   };
 
   const sanitizeHTML = (html: string): string => {
-    // Step 1: Remove <pre> tags and decode HTML entities if necessary
     const cleanedHtml = html
-      .replace(/<pre>/gi, "") // Remove opening <pre> tag
-      .replace(/<\/pre>/gi, "") // Remove closing </pre> tag
-      .replace(/&lt;/g, "<") // Decode HTML entities
+      .replace(/<pre>/gi, "")
+      .replace(/<\/pre>/gi, "")
+      .replace(/&lt;/g, "<")
       .replace(/&gt;/g, ">")
       .replace(/&quot;/g, '"')
       .replace(/&amp;/g, "&");
-    // Step 2: Sanitize the cleaned HTML with DOMPurify
     return DOMPurify.sanitize(cleanedHtml, {
-      ADD_TAGS: ["iframe", "a"], // Allow iframe and a tags
+      ADD_TAGS: ["iframe", "a"],
       ADD_ATTR: [
         "allow",
         "allowfullscreen",
@@ -108,12 +118,12 @@ const ContentBlogDetails = ({categoryId, subcategoryId, id}: {categoryId: string
         "src",
         "title",
         "referrerpolicy",
-        "href", // Allow href attribute for <a> tags
-        "target", // Allow target attribute for <a> tags
-        "rel", // Allow rel attribute for <a> tags
+        "href",
+        "target",
+        "rel",
       ],
-      // Removed ALLOWED_URI_REGEXP to allow general links for <a> tags.
-      // This will also make iframe src attributes more permissive.
+      FORBID_ATTR: ["srcdoc"], // Prevent srcdoc in iframes
+      ALLOWED_URI_REGEXP: /^(?:(?:https?):\/\/)/, // Restrict to HTTPS
     });
   };
 
@@ -133,9 +143,61 @@ const ContentBlogDetails = ({categoryId, subcategoryId, id}: {categoryId: string
     return `${process.env.NEXT_PUBLIC_BACKEND_URL}/${path.replace(/^\/+/, "")}`;
   };
 
+  const handleShare = async (post: BlogData["data"]) => {
+    const shareUrl = getShareUrl(
+      post.category_id,
+      post.subcategory_id,
+      post.id
+    );
+    const shareData = {
+      title: post.heading,
+      text: post.sub_heading || "Check out this blog post!",
+      url: shareUrl,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.error("Error sharing:", err);
+      }
+    } else {
+      setShowShareMenu(showShareMenu === post.id ? null : post.id);
+    }
+  };
+
+  const shareToTwitter = (url: string, text: string) => {
+    window.open(
+      `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+        url
+      )}&text=${encodeURIComponent(text)}`,
+      "_blank"
+    );
+  };
+
+  const shareToFacebook = (url: string) => {
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+      "_blank"
+    );
+  };
+
+  const shareToLinkedIn = (url: string, title: string) => {
+    window.open(
+      `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+        url
+      )}&title=${encodeURIComponent(title)}`,
+      "_blank"
+    );
+  };
+
   // Skeleton Loader Component
   const SkeletonLoader = () => (
-    <div className="animate-pulse container py-[30px] md:py-[50px] lg:py-[72px]">
+    <div
+      className="animate-pulse container py-[30px] md:py-[50px] lg:py-[72px]"
+      aria-busy="true"
+      aria-label="Loading content"
+    >
       <div className="grid grid-cols-1 md:grid-cols-7 gap-[30px] md:gap-[50px] lg:gap-[72px]">
         {/* Left Column */}
         <div className="md:col-span-2 flex flex-col gap-[25px] md:gap-[32px] lg:gap-[40px]">
@@ -267,7 +329,7 @@ const ContentBlogDetails = ({categoryId, subcategoryId, id}: {categoryId: string
 
   if (!blogData) {
     return (
-      <div className="flex items-center justify-center  bg-black  h-screen">
+      <div className="flex items-center justify-center bg-black h-screen">
         <div
           className="text-center p-10 rounded-lg w-[500px] h-[400px] flex flex-col items-center justify-end"
           style={{
@@ -290,12 +352,12 @@ const ContentBlogDetails = ({categoryId, subcategoryId, id}: {categoryId: string
   const cleanedTags = cleanTags(blogData.tags || []);
 
   return (
-    <div className="">
+    <div>
       <div className="container py-[30px] md:py-[50px] lg:py-[72px]">
         {/* First part */}
         <div className="grid grid-cols-7 gap-[30px] md:gap-[50px] lg:gap-[72px]">
           <div className="col-span-7 md:col-span-3 lg:col-span-2 flex flex-col gap-[25px] md:gap-[32px] lg:gap-[40px]">
-            <div className="">
+            <div>
               <h2
                 dangerouslySetInnerHTML={{
                   __html: sanitizeHTML(blogData.heading ?? ""),
@@ -318,7 +380,7 @@ const ContentBlogDetails = ({categoryId, subcategoryId, id}: {categoryId: string
                       ?.getElementById("comment")
                       ?.scrollIntoView({ behavior: "smooth" })
                   }
-                  className="w-full bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
+                  className="w-full bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
                 >
                   Leave A Comment
                 </button>
@@ -352,8 +414,59 @@ const ContentBlogDetails = ({categoryId, subcategoryId, id}: {categoryId: string
                 <span className="w-2/3 h-[2px] bg-secondary" />
               </div>
             </div>
+            <div className="flex items-center gap-3 relative mt-8">
+              <span
+                onClick={() => handleShare(blogData)}
+                className="cursor-pointer"
+              >
+                <RiShareForwardLine className="w-6 h-6" />
+              </span>
+              {showShareMenu === blogData.id && (
+                <div className="absolute top-8 right-0 bg-white shadow-md p-2 rounded flex gap-2 z-10">
+                  <FaTwitter
+                    className="w-6 h-6 cursor-pointer text-blue-500"
+                    onClick={() =>
+                      shareToTwitter(
+                        getShareUrl(
+                          blogData.category_id,
+                          blogData.subcategory_id,
+                          blogData.id
+                        ),
+                        blogData.heading
+                      )
+                    }
+                  />
+                  <FaFacebook
+                    className="w-6 h-6 cursor-pointer text-blue-700"
+                    onClick={() =>
+                      shareToFacebook(
+                        getShareUrl(
+                          blogData.category_id,
+                          blogData.subcategory_id,
+                          blogData.id
+                        )
+                      )
+                    }
+                  />
+                  <FaLinkedin
+                    className="w-6 h-6 cursor-pointer text-blue-600"
+                    onClick={() =>
+                      shareToLinkedIn(
+                        getShareUrl(
+                          blogData.category_id,
+                          blogData.subcategory_id,
+                          blogData.id
+                        ),
+                        blogData.heading
+                      )
+                    }
+                  />
+                </div>
+              )}
+              <TbTargetArrow className="w-6 h-6" />
+            </div>
             {/* Second part */}
-            <div className="mt-[25px] md:mt-[37px] lg:mt-[51px]">
+            <div className="mt-[25px]">
               {/* Posted in */}
               <div className="w-full lg:w-3/5 grid grid-cols-1 md:grid-cols-7 gap-2">
                 <h4 className="md:col-span-2 text-lg md:text-xl text-secondary font-bold leading-[120%] tracking-[0%] uppercase">
@@ -362,18 +475,19 @@ const ContentBlogDetails = ({categoryId, subcategoryId, id}: {categoryId: string
                 <div className="md:col-span-5 w-full flex items-center gap-2">
                   <Link
                     href={`/blogs/${blogData.category_name}`}
-                    className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
+                    className="bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
                   >
                     {blogData?.category_name || ""}
                   </Link>
                   <Link
                     href={`/${blogData.category_id}/${blogData.subcategory_id}`}
-                    className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
+                    className="bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
                   >
                     {blogData?.sub_category_name || ""}
                   </Link>
                 </div>
               </div>
+
               {/* Tags */}
               {cleanedTags.length > 0 && (
                 <div className="w-full lg:w-3/5 grid grid-cols-1 md:grid-cols-7 gap-2 mt-4 md:mt-5 lg:mt-6">
@@ -404,13 +518,16 @@ const ContentBlogDetails = ({categoryId, subcategoryId, id}: {categoryId: string
                   <Image
                     src={
                       blogData.user?.profilePic
-                        ? `${blogData.user.profilePic}`
+                        ? getImageUrl(blogData.user.profilePic)
                         : "/assets/images/no-user.png"
                     }
                     alt={blogData.user?.first_name || "Author"}
                     width={120}
                     height={120}
                     className="w-[180px] h-[180px] object-cover rounded-full border"
+                    onError={(e) =>
+                      (e.currentTarget.src = "/assets/images/no-user.png")
+                    }
                   />
                 </div>
                 <div className="md:col-span-7 h-full flex flex-col justify-center mt-2 md:mt-0">
@@ -485,7 +602,7 @@ const ContentBlogDetails = ({categoryId, subcategoryId, id}: {categoryId: string
                 </div>
               )}
               {commentAccess && (
-                <div className="">
+                <div>
                   <section id="comment" className="py-5">
                     <LeaveAComment UserEmail={userEmail} blogId={Number(id)} />
                   </section>
