@@ -62,7 +62,32 @@ const AllContents: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showShareMenu, setShowShareMenu] = useState<number | null>(null);
 
-  console.log("home data", contents);
+  // console.log("home data", contents);
+    function convertToCDNUrl(image2?: string): string {
+    const image2BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
+    const cdnBaseUrl = "https://dsfua14fu9fn0.cloudfront.net/images";
+
+    if (typeof image2 === "string" && image2.startsWith(image2BaseUrl)) {
+      return image2.replace(image2BaseUrl, cdnBaseUrl);
+    }
+
+    return image2 || "";
+  }
+
+  function getImageUrl(image2?: string) {
+    if (!image2) return "";
+
+    try {
+      const parsed = JSON.parse(image2);
+      if (parsed?.image2) {
+        return convertToCDNUrl(parsed.image2);
+      }
+    } catch {
+      return convertToCDNUrl(image2);
+    }
+
+    return "";
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -93,11 +118,11 @@ const AllContents: React.FC = () => {
     fetchData();
   }, []);
 
-  const getImageUrl = (path: string | null): string => {
-    if (!path) return "/fallback-image.jpg";
-    if (path.startsWith("http")) return path;
-    return `${process.env.NEXT_PUBLIC_BACKEND_URL}/${path.replace(/^\/+/, "")}`;
-  };
+  // const getImageUrl = (path: string | null): string => {
+  //   if (!path) return "/fallback-image.jpg";
+  //   if (path.startsWith("http")) return path;
+  //   return `${process.env.NEXT_PUBLIC_BACKEND_URL}/${path.replace(/^\/+/, "")}`;
+  // };
 
   const getShareUrl = (
     categoryId: number,
@@ -331,7 +356,7 @@ const AllContents: React.FC = () => {
             </div>
           </div>
           <div className="mt-8">
-            <ImageCarousel posts={[firstPost]} getImageUrl={getImageUrl} />
+            <ImageCarousel posts={[firstPost]}  />
           </div>
         </div>
       )}
@@ -579,6 +604,7 @@ const AllContents: React.FC = () => {
               <Link
                 href={`/${fourthPost.category_id}/${fourthPost.subcategory_id}/${fourthPost.id}`}
               >
+
                 <Image
                   src={getImageUrl(fourthPost.image2?.[0] || "")}
                   alt={fourthPost.heading}
