@@ -47,9 +47,6 @@ export default function GearCarousel({
 }: GearCarouselProps) {
   const [api, setApi] = useState<CarouselApi | null>(null);
 
-
- 
-
   // Debug: Log posts and API
   useEffect(() => {
     console.log("GearCarousel Posts:", posts);
@@ -89,10 +86,8 @@ export default function GearCarousel({
                           style={{
                             backgroundImage: `url(${getImageUrl(image)})`,
                             height: "433px",
-                            backgroundPosition: "center",
-                            backgroundSize: "cover",
                           }}
-                          className="flex items-center justify-center object-contain"
+                          className="flex items-center justify-center object-contain aspect-[2/1] w-full bg-contain bg-no-repeat bg-center"
                         >
                           <div className="text-center max-w-[1000px] mx-auto px-4">
                             <motion.p
@@ -130,10 +125,8 @@ export default function GearCarousel({
                           style={{
                             backgroundImage: `url(${getImageUrl(post.image1)})`,
                             height: "433px",
-                            backgroundPosition: "center",
-                            backgroundSize: "cover",
                           }}
-                          className="flex items-center justify-center"
+                          className="flex items-center justify-center aspect-[2/1] w-full bg-contain bg-no-repeat bg-center"
                         >
                           <div className="text-center">
                             <div

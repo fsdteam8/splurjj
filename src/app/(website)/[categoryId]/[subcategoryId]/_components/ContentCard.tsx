@@ -126,11 +126,31 @@ const SecondContents = ({
     };
   }, [currentPage, hasMore, loadingMore, fetchData]);
 
-  const getImageUrl = (path: string | null): string => {
-    if (!path) return "/fallback-image.jpg";
-    if (path.startsWith("http")) return path;
-    return `${process.env.NEXT_PUBLIC_BACKEND_URL}/${path.replace(/^\/+/, "")}`;
-  };
+    function convertToCDNUrl(image2?: string): string {
+    const image2BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
+    const cdnBaseUrl = "https://dsfua14fu9fn0.cloudfront.net/images";
+
+    if (typeof image2 === "string" && image2.startsWith(image2BaseUrl)) {
+      return image2.replace(image2BaseUrl, cdnBaseUrl);
+    }
+
+    return image2 || "";
+  }
+
+  function getImageUrl(image2?: string | null): string {
+    if (!image2) return "";
+
+    try {
+      const parsed = JSON.parse(image2);
+      if (parsed?.image2) {
+        return convertToCDNUrl(parsed.image2);
+      }
+    } catch {
+      return convertToCDNUrl(image2);
+    }
+
+    return "";
+  }
 
   const getShareUrl = (post: Post): string => {
     const baseUrl = typeof window !== "undefined" ? window.location.origin : "";

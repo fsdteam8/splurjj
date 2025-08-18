@@ -86,11 +86,31 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
     fetchData();
   }, [categoryName.categoryName]);
 
-  const getImageUrl = (path: string | null): string => {
-    if (!path) return "/assets/images/fallback.jpg"; // Fallback image
-    if (path.startsWith("http")) return path;
-    return `${process.env.NEXT_PUBLIC_BACKEND_URL}/${path.replace(/^\/+/, "")}`;
-  };
+    function convertToCDNUrl(image2?: string): string {
+    const image2BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
+    const cdnBaseUrl = "https://dsfua14fu9fn0.cloudfront.net/images";
+
+    if (typeof image2 === "string" && image2.startsWith(image2BaseUrl)) {
+      return image2.replace(image2BaseUrl, cdnBaseUrl);
+    }
+
+    return image2 || "";
+  }
+
+  function getImageUrl(image2?: string | null): string {
+    if (!image2) return "";
+
+    try {
+      const parsed = JSON.parse(image2);
+      if (parsed?.image2) {
+        return convertToCDNUrl(parsed.image2);
+      }
+    } catch {
+      return convertToCDNUrl(image2);
+    }
+
+    return "";
+  }
 
   const getShareUrl = (
     categoryId: number,
@@ -343,9 +363,9 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 <Image
                   src={getImageUrl(firstPost.image2?.[0] || "")}
                   alt={firstPost.heading || "Blog Image"}
-                  width={300}
-                  height={200}
-                  className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
+                  width={1200}
+                  height={800}
+                  className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out bg-contain bg-no-repeat bg-center"
                 />
               </Link>
             </div>
@@ -365,7 +385,7 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   alt={secondPost.heading || "Blog Image"}
                   width={300}
                   height={200}
-                  className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
+                  className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out bg-contain bg-no-repeat bg-center"
                 />
               </Link>
             </div>

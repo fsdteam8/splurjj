@@ -157,11 +157,37 @@ function Contents({ initialSearchQuery }: ContentsProps) {
     };
   }, [currentPage, hasMore, loadingMore, loading, fetchData]);
 
-  const getImageUrl = (path: string | null): string => {
-    if (!path) return "/placeholder.svg"; // Fallback image
-    if (path.startsWith("http")) return path;
-    return `${process.env.NEXT_PUBLIC_BACKEND_URL}/${path.replace(/^\/+/, "")}`;
-  };
+  // const getImageUrl = (path: string | null): string => {
+  //   if (!path) return "/placeholder.svg"; // Fallback image
+  //   if (path.startsWith("http")) return path;
+  //   return `${process.env.NEXT_PUBLIC_BACKEND_URL}/${path.replace(/^\/+/, "")}`;
+  // };
+
+  function convertToCDNUrl(image2?: string): string {
+    const image2BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
+    const cdnBaseUrl = "https://dsfua14fu9fn0.cloudfront.net/images";
+
+    if (typeof image2 === "string" && image2.startsWith(image2BaseUrl)) {
+      return image2.replace(image2BaseUrl, cdnBaseUrl);
+    }
+
+    return image2 || "";
+  }
+
+  function getImageUrl(image2?: string) {
+    if (!image2) return "";
+
+    try {
+      const parsed = JSON.parse(image2);
+      if (parsed?.image2) {
+        return convertToCDNUrl(parsed.image2);
+      }
+    } catch {
+      return convertToCDNUrl(image2);
+    }
+
+    return "";
+  }
 
   const getShareUrl = (
     categoryId: number,
@@ -258,14 +284,18 @@ function Contents({ initialSearchQuery }: ContentsProps) {
     <div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {contents.map((post) => (
-          <Link href={`/${post.category_id}/${post.subcategory_id}/${post.id}`} key={post.id} className="relative">
+          <Link
+            href={`/${post.category_id}/${post.subcategory_id}/${post.id}`}
+            key={post.id}
+            className="relative"
+          >
             <div className="overflow-hidden">
               <Image
                 src={getImageUrl(post.image2?.[0] || "") || "/placeholder.svg"}
                 alt={post.heading}
                 width={400}
                 height={300}
-                className="w-full h-[300px] object-cover object-contain hover:scale-150 transition-all duration-500 ease-in-out"
+                className="w-full h-[300px] object-contain hover:scale-150 transition-all duration-500 ease-in-out"
                 priority
               />
             </div>
