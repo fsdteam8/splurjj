@@ -24,6 +24,36 @@ const RecentArticles = () => {
   const session = useSession();
   const token = (session?.data?.user as { token: string })?.token;
 
+   // cdn url link start
+
+  function convertToCDNUrl(image2?: string): string {
+    const image2BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
+    const cdnBaseUrl = "https://dsfua14fu9fn0.cloudfront.net/images";
+
+    if (typeof image2 === "string" && image2.startsWith(image2BaseUrl)) {
+      return image2.replace(image2BaseUrl, cdnBaseUrl);
+    }
+
+    return image2 || "";
+  }
+
+  function getImageUrl(image2?: string) {
+    if (!image2) return "";
+
+    try {
+      const parsed = JSON.parse(image2);
+      if (parsed?.image2) {
+        return convertToCDNUrl(parsed.image2);
+      }
+    } catch {
+      return convertToCDNUrl(image2);
+    }
+
+    return "";
+  }
+
+  // cdn url link end 
+
   const { data, isLoading, isError, error } =
     useQuery<DashboardOverviewResponse>({
       queryKey: ["dashboard-recent-articles", selectedNumber],
@@ -39,7 +69,12 @@ const RecentArticles = () => {
         ).then((res) => res.json()),
     });
 
-  console.log(data?.data?.recent_content?.data);
+  // console.log(data?.data?.recent_content?.data);
+
+  //   const imageUrl = JSON.parse(data?.data?.recent_content?.data?.image2 || "{}") || "";
+
+  // const cdnUrl = convertToCDNUrl(imageUrl.image2);
+  // console.log({cdnUrl})
   if (isLoading) {
     return (
       <div>
@@ -76,6 +111,8 @@ const RecentArticles = () => {
           <table className="w-full">
             <tbody className="">
               {data?.data?.recent_content?.data?.map((content) => {
+                const cdnUrl = getImageUrl(content?.image2?.[0]);
+
                 return (
                   <tr
                     key={content?.id}
@@ -84,11 +121,12 @@ const RecentArticles = () => {
                     <td className="flex items-center gap-4">
                       <div className="w-[120px] h-full">
                         <Image
-                          src={
-                            content?.image2
-                              ? content.image2[0]
-                              : "/assets/images/no-images.jpg"
-                          }
+                          src={cdnUrl ? cdnUrl : "/assets/images/no-images.jpg"}
+                          // src={
+                          //   content?.image2
+                          //     ? content.image2[0]
+                          //     : "/assets/images/no-images.jpg"
+                          // }
                           alt={content?.heading}
                           width={120}
                           height={60}
