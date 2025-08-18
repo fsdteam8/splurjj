@@ -34,6 +34,32 @@ export default function ContentTable({
 
   console.log("contents", contents);
 
+  function convertToCDNUrl(image2?: string): string {
+    const image2BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
+    const cdnBaseUrl = "https://dsfua14fu9fn0.cloudfront.net/images";
+
+    if (typeof image2 === "string" && image2.startsWith(image2BaseUrl)) {
+      return image2.replace(image2BaseUrl, cdnBaseUrl);
+    }
+
+    return image2 || "";
+  }
+
+  function getImageUrl(image2?: string) {
+    if (!image2) return "";
+
+    try {
+      const parsed = JSON.parse(image2);
+      if (parsed?.image2) {
+        return convertToCDNUrl(parsed.image2);
+      }
+    } catch {
+      return convertToCDNUrl(image2);
+    }
+
+    return "";
+  }
+
   const isAuthor = userRole === "author";
   if (loading) {
     return (
@@ -90,10 +116,11 @@ export default function ContentTable({
       <TableBody className="border border-[#616161]">
         {contents?.map((content) => {
           // Select the first valid image from image2, image1, or imageLink, with a fallback
-          const imageSrc =
-            Array.isArray(content.image2) && content.image2.length > 0
-              ? content.image2[0]
-              : content.image1 || content.imageLink || "/fallback-image.jpg"; // Replace with your fallback image path
+          const cdnUrl = getImageUrl(content?.image2?.[0]);
+          // const imageSrc =
+          //   Array.isArray(content.image2) && content.image2.length > 0
+          //     ? content.image2[0]
+          //     : content.image1 || content.imageLink || "/fallback-image.jpg";
 
           return (
             <TableRow
@@ -104,7 +131,7 @@ export default function ContentTable({
                 <div className="flex items-center gap-[10px] pl-8">
                   <div className="rounded-[8px] overflow-hidden bg-gray-100 flex-shrink-0">
                     <Image
-                      src={imageSrc}
+                      src={cdnUrl ? cdnUrl : "/assets/images/no-images.jpg"}
                       alt={content.heading}
                       width={130}
                       height={68}

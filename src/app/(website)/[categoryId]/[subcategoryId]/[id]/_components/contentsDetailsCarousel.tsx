@@ -21,10 +21,46 @@ interface ImageCarouselProps {
   getImageUrl: (image: string | null) => string
 }
 
-export default function ContentsDetailsCarousel({ posts, getImageUrl }: ImageCarouselProps) {
+export default function ContentsDetailsCarousel({ posts }: ImageCarouselProps) {
   const [api, setApi] = useState<CarouselApi | null>(null)
   const [isViewerOpen, setIsViewerOpen] = useState(false)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
+
+  console.log("posts in carousel", posts?.image2)
+
+  // ✅ Convert S3 → CDN
+function convertToCDNUrl(image2?: string): string {
+  const image2BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
+  const cdnBaseUrl = "https://dsfua14fu9fn0.cloudfront.net/images";
+
+  if (typeof image2 === "string" && image2.startsWith(image2BaseUrl)) {
+    return image2.replace(image2BaseUrl, cdnBaseUrl);
+  }
+  return image2 || "";
+}
+
+// ✅ Safely normalize image2
+function normalizeImageArray(image2?: string[] | string): string[] {
+  if (!image2) return [];
+
+  if (Array.isArray(image2)) {
+    return image2.map((url) => convertToCDNUrl(url));
+  }
+
+  try {
+    const parsed = JSON.parse(image2);
+    if (Array.isArray(parsed)) {
+      return parsed.map((url) => convertToCDNUrl(url));
+    }
+  } catch {
+    return [convertToCDNUrl(image2)];
+  }
+
+  return [];
+}
+
+  
+
 
   useEffect(() => {
     if (!api) return
@@ -32,29 +68,29 @@ export default function ContentsDetailsCarousel({ posts, getImageUrl }: ImageCar
     return () => clearInterval(interval)
   }, [api])
 
-  const imageUrls = (() => {
-    const urls: string[] = []
-    if (posts.image1) urls.push(getImageUrl(posts.image1))
-    if (posts.image2) {
-      // First check if it's already an array
-      if (Array.isArray(posts.image2)) {
-        urls.push(...posts.image2.map(getImageUrl))
-      } else if (typeof posts.image2 === "string") {
-        try {
-          const parsed = JSON.parse(posts.image2)
-          if (Array.isArray(parsed)) {
-            urls.push(...parsed.map(getImageUrl))
-          } else if (typeof parsed === "string") {
-            urls.push(getImageUrl(parsed))
-          }
-        } catch {
-          // If JSON parsing fails, treat it as a regular string
-          urls.push(getImageUrl(posts.image2))
-        }
-      }
-    }
-    return urls.length ? urls : ["/fallback-image.jpg"]
-  })()
+  // const images = (() => {
+  //   const urls: string[] = []
+  //   if (posts.image1) urls.push(getImageUrl(posts.image1))
+  //   if (posts.image2) {
+  //     // First check if it's already an array
+  //     if (Array.isArray(posts.image2)) {
+  //       urls.push(...posts.image2.map(getImageUrl))
+  //     } else if (typeof posts.image2 === "string") {
+  //       try {
+  //         const parsed = JSON.parse(posts.image2)
+  //         if (Array.isArray(parsed)) {
+  //           urls.push(...parsed.map(getImageUrl))
+  //         } else if (typeof parsed === "string") {
+  //           urls.push(getImageUrl(parsed))
+  //         }
+  //       } catch {
+  //         // If JSON parsing fails, treat it as a regular string
+  //         urls.push(getImageUrl(posts.image2))
+  //       }
+  //     }
+  //   }
+  //   return urls.length ? urls : ["/fallback-image.jpg"]
+  // })()
 
   const handleImageClick = (index: number) => {
     setSelectedImageIndex(index)
@@ -65,12 +101,14 @@ export default function ContentsDetailsCarousel({ posts, getImageUrl }: ImageCar
     setIsViewerOpen(false)
   }
 
+  const images = normalizeImageArray(posts?.image2 || "");
+
   return (
     <>
       <div className="w-full">
         <Carousel setApi={setApi} opts={{ align: "start", loop: true }} className="w-full relative">
           <CarouselContent>
-            {imageUrls.map((imageUrl, index) => (
+            {images.map((imageUrl, index) => (
               <CarouselItem key={`${posts.id}-${index}`}>
                 <div className="relative cursor-pointer group" onClick={() => handleImageClick(index)}>
                   <Image
@@ -83,16 +121,10 @@ export default function ContentsDetailsCarousel({ posts, getImageUrl }: ImageCar
                       ;(e.currentTarget as HTMLImageElement).src = "/fallback-image.jpg"
                     }}
                   />
-                  {/* Overlay hint */}
-                  {/* <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-200 flex items-center justify-center">
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/50 text-white px-3 py-1 rounded-full text-sm font-medium">
-                      Click to view full size
-                    </div>
-                  </div> */}
                   {/* Image counter badge */}
-                  {imageUrls.length > 1 && (
+                  {images.length > 1 && (
                     <div className="absolute top-4 right-4 bg-black/50 text-white px-2 py-1 rounded-full text-sm font-medium">
-                      {index + 1} / {imageUrls.length}
+                      {index + 1} / {images.length}
                     </div>
                   )}
                 </div>
@@ -101,7 +133,7 @@ export default function ContentsDetailsCarousel({ posts, getImageUrl }: ImageCar
           </CarouselContent>
 
           {/* Navigation Buttons - Only show if there are multiple images */}
-          {imageUrls.length > 1 && (
+          {images.length > 1 && (
             <>
               <button
                 onClick={() => api?.scrollPrev()}
@@ -123,7 +155,7 @@ export default function ContentsDetailsCarousel({ posts, getImageUrl }: ImageCar
       </div>
 
       <ImageViewer
-        images={imageUrls}
+        images={images}
         initialIndex={selectedImageIndex}
         isOpen={isViewerOpen}
         onClose={handleCloseViewer}
