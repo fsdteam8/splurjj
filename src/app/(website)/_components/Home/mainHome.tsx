@@ -49,6 +49,8 @@ function MainHome() {
   const forthPost = categories[3]?.category_name;
   const fifthPost = categories[4]?.category_name;
   const sixthPost = categories[5]?.category_name;
+  const sevenPost = categories[6]?.category_name;
+  const eightPost = categories[7]?.category_name;
 
   return (
     <div>
@@ -56,7 +58,7 @@ function MainHome() {
         <div className="grid grid-cols-8 gap-4 pt-16">
           {/* Main content */}
           <div className="col-span-8 md:col-span-6 pb-8 md:pb-14 lg:pb-16">
-            <AllContents/>
+            <AllContents />
           </div>
 
           {/* Sticky sidebar */}
@@ -105,6 +107,7 @@ function MainHome() {
           </div>
         </div>
       </div>
+
       <div>
         <Horizontal />
         <div className="container">
@@ -123,6 +126,7 @@ function MainHome() {
           </div>
         </div>
       </div>
+
       <div>
         <Horizontal />
         <div className="container">
@@ -140,8 +144,52 @@ function MainHome() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* new posts section */}
+
+      <div>
+        <Horizontal />
+        <div className="container">
+          <div className="grid grid-cols-8 gap-4 pt-4">
+            {/* Main content */}
+            <div className="col-span-8 md:col-span-6 pb-2">
+              <QuitCalm categoryName={{ categoryName: sevenPost }} />
+            </div>
+
+            {/* Sticky sidebar */}
+            <div className="col-span-8 md:col-span-2">
+              <div className="sticky top-[120px] mb-2">
+                <Vertical />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <Horizontal />
+        <div className="container">
+          <div className="grid grid-cols-8 gap-4 pt-4">
+            {/* Main content */}
+            <div className="col-span-8 md:col-span-6 pb-2">
+              <QuitCalm categoryName={{ categoryName: eightPost }} />
+            </div>
+
+            {/* Sticky sidebar */}
+            <div className="col-span-8 md:col-span-2">
+              <div className="sticky top-[120px] mb-2">
+                <Vertical />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
         <Horizontal />
       </div>
+
     </div>
   );
 }
