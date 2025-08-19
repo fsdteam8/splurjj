@@ -9,14 +9,13 @@ import { LuFacebook } from "react-icons/lu";
 import { PiYoutubeLogoLight } from "react-icons/pi";
 import { TbTargetArrow } from "react-icons/tb";
 import Link from "next/link";
-import { LeaveAComment } from "@/app/(website)/_components/LeaveAComment/LeaveAComment";
+import CommentSection from "@/app/(website)/_components/LeaveAComment/LeaveAComment";
 import { useSession } from "next-auth/react";
 import Vertical from "@/components/adds/vertical";
 import Horizontal from "@/components/adds/horizontal";
 import RelatedContent from "@/app/(website)/_components/RalatedBlog/RalatedBlog";
 import DOMPurify from "dompurify";
 import ContentsDetailsCarousel from "./contentsDetailsCarousel";
-import ContentComments from "./upvoteDownvoteAllComments";
 
 interface BlogData {
   status: boolean;
@@ -604,13 +603,10 @@ const ContentBlogDetails = ({
               {commentAccess && (
                 <div>
                   <section id="comment" className="py-5">
-                    <LeaveAComment UserEmail={userEmail} blogId={Number(id)} />
+                    <CommentSection UserEmail={userEmail} blogId={Number(id)} />
                   </section>
                 </div>
               )}
-            </div>
-            <div>
-              <ContentComments blogId={Number(id)} />
             </div>
           </div>
         </div>
