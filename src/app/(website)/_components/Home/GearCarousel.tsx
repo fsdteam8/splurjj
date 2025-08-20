@@ -5,8 +5,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
 } from "@/components/ui/carousel";
 import { CarouselApi } from "@/components/ui/carousel";
 import Link from "next/link";
@@ -162,8 +160,8 @@ export default function GearCarousel({
             </CarouselItem>
           )}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
+        {/* <CarouselPrevious />
+        <CarouselNext /> */}
       </Carousel>
     </div>
   );
