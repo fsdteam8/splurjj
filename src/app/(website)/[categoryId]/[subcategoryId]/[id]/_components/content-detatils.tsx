@@ -612,10 +612,13 @@ const ContentBlogDetails = ({
         </div>
       </div>
       <div className="sticky mb-2">
-        <Horizontal />
+        {/* <Horizontal /> */}
+        <div className="hidden md:block">
+          <Horizontal />
+        </div>
       </div>
       {/* Related blogs */}
-      <section>
+      <section className="">
         <RelatedContent categoryId={categoryId} subcategoryId={subcategoryId} />
       </section>
     </div>
