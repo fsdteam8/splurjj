@@ -70,7 +70,9 @@ function MainHome() {
         </div>
       </div>
       <div>
-        <Horizontal />
+        <div className="hidden md:block">
+          <Horizontal />
+        </div>
         <div className="container">
           <div className="grid grid-cols-8 gap-4 pt-8 md:pt-12 lg:pt-16">
             {/* Main content */}
@@ -89,7 +91,9 @@ function MainHome() {
         </div>
       </div>
       <div>
-        <Horizontal />
+        <div className="hidden md:block">
+          <Horizontal />
+        </div>
         <div className="container">
           <div className="grid grid-cols-8 gap-4 pt-8 md:pt-12 lg:pt-16">
             {/* Main content */}
@@ -109,7 +113,9 @@ function MainHome() {
       </div>
 
       <div>
-        <Horizontal />
+        <div className="hidden md:block">
+          <Horizontal />
+        </div>
         <div className="container">
           <div className="grid grid-cols-8 gap-4 pt-8 md:pt-12 lg:pt-16">
             {/* Main content */}
@@ -128,7 +134,9 @@ function MainHome() {
       </div>
 
       <div>
-        <Horizontal />
+        <div className="hidden md:block">
+          <Horizontal />
+        </div>
         <div className="container">
           <div className="grid grid-cols-8 gap-4 pt-4">
             {/* Main content */}
@@ -149,7 +157,9 @@ function MainHome() {
       {/* new posts section */}
 
       <div>
-        <Horizontal />
+        <div className="hidden md:block">
+          <Horizontal />
+        </div>
         <div className="container">
           <div className="grid grid-cols-8 gap-4 pt-4">
             {/* Main content */}
@@ -168,7 +178,9 @@ function MainHome() {
       </div>
 
       <div>
-        <Horizontal />
+        <div className="hidden md:block">
+          <Horizontal />
+        </div>
         <div className="container">
           <div className="grid grid-cols-8 gap-4 pt-4">
             {/* Main content */}
@@ -186,10 +198,9 @@ function MainHome() {
         </div>
       </div>
 
-      <div>
+      <div className="hidden md:block">
         <Horizontal />
       </div>
-
     </div>
   );
 }
