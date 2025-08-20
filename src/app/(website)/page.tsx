@@ -4,7 +4,7 @@ import MainHome from "./_components/Home/mainHome";
 
 const HomePage = () => {
   return (
-    <div>
+    <div className="overflow-x-hidden">
       <Suspense fallback={<div>Loading...</div>}>
         <MainHome />
       </Suspense>
