@@ -267,19 +267,13 @@ const SecondContents = ({
                     <div className="md:flex items-center gap-4 mb-2">
                       <div className="flex items-center gap-2">
                         <Link
-                          href={`/blogs/${post.category_name
-                            .toLowerCase()
-                            .replace(/\s+/g, "-")}`}
+                          href={`/blogs/${post.category_name}`}
                           className="bg-primary py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
                         >
                           {post.category_name || "Category"}
                         </Link>
                         <Link
-                          href={`/blogs/${post.category_name
-                            .toLowerCase()
-                            .replace(/\s+/g, "-")}/${post.sub_category_name
-                            .toLowerCase()
-                            .replace(/\s+/g, "-")}`}
+                          href={`/blogs/${post.category_name}/${post.sub_category_name}`}
                           className="bg-primary py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
                         >
                           {post.sub_category_name || "Subcategory"}
@@ -317,11 +311,7 @@ const SecondContents = ({
                     </div>
                     <div>
                       <Link
-                        href={`/blogs/${post.category_name
-                          .toLowerCase()
-                          .replace(/\s+/g, "-")}/${post.sub_category_name
-                          .toLowerCase()
-                          .replace(/\s+/g, "-")}/${post.id}`}
+                        href={`/blogs/${post.category_name}/${post.sub_category_name}/${post.id}`}
                       >
                         <motion.p
                           dangerouslySetInnerHTML={{ __html: post.heading }}
@@ -372,19 +362,13 @@ const SecondContents = ({
                     <div className="flex items-center gap-4 mb-2">
                       <div className="flex items-center gap-2">
                         <Link
-                          href={`/blogs/${post.category_name
-                            .toLowerCase()
-                            .replace(/\s+/g, "-")}`}
+                          href={`/blogs/${post.category_name}`}
                           className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
                         >
                           {post.category_name || "Category"}
                         </Link>
                         <Link
-                          href={`/blogs/${post.category_name
-                            .toLowerCase()
-                            .replace(/\s+/g, "-")}/${post.sub_category_name
-                            .toLowerCase()
-                            .replace(/\s+/g, "-")}`}
+                          href={`/blogs/${post.category_name}/${post.sub_category_name}`}
                           className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
                         >
                           {post.sub_category_name || "Subcategory"}
@@ -422,11 +406,7 @@ const SecondContents = ({
                     </div>
                     <div>
                       <Link
-                        href={`/blogs/${post.category_name
-                          .toLowerCase()
-                          .replace(/\s+/g, "-")}/${post.sub_category_name
-                          .toLowerCase()
-                          .replace(/\s+/g, "-")}/${post.id}`}
+                        href={`/blogs/${post.category_name}/${post.sub_category_name}/${post.id}`}
                       >
                         <motion.p
                           dangerouslySetInnerHTML={{ __html: post.heading }}
