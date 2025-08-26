@@ -45,7 +45,7 @@ const FirstContents: React.FC<FirstContentsProps> = ({
 }) => {
   const [showShareMenu, setShowShareMenu] = useState<number | null>(null);
 
-    function convertToCDNUrl(image2?: string): string {
+  function convertToCDNUrl(image2?: string): string {
     const image2BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
     const cdnBaseUrl = "https://dsfua14fu9fn0.cloudfront.net/images";
 
@@ -151,9 +151,7 @@ const FirstContents: React.FC<FirstContentsProps> = ({
           <div className="lg:flex items-center gap-4 mb-4 space-y-4 md:space-y-0">
             <div className="flex items-center gap-2">
               <Link
-                href={`/blogs/${firstPost.category_name
-                  .toLowerCase()
-                  .replace(/\s+/g, "-")}`}
+                href={`/blogs/${firstPost.category_name}`}
                 className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
               >
                 {firstPost.category_name || "Category"}
@@ -262,9 +260,7 @@ const FirstContents: React.FC<FirstContentsProps> = ({
           <div className="col-span-5 lg:col-span-2">
             <div className="flex items-center gap-2 mb-2">
               <Link
-                href={`/blogs/${secondPost.category_name
-                  .toLowerCase()
-                  .replace(/\s+/g, "-")}`}
+                href={`/blogs/${secondPost.category_name}`}
                 className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
               >
                 {secondPost.category_name || "Category"}
@@ -390,9 +386,7 @@ const FirstContents: React.FC<FirstContentsProps> = ({
             <div className="md:flex items-center justify-between gap-4 mb-2">
               <div className="flex items-center gap-2">
                 <Link
-                  href={`/blogs/${thirdPost.category_name
-                    .toLowerCase()
-                    .replace(/\s+/g, "-")}`}
+                  href={`/blogs/${thirdPost.category_name}`}
                   className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
                 >
                   {thirdPost.category_name || "Category"}
@@ -491,9 +485,7 @@ const FirstContents: React.FC<FirstContentsProps> = ({
             <div className="md:flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <Link
-                  href={`/blogs/${fourthPost.category_name
-                    .toLowerCase()
-                    .replace(/\s+/g, "-")}`}
+                  href={`/blogs/${fourthPost.category_name}`}
                   className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
                 >
                   {fourthPost.category_name || "Category"}
@@ -600,9 +592,7 @@ const FirstContents: React.FC<FirstContentsProps> = ({
             <div className="md:flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <Link
-                  href={`/blogs/${fifthPost.category_name
-                    .toLowerCase()
-                    .replace(/\s+/g, "-")}`}
+                  href={`/blogs/${fifthPost.category_name}`}
                   className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
                 >
                   {fifthPost.category_name || "Category"}
