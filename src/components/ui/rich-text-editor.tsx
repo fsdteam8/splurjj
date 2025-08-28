@@ -201,7 +201,7 @@ export function RichTextEditor({
 
   return (
     <div className={ ` border border-[#B6B6B6] focus:border-none focus:ring-0 focus-visible:border-none rounded-md overflow-scroll `}>
-      <div className="rich-text-toolbar sticky top-0 z-50 overflow-x-auto">
+      <div className="rich-text-toolbar sticky top-0 z-20 overflow-x-auto">
         <div className="rich-text-toolbar-group">
           <select
             onChange={(e) => formatHeading(e.target.value)}
