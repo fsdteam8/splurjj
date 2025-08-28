@@ -279,13 +279,14 @@ function Contents({ initialSearchQuery }: ContentsProps) {
   if (loading && contents.length === 0) return <SkeletonLoader />;
   if (error) return <div>Error: {error}</div>;
   if (!contents.length && !loading) return <div>No content found</div>;
+  console.log(contents)
 
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {contents.map((post) => (
+        {contents?.map((post) => (
           <Link
-            href={`/${post.category_id}/${post.subcategory_id}/${post.id}`}
+            href={`/${post?.category_id}/${post?.subcategory_id}/${post.id}`}
             key={post.id}
             className="relative"
           >
