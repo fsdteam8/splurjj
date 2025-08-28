@@ -223,7 +223,7 @@ const Footer = () => {
 
   return (
     <div
-      className="h-full lg:h-[533px] w-full pt-24"
+      className="h-full lg:h-auto w-full pt-14 pb-3"
       style={{ backgroundColor: footerbg?.data?.bg_color || "#C9C3C3"}}
       // style={
       //   footerbg?.data?.bg_color
