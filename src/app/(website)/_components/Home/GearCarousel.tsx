@@ -87,7 +87,7 @@ export default function GearCarousel({
                           }}
                           className="flex items-center justify-center object-contain aspect-[2/1] w-full bg-contain bg-no-repeat bg-center"
                         >
-                          <div className="text-center max-w-[1000px] mx-auto px-4">
+                          <div className="text-center max-w-[1000px] mx-auto py-4 px-10 bg-black/20 rounded-[12px]">
                             <motion.p
                               dangerouslySetInnerHTML={{
                                 __html: DOMPurify.sanitize(post.heading),

@@ -241,7 +241,7 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
       {firstPost && (
         <div className="">
           <div className="md:flex items-center gap-2 mb-4">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 ">
               <Link
                 href={`/blogs/${firstPost.category_name}`}
                 className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-sm font-extrabold uppercase text-white"
@@ -327,7 +327,7 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 }}
                 className="flex items-center justify-center bg-contain bg-no-repeat bg-center aspect-[1.5/1] w-full duration-500 ease-in-out hover:scale-110 "
               >
-                <div className=" px-4">
+                <div className=" py-4 px-10 bg-black/20 rounded-[12px]">
                   <motion.p
                     dangerouslySetInnerHTML={{ __html: firstPost.heading }}
                     className="font-medium white-text max-w-[800px]  text-3xl lg:text-5xl text-center text-white line-clamp-3"
