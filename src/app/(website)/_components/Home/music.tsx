@@ -327,7 +327,7 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 }}
                 className="flex items-center justify-center bg-contain bg-no-repeat bg-center aspect-[1.5/1] w-full duration-500 ease-in-out hover:scale-110 "
               >
-                <div className=" py-4 px-10 bg-black/20 rounded-[12px]">
+                <div className=" py-4 px-10 bg-black/40 rounded-[12px]">
                   <motion.p
                     dangerouslySetInnerHTML={{ __html: firstPost.heading }}
                     className="font-medium white-text max-w-[800px]  text-3xl lg:text-5xl text-center text-white line-clamp-3"
