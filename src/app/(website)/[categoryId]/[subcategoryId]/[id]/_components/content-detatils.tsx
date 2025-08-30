@@ -407,7 +407,8 @@ const ContentBlogDetails = ({
                 dangerouslySetInnerHTML={{
                   __html: sanitizeHTML(blogData.body1 ?? ""),
                 }}
-                className="text-base font-normal leading-[150%] tracking-[0%] text-[#424242] pb-5 md:pb-7 lg:pb-8"
+                // className="text-base font-normal leading-[150%] tracking-[0%] text-[#424242] pb-5 md:pb-7 lg:pb-8"
+                className="list-item list-none"
               />
               <div className="w-full flex items-center justify-center">
                 <span className="w-2/3 h-[2px] bg-secondary" />

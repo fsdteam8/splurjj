@@ -432,9 +432,9 @@ const Footer = () => {
                 <Image
                   src="/assets/images/google_play.png"
                   alt="Download on App Store"
-                  width={165}
-                  height={56}
-                  className="hover:opacity-80 transition-opacity"
+                  width={465}
+                  height={156}
+                  className="w-[165px] h-[56px]"
                 />
               </Link>
               <Link
@@ -446,9 +446,9 @@ const Footer = () => {
                 <Image
                   src="/assets/images/app_store.png"
                   alt="Get it on Google Play"
-                  width={165}
-                  height={56}
-                  className="hover:opacity-80 transition-opacity"
+                  width={465}
+                  height={156}
+                  className="w-[165px] h-[56px]"
                 />
               </Link>
             </div>

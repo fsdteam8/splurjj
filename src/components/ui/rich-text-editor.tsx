@@ -294,7 +294,7 @@ export function RichTextEditor({
           </button>
         </div>
 
-        <div className="rich-text-toolbar-group">
+        <div className="rich-text-toolbar-group border-2 border-red-500">
           <button
             onClick={() => execCommand("insertUnorderedList")}
             className={`rich-text-toolbar-button dark:text-black ${
@@ -303,7 +303,7 @@ export function RichTextEditor({
             title="Bullet list"
             type="button"
           >
-            <List className="h-4 w-4" />
+            <List className="h-4 w-4 text-black dark:text-black" />
           </button>
           <button
             onClick={() => execCommand("insertOrderedList")}
@@ -313,7 +313,7 @@ export function RichTextEditor({
             title="Ordered list"
             type="button"
           >
-            <ListOrdered className="h-4 w-4" />
+            <ListOrdered className="h-4 w-4 text-black dark:text-black" />
           </button>
         </div>
 
