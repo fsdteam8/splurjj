@@ -352,7 +352,7 @@ const ContentBlogDetails = ({
 
   return (
     <div>
-      <div className="container py-[30px] md:py-[50px] lg:py-[72px]">
+      <div className="container py-[30px] md:py-[50px] lg:py-[72px] ">
         {/* First part */}
         <div className="grid grid-cols-7 gap-[30px] md:gap-[50px] lg:gap-[72px]">
           <div className="col-span-7 md:col-span-3 lg:col-span-2 flex flex-col gap-[25px] md:gap-[32px] lg:gap-[40px]">

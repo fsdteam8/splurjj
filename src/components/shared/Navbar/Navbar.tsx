@@ -334,14 +334,14 @@ export default function Header() {
                     {item.name}
                   </Link>
                 ))}
-                {categories.map((category) => {
+                {categories?.map((category) => {
                   const isActive = isCategoryActive(category.category_id);
                   if (category.subcategories.length === 0) {
                     return (
                       <Link
                         key={category.category_id}
                         href={`/blogs/${category.category_name}`}
-                        className="text-xs lg:text-sm font-medium transition-colors hover:text-primary"
+                        className="text-xs lg:text-sm font-medium transition-colors hover:text-primary "
                         style={{
                           color: isActive
                             ? header?.menu_item_active_color || "#0253F7"
@@ -408,7 +408,7 @@ export default function Header() {
                         </div>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent
-                        className="w-48 bg-white text-[18px] font-semibold border-0 mt-[20px]"
+                        className="w-48 bg-white text-[18px] font-semibold border-0 mt-[5px]"
                         onPointerEnter={() =>
                           handleDropdownOpen(category.category_id)
                         }
