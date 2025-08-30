@@ -68,7 +68,7 @@ interface ContentFormModalProps {
 const formSchema = z.object({
   image2: z
     .array(z.string().min(1, "Image name or URL is required"))
-    .min(1, "At least one image is required")
+    .min(0, "At least one image is required")
     .max(10, "Maximum 10 images allowed"),
   tags: z.array(z.string().min(1)).max(10, "Max 10 tags"),
   author: z.string().min(2, "Author must be at least 2 characters"),
@@ -403,7 +403,7 @@ export default function ContentAddEditForm({
                           placeholder="Heading ...."
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500"/>
                     </FormItem>
                   )}
                 />
@@ -424,7 +424,7 @@ export default function ContentAddEditForm({
                           placeholder="Sub Heading ...."
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500"/>
                     </FormItem>
                   )}
                 />
@@ -445,7 +445,7 @@ export default function ContentAddEditForm({
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500"/>
                     </FormItem>
                   )}
                 />
@@ -519,7 +519,7 @@ export default function ContentAddEditForm({
                           </PopoverContent>
                         </Popover>
                       </div>
-                      <FormMessage />
+                      <FormMessage className="text-red-500"/>
                     </FormItem>
                   )}
                 />
@@ -588,7 +588,7 @@ export default function ContentAddEditForm({
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500"/>
                     </FormItem>
                   )}
                 />
@@ -609,7 +609,7 @@ export default function ContentAddEditForm({
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500"/>
                     </FormItem>
                   )}
                 />
@@ -630,7 +630,7 @@ export default function ContentAddEditForm({
                           placeholder="Description...."
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500"/>
                     </FormItem>
                   )}
                 />
@@ -735,7 +735,7 @@ export default function ContentAddEditForm({
                           </div>
                         </div>
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500"/>
                     </FormItem>
                   )}
                 />
@@ -1170,7 +1170,7 @@ export default function ContentAddEditForm({
 //                           placeholder="Heading ...."
 //                         />
 //                       </FormControl>
-//                       <FormMessage />
+//                       <FormMessage className="text-red-500"/>
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1191,7 +1191,7 @@ export default function ContentAddEditForm({
 //                           placeholder="Sub Heading ...."
 //                         />
 //                       </FormControl>
-//                       <FormMessage />
+//                       <FormMessage className="text-red-500"/>
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1212,7 +1212,7 @@ export default function ContentAddEditForm({
 //                           {...field}
 //                         />
 //                       </FormControl>
-//                       <FormMessage />
+//                       <FormMessage className="text-red-500"/>
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1286,7 +1286,7 @@ export default function ContentAddEditForm({
 //                           </PopoverContent>
 //                         </Popover>
 //                       </div>
-//                       <FormMessage />
+//                       <FormMessage className="text-red-500"/>
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1355,7 +1355,7 @@ export default function ContentAddEditForm({
 //                           {...field}
 //                         />
 //                       </FormControl>
-//                       <FormMessage />
+//                       <FormMessage className="text-red-500"/>
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1375,7 +1375,7 @@ export default function ContentAddEditForm({
 //                           {...field}
 //                         />
 //                       </FormControl>
-//                       <FormMessage />
+//                       <FormMessage className="text-red-500"/>
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1396,7 +1396,7 @@ export default function ContentAddEditForm({
 //                           placeholder="Description...."
 //                         />
 //                       </FormControl>
-//                       <FormMessage />
+//                       <FormMessage className="text-red-500"/>
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1492,7 +1492,7 @@ export default function ContentAddEditForm({
 //                           </div>
 //                         </div>
 //                       </FormControl>
-//                       <FormMessage />
+//                       <FormMessage className="text-red-500"/>
 //                     </FormItem>
 //                   )}
 //                 />

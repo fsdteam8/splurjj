@@ -334,14 +334,14 @@ export default function Header() {
                     {item.name}
                   </Link>
                 ))}
-                {categories.map((category) => {
+                {categories?.map((category) => {
                   const isActive = isCategoryActive(category.category_id);
                   if (category.subcategories.length === 0) {
                     return (
                       <Link
                         key={category.category_id}
                         href={`/blogs/${category.category_name}`}
-                        className="text-xs lg:text-sm font-medium transition-colors hover:text-primary"
+                        className="text-xs lg:text-sm font-medium transition-colors hover:text-primary "
                         style={{
                           color: isActive
                             ? header?.menu_item_active_color || "#0253F7"
@@ -408,7 +408,7 @@ export default function Header() {
                         </div>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent
-                        className="w-48 bg-white text-[18px] font-semibold border-0 mt-[20px]"
+                        className="w-48 bg-white text-[18px] font-semibold border-0 mt-[5px]"
                         onPointerEnter={() =>
                           handleDropdownOpen(category.category_id)
                         }
@@ -447,16 +447,20 @@ export default function Header() {
                 {isSearchOpen ? (
                   <form
                     onSubmit={handleSearch}
-                    className="flex items-center w-full max-w-sm transition-all duration-300 border border-gray-300 rounded-full px-3 py-1 bg-white shadow-sm"
+                    className="flex items-center w-full max-w-[250px] transition-all duration-300 border border-gray-300 rounded-full px-3 py-1 bg-white shadow-sm"
                     role="search"
                   >
                     <Input
                       type="text"
-                      placeholder="Search products, categories..."
+                      placeholder="Search by blog..."
                       value={searchQuery}
                       onChange={handleSearchChange}
                       onKeyDown={handleKeyDown}
-                      className="w-full ml-2 bg-transparent text-sm focus:ring-0 focus:outline-none focus:border-0 border-0 outline-none ring-0 placeholder:text-gray-400 dark:text-black"
+                      // className="w-full ml-2 bg-transparent text-sm focus:ring-0 focus:outline-none focus:border-0 border-0 outline-none ring-0 placeholder:text-gray-400 dark:text-black  "
+                      className="w-full ml-2 bg-transparent text-sm 
+           focus:ring-0 focus:outline-none 
+           border-none !border-0 !ring-0 outline-none 
+           placeholder:text-gray-400 placeholder:text-xs dark:text-black"
                       autoFocus
                       aria-label="Search content"
                     />
