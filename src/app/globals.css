@@ -151,13 +151,15 @@ body {
   position: relative;
 }
 
+/* -------- Unordered list (• bullets) -------- */
 .list-item ul li::before {
-  content: "•";
-  @apply text-gray-700;
+  content: "•"; /* keep bullet dot */
   position: absolute;
   left: -1em;
+  @apply text-black dark:text-white text-xl; /* bigger + light/dark */
 }
 
+/* -------- Ordered list (1, 2, 3, …) -------- */
 .list-item ol {
   counter-reset: item;
 }
@@ -168,10 +170,12 @@ body {
 
 .list-item ol li::before {
   content: counter(item) ".";
-  @apply text-gray-700;
   position: absolute;
   left: -1em;
+  @apply text-black dark:text-white text-xl; /* bigger + light/dark */
 }
+
+
 
 /* Heading styles for the list items */
 .list-item h1,
@@ -209,9 +213,7 @@ body {
   @apply text-sm;
 }
 
-.list-item a
-
-iframe {
+.list-item iframe {
   width: 100%;
   max-width: 560px; /* Match the iframe width */
   height: auto;
@@ -245,9 +247,9 @@ h6 {
 p {
   @apply text-[#131313] dark:text-white;
 }
-li {
+/* li {
   @apply text-[#131313] dark:text-white;
-}
+} */
 
 
 
@@ -333,11 +335,11 @@ Textarea {
 }
 
 .rich-text-content ul {
-  @apply list-disc pl-5 mb-4 dark:text-black;
+  @apply list-disc pl-5 mb-4 text-black dark:text-black;
 }
 
 .rich-text-content ol {
-  @apply list-decimal pl-5 mb-4 dark:text-black;
+  @apply list-decimal pl-5 mb-4 text-black dark:text-black;
 }
 .rich-text-content img {
   @apply max-w-full h-auto my-4 rounded-md block;

@@ -64,6 +64,25 @@ interface ContentFormModalProps {
   setShowForm?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+// Utility function to format Date to DD-MM-YYYY
+const formatDateToDDMMYYYY = (date: Date): string => {
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
+
+// Utility function to parse DD-MM-YYYY string to Date
+const parseDDMMYYYYToDate = (dateStr: string): Date | null => {
+  const [day, month, year] = dateStr.split("-").map(Number);
+  if (!day || !month || !year || isNaN(day) || isNaN(month) || isNaN(year)) {
+    return null;
+  }
+  // Create date in local timezone to avoid UTC offset issues
+  const date = new Date(year, month - 1, day); // Months are 0-based
+  return isNaN(date.getTime()) ? null : date;
+};
+
 // Zod Schema
 const formSchema = z.object({
   image2: z
@@ -303,7 +322,11 @@ export default function ContentAddEditForm({
       formDataToSend.append("author", formData.author);
       formDataToSend.append("meta_title", formData.meta_title);
       formDataToSend.append("meta_description", formData.meta_description);
-      formDataToSend.append("date", formData.date.toISOString().split("T")[0]);
+      // Use local date parts to avoid timezone offset issues
+      const year = formData.date.getFullYear();
+      const month = String(formData.date.getMonth() + 1).padStart(2, "0");
+      const day = String(formData.date.getDate()).padStart(2, "0");
+      formDataToSend.append("date", `${year}-${month}-${day}`);
       formDataToSend.append("sub_heading", formData.sub_heading);
       formDataToSend.append("body1", formData.body1);
       formDataToSend.append("tags", JSON.stringify(formData.tags));
@@ -403,7 +426,7 @@ export default function ContentAddEditForm({
                           placeholder="Heading ...."
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -424,7 +447,7 @@ export default function ContentAddEditForm({
                           placeholder="Sub Heading ...."
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -445,7 +468,7 @@ export default function ContentAddEditForm({
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -462,16 +485,13 @@ export default function ContentAddEditForm({
                       <div className="relative flex gap-2">
                         <FormControl>
                           <Input
-                            value={field.value.toLocaleDateString("en-US", {
-                              day: "2-digit",
-                              month: "long",
-                              year: "numeric",
-                            })}
+                            value={field.value ? formatDateToDDMMYYYY(field.value) : ""}
                             onChange={(e) => {
-                              const parsed = new Date(e.target.value);
-                              if (!isNaN(parsed.getTime())) {
-                                field.onChange(parsed);
-                                setMonth(parsed);
+                              const dateStr = e.target.value;
+                              const parsedDate = parseDDMMYYYYToDate(dateStr);
+                              if (parsedDate) {
+                                field.onChange(parsedDate);
+                                setMonth(parsedDate);
                               }
                             }}
                             onKeyDown={(e) => {
@@ -481,7 +501,7 @@ export default function ContentAddEditForm({
                               }
                             }}
                             className="bg-white border border-gray-300 text-black rounded-lg p-4"
-                            placeholder="Select date"
+                            placeholder="DD-MM-YYYY"
                           />
                         </FormControl>
 
@@ -515,11 +535,12 @@ export default function ContentAddEditForm({
                               month={month}
                               onMonthChange={setMonth}
                               captionLayout="dropdown"
+                              disabled={(date) => date > new Date()}
                             />
                           </PopoverContent>
                         </Popover>
                       </div>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -588,7 +609,7 @@ export default function ContentAddEditForm({
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -609,7 +630,7 @@ export default function ContentAddEditForm({
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -630,7 +651,7 @@ export default function ContentAddEditForm({
                           placeholder="Description...."
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -735,7 +756,7 @@ export default function ContentAddEditForm({
                           </div>
                         </div>
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -773,7 +794,14 @@ export default function ContentAddEditForm({
 
 
 
-// update code 2
+
+
+
+
+
+
+
+
 
 // "use client";
 
@@ -845,7 +873,7 @@ export default function ContentAddEditForm({
 // const formSchema = z.object({
 //   image2: z
 //     .array(z.string().min(1, "Image name or URL is required"))
-//     .min(1, "At least one image is required")
+//     .min(0, "At least one image is required")
 //     .max(10, "Maximum 10 images allowed"),
 //   tags: z.array(z.string().min(1)).max(10, "Max 10 tags"),
 //   author: z.string().min(2, "Author must be at least 2 characters"),
@@ -900,6 +928,7 @@ export default function ContentAddEditForm({
 //   const [tagInput, setTagInput] = useState("");
 //   const [open, setOpen] = useState(false);
 //   const [month, setMonth] = useState<Date | undefined>(undefined);
+//   const [isDragging, setIsDragging] = useState(false);
 
 //   const session = useSession();
 //   const token = (session?.data?.user as { token: string })?.token;
@@ -931,8 +960,6 @@ export default function ContentAddEditForm({
 //     return "";
 //   }
 
-//   console.log(initialContent);
-
 //   const form = useForm<FormData>({
 //     resolver: zodResolver(formSchema),
 //     defaultValues: {
@@ -953,7 +980,6 @@ export default function ContentAddEditForm({
 //       const initialImages = (initialContent?.image2 || []).map((img: string) =>
 //         getImageUrl(img)
 //       );
-//       // const initialImages = initialContent.image2 || [];
 
 //       form.reset({
 //         image2: initialImages,
@@ -981,8 +1007,7 @@ export default function ContentAddEditForm({
 //   const { watch, setValue } = form;
 //   const tags = watch("tags");
 
-//   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     const files = event.target.files;
+//   const handleFileUpload = (files: FileList | null) => {
 //     if (files && files.length > 0) {
 //       const validFiles = Array.from(files).filter((file) => {
 //         const validType = [
@@ -1012,6 +1037,23 @@ export default function ContentAddEditForm({
 //       setImagePreviews((prev) => [...prev, ...newPreviews].slice(0, 10));
 //       setImageFiles((prev) => [...prev, ...validFiles].slice(0, 10));
 //     }
+//   };
+
+//   const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+//     e.preventDefault();
+//     setIsDragging(true);
+//   };
+
+//   const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
+//     e.preventDefault();
+//     setIsDragging(false);
+//   };
+
+//   const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+//     e.preventDefault();
+//     setIsDragging(false);
+//     const files = e.dataTransfer.files;
+//     handleFileUpload(files);
 //   };
 
 //   const removeImage = (index: number) => {
@@ -1052,8 +1094,6 @@ export default function ContentAddEditForm({
 //     ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${initialContent?.id}?_method=PUT`
 //     : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents`;
 
-//   // const method = initialContent ? "POST" : "POST";
-
 //   const { mutate, isPending, error } = useMutation<
 //     MutationResponse,
 //     Error,
@@ -1073,7 +1113,6 @@ export default function ContentAddEditForm({
 //       formDataToSend.append("body1", formData.body1);
 //       formDataToSend.append("tags", JSON.stringify(formData.tags));
 
-//       // Handle images: append existing URLs and new files
 //       formData.image2.forEach((image, index) => {
 //         const file = imageFiles.find((f) => f.name === image);
 //         if (file) {
@@ -1083,13 +1122,12 @@ export default function ContentAddEditForm({
 //         }
 //       });
 
-//       // Explicitly append _method=PUT for updates
 //       if (initialContent) {
 //         formDataToSend.append("_method", "PUT");
 //       }
 
 //       const response = await fetch(url, {
-//         method: "POST", // Always use POST, as _method=PUT handles updates
+//         method: "POST",
 //         headers: {
 //           Authorization: `Bearer ${token}`,
 //         },
@@ -1170,7 +1208,7 @@ export default function ContentAddEditForm({
 //                           placeholder="Heading ...."
 //                         />
 //                       </FormControl>
-//                       <FormMessage />
+//                       <FormMessage className="text-red-500"/>
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1191,7 +1229,7 @@ export default function ContentAddEditForm({
 //                           placeholder="Sub Heading ...."
 //                         />
 //                       </FormControl>
-//                       <FormMessage />
+//                       <FormMessage className="text-red-500"/>
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1212,7 +1250,7 @@ export default function ContentAddEditForm({
 //                           {...field}
 //                         />
 //                       </FormControl>
-//                       <FormMessage />
+//                       <FormMessage className="text-red-500"/>
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1286,7 +1324,7 @@ export default function ContentAddEditForm({
 //                           </PopoverContent>
 //                         </Popover>
 //                       </div>
-//                       <FormMessage />
+//                       <FormMessage className="text-red-500"/>
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1339,7 +1377,7 @@ export default function ContentAddEditForm({
 //                   </div>
 //                 </div>
 
-//                 {/* meta title */}
+//                 {/* Meta Title */}
 //                 <FormField
 //                   control={form.control}
 //                   name="meta_title"
@@ -1351,15 +1389,16 @@ export default function ContentAddEditForm({
 //                       <FormControl>
 //                         <Input
 //                           className="text-black bg-white border border-gray-300 rounded-lg p-4"
-//                           placeholder="meta title"
+//                           placeholder="Meta title"
 //                           {...field}
 //                         />
 //                       </FormControl>
-//                       <FormMessage />
+//                       <FormMessage className="text-red-500"/>
 //                     </FormItem>
 //                   )}
 //                 />
-//                 {/* meta description */}
+
+//                 {/* Meta Description */}
 //                 <FormField
 //                   control={form.control}
 //                   name="meta_description"
@@ -1371,11 +1410,11 @@ export default function ContentAddEditForm({
 //                       <FormControl>
 //                         <Input
 //                           className="text-black bg-white border border-gray-300 rounded-lg p-4"
-//                           placeholder="meta description"
+//                           placeholder="Meta description"
 //                           {...field}
 //                         />
 //                       </FormControl>
-//                       <FormMessage />
+//                       <FormMessage className="text-red-500"/>
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1396,7 +1435,7 @@ export default function ContentAddEditForm({
 //                           placeholder="Description...."
 //                         />
 //                       </FormControl>
-//                       <FormMessage />
+//                       <FormMessage className="text-red-500"/>
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1433,11 +1472,20 @@ export default function ContentAddEditForm({
 //                               </div>
 //                             ))}
 //                             {(!field.value || field.value.length < 10) && (
-//                               <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+//                               <label
+//                                 className={`flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
+//                                   isDragging
+//                                     ? "bg-blue-100 border-blue-500"
+//                                     : "border-gray-300 bg-gray-50 hover:bg-gray-100"
+//                                 }`}
+//                                 onDragOver={handleDragOver}
+//                                 onDragLeave={handleDragLeave}
+//                                 onDrop={handleDrop}
+//                               >
 //                                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
 //                                   <Upload className="w-8 h-8 text-gray-500" />
 //                                   <p className="mb-2 text-sm text-gray-500 dark:text-black">
-//                                     Click to upload
+//                                     Drag and drop or click to upload images
 //                                   </p>
 //                                   <p className="text-xs text-gray-500 dark:text-black">
 //                                     PNG, JPG, GIF, WEBP, AVIF (MAX. 10MB)
@@ -1447,7 +1495,7 @@ export default function ContentAddEditForm({
 //                                   type="file"
 //                                   multiple
 //                                   accept="image/*"
-//                                   onChange={handleFileUpload}
+//                                   onChange={(e) => handleFileUpload(e.target.files)}
 //                                   className="hidden"
 //                                 />
 //                               </label>
@@ -1492,7 +1540,7 @@ export default function ContentAddEditForm({
 //                           </div>
 //                         </div>
 //                       </FormControl>
-//                       <FormMessage />
+//                       <FormMessage className="text-red-500"/>
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1526,3 +1574,6 @@ export default function ContentAddEditForm({
 //     </ErrorBoundary>
 //   );
 // }
+
+
+

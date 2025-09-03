@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React from "react";
+import DOMPurify from "dompurify";
 
 type ContentResponse = {
   status: boolean;
@@ -97,6 +98,32 @@ const RecentArticleViewDetails = ({ params }: { params: { slug: string } }) => {
   const session = useSession();
   const token = (session?.data?.user as { token: string })?.token;
 
+  const sanitizeHTML = (html: string): string => {
+      const cleanedHtml = html
+        .replace(/<pre>/gi, "")
+        .replace(/<\/pre>/gi, "")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .replace(/&quot;/g, '"')
+        .replace(/&amp;/g, "&");
+      return DOMPurify.sanitize(cleanedHtml, {
+        ADD_TAGS: ["iframe", "a"],
+        ADD_ATTR: [
+          "allow",
+          "allowfullscreen",
+          "frameborder",
+          "src",
+          "title",
+          "referrerpolicy",
+          "href",
+          "target",
+          "rel",
+        ],
+        FORBID_ATTR: ["srcdoc"], // Prevent srcdoc in iframes
+        ALLOWED_URI_REGEXP: /^(?:(?:https?):\/\/)/, // Restrict to HTTPS
+      });
+    };
+
   const { data, isLoading, error } = useQuery<ContentResponse>({
     queryKey: ["recent-article-view", params.slug],
     queryFn: () =>
@@ -117,7 +144,7 @@ const RecentArticleViewDetails = ({ params }: { params: { slug: string } }) => {
   const images = normalizeImageArray(data?.data?.image2);
 
   return (
-    <div className="pb-20">
+    <div className="pb-20  max-w-[1600px] ">
       <div>
         <Swiper
           modules={[Autoplay]}
@@ -135,7 +162,7 @@ const RecentArticleViewDetails = ({ params }: { params: { slug: string } }) => {
         >
           {images.map((item, index) => (
             <SwiperSlide key={index} className="!h-auto !md:h-full">
-              <div className="relative w-full !h-full">
+              <div className="relative w-full !h-full cursor-pointer">
                 <Image
                   src={item}
                   alt={`image-${index}`}
@@ -188,8 +215,8 @@ const RecentArticleViewDetails = ({ params }: { params: { slug: string } }) => {
       />
 
       <p
-        className="text-base font-normal text-black my-2 leading-normal text-justify"
-        dangerouslySetInnerHTML={{ __html: data?.data?.body1 ?? "" }}
+        className="text-base font-normal text-black my-2 leading-normal text-justify list-item list-none"
+        dangerouslySetInnerHTML={{ __html: sanitizeHTML(data?.data?.body1 ?? "") }}
       />
     </div>
   );

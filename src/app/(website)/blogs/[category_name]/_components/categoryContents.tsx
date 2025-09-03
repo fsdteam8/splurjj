@@ -1,6 +1,5 @@
 "use client";
 
-import SplurjjPagination from "@/components/ui/SplurjjPagination";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -13,51 +12,22 @@ import {
 import { RiShareForwardLine } from "react-icons/ri";
 import { TbTargetArrow } from "react-icons/tb";
 import { motion } from "framer-motion";
-
-interface BlogPost {
-  id: number;
-  category_id: number;
-  subcategory_id: number;
-  category_name: string;
-  sub_category_name: string;
-  heading: string;
-  author: string;
-  date: string;
-  sub_heading: string;
-  body1: string;
-  image1: string;
-  image2?: string | string[];
-  advertising_image: string;
-  tags: string[];
-  created_at: string;
-  updated_at: string;
-  imageLink: string;
-  advertisingLink: string;
-  user_id: number;
-  status: string;
-}
+import { BlogPost } from "./blog-post-types"; // Import from blog-post-types.ts
 
 interface CategoryContentsProps {
   posts: BlogPost[];
   loading: boolean;
   error: string | null;
-  currentPage: number;
-  totalPages: number;
-  totalItems: number;
-  setCurrentPage: (page: number) => void;
 }
 
 function CategoryContents({
   posts,
-  currentPage,
-  totalPages,
   loading,
-  totalItems,
-  setCurrentPage,
+  error,
 }: CategoryContentsProps) {
   const [showShareMenu, setShowShareMenu] = useState<number | null>(null);
 
-    function convertToCDNUrl(image2?: string): string {
+  function convertToCDNUrl(image2?: string): string {
     const image2BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
     const cdnBaseUrl = "https://dsfua14fu9fn0.cloudfront.net/images";
 
@@ -68,8 +38,12 @@ function CategoryContents({
     return image2 || "";
   }
 
-  function getImageUrl(image2?: string | null): string {
-    if (!image2) return "";
+  function getImageUrl(image2?: string | string[] | null): string {
+    if (!image2) return ""; // Handle null or undefined
+
+    if (Array.isArray(image2)) {
+      return convertToCDNUrl(image2[0]); // Handle string array
+    }
 
     try {
       const parsed = JSON.parse(image2);
@@ -77,7 +51,7 @@ function CategoryContents({
         return convertToCDNUrl(parsed.image2);
       }
     } catch {
-      return convertToCDNUrl(image2);
+      return convertToCDNUrl(image2); // Handle string
     }
 
     return "";
@@ -145,9 +119,7 @@ function CategoryContents({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {Array.from({ length: 9 }).map((_, index) => (
           <div key={index} className="relative">
-            {/* Image */}
             <div className="bg-gray-300 w-full h-[300px] rounded-t-lg"></div>
-            {/* Content */}
             <div className="p-4">
               <div className="flex items-center gap-2">
                 <div className="bg-gray-300 h-6 w-20 rounded"></div>
@@ -167,18 +139,10 @@ function CategoryContents({
           </div>
         ))}
       </div>
-      {/* Pagination */}
-      <div className="flex justify-between items-center mt-4 px-4 py-2">
-        <div className="bg-gray-300 h-4 w-32 rounded"></div>
-        <div className="flex space-x-2">
-          <div className="bg-gray-300 h-8 w-8 rounded"></div>
-          <div className="bg-gray-300 h-8 w-8 rounded"></div>
-          <div className="bg-gray-300 h-8 w-8 rounded"></div>
-        </div>
-      </div>
     </div>
   );
 
+  if (error) return <div className="text-center py-8 text-red-500">{error}</div>;
   if (loading) return <SkeletonLoader />;
   if (!posts.length)
     return <div className="text-center py-8">No content found</div>;
@@ -193,7 +157,7 @@ function CategoryContents({
                 href={`/${post.category_id}/${post.subcategory_id}/${post.id}#comment`}
               >
                 <Image
-                  src={getImageUrl(post.image2?.[0] || "")}
+                  src={getImageUrl(post.image2)}
                   alt={post.heading}
                   width={400}
                   height={300}
@@ -207,13 +171,13 @@ function CategoryContents({
               <div className="flex items-center gap-2">
                 <Link
                   href={`/blogs/${post.category_name}`}
-                  className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
+                  className="bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
                 >
                   {post.category_name || "Category"}
                 </Link>
                 <Link
                   href={`/${post.category_id}/${post.subcategory_id}`}
-                  className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
+                  className="bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
                 >
                   {post.sub_category_name || "Subcategory"}
                 </Link>
@@ -226,13 +190,13 @@ function CategoryContents({
                   className="text-2xl font-medium"
                   whileHover={{
                     scaleX: 1.05,
-                    transformOrigin: "left", // Ensures scaling happens from the left side
+                    transformOrigin: "left",
                     fontWeight: 900,
                     transition: { duration: 0.3 },
                   }}
                 />
               </Link>
-              <p className="text-sm font-semibold  uppercase text-[#424242] mt-2">
+              <p className="text-sm font-semibold uppercase text-[#424242] mt-2">
                 {post.author} - {post.date}
               </p>
               <div className="flex items-center gap-3 mt-2 relative">
@@ -291,25 +255,12 @@ function CategoryContents({
               </div>
               <p
                 dangerouslySetInnerHTML={{ __html: post.sub_heading }}
-                className="text-sm font-normal  text-[#424242] line-clamp-3 mt-2"
+                className="text-sm font-normal text-[#424242] line-clamp-3 mt-2"
               />
             </div>
           </div>
         ))}
       </div>
-
-      {totalPages > 10 && (
-        <div className="flex justify-between items-center mt-4 px-4 py-2">
-          <div className="text-sm text-muted-foreground">
-            Showing {posts.length} of {totalItems} items
-          </div>
-          <SplurjjPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
-        </div>
-      )}
     </div>
   );
 }

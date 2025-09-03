@@ -69,7 +69,7 @@ const formSchema = z.object({
     .array(z.string().min(1, "Image name or URL is required"))
     .min(1, "At least one image is required")
     .max(10, "Maximum 10 images allowed"),
-  tags: z.array(z.string().min(1)).max(10, "Max 10 tags"),
+  tags: z.array(z.string().min(1)).max(10, "MaxK 10 tags"),
   author: z.string().min(2, "Author must be at least 2 characters"),
   meta_title: z.string().min(2, "Meta title must be at least 2 characters"),
   meta_description: z
@@ -110,6 +110,25 @@ const ErrorFallback = ({ error }: { error: Error }) => (
     <Button onClick={() => window.location.reload()}>Try again</Button>
   </div>
 );
+
+// Utility function to format Date to DD-MM-YYYY
+const formatDateToDDMMYYYY = (date: Date): string => {
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
+
+// Utility function to parse DD-MM-YYYY string to Date
+const parseDDMMYYYYToDate = (dateStr: string): Date | null => {
+  const [day, month, year] = dateStr.split("-").map(Number);
+  if (!day || !month || !year || isNaN(day) || isNaN(month) || isNaN(year)) {
+    return null;
+  }
+  // Create date in local timezone to avoid UTC offset issues
+  const date = new Date(year, month - 1, day); // Months are 0-based
+  return isNaN(date.getTime()) ? null : date;
+};
 
 export default function AddNewPostForm() {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
@@ -200,7 +219,6 @@ export default function AddNewPostForm() {
     setIsDragging(false);
   };
 
-  // HTMLDivElement 
   const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
     setIsDragging(false);
@@ -366,7 +384,7 @@ export default function AddNewPostForm() {
                             </SelectContent>
                           </Select>
                         </FormControl>
-                           <FormMessage className="text-red-500" />
+                        <FormMessage className="text-red-500" />
                       </FormItem>
                     )}
                   />
@@ -400,7 +418,7 @@ export default function AddNewPostForm() {
                             </SelectContent>
                           </Select>
                         </FormControl>
-                           <FormMessage className="text-red-500" />
+                        <FormMessage className="text-red-500" />
                       </FormItem>
                     )}
                   />
@@ -421,7 +439,7 @@ export default function AddNewPostForm() {
                           placeholder="Heading ...."
                         />
                       </FormControl>
-                         <FormMessage className="text-red-500" />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -442,7 +460,7 @@ export default function AddNewPostForm() {
                           placeholder="Sub Heading ...."
                         />
                       </FormControl>
-                         <FormMessage className="text-red-500" />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -463,7 +481,7 @@ export default function AddNewPostForm() {
                           {...field}
                         />
                       </FormControl>
-                         <FormMessage className="text-red-500" />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -480,16 +498,13 @@ export default function AddNewPostForm() {
                       <div className="relative flex gap-2">
                         <FormControl>
                           <Input
-                            value={field.value.toLocaleDateString("en-US", {
-                              day: "2-digit",
-                              month: "long",
-                              year: "numeric",
-                            })}
+                            value={field.value ? formatDateToDDMMYYYY(field.value) : ""}
                             onChange={(e) => {
-                              const parsed = new Date(e.target.value);
-                              if (!isNaN(parsed.getTime())) {
-                                field.onChange(parsed);
-                                setMonth(parsed);
+                              const dateStr = e.target.value;
+                              const parsedDate = parseDDMMYYYYToDate(dateStr);
+                              if (parsedDate) {
+                                field.onChange(parsedDate);
+                                setMonth(parsedDate);
                               }
                             }}
                             onKeyDown={(e) => {
@@ -499,7 +514,7 @@ export default function AddNewPostForm() {
                               }
                             }}
                             className="bg-white border border-gray-300 text-black rounded-lg p-4"
-                            placeholder="Select date"
+                            placeholder="DD-MM-YYYY"
                           />
                         </FormControl>
 
@@ -533,11 +548,12 @@ export default function AddNewPostForm() {
                               month={month}
                               onMonthChange={setMonth}
                               captionLayout="dropdown"
+                              disabled={(date) => date > new Date()}
                             />
                           </PopoverContent>
                         </Popover>
                       </div>
-                         <FormMessage className="text-red-500" />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -606,7 +622,7 @@ export default function AddNewPostForm() {
                           {...field}
                         />
                       </FormControl>
-                         <FormMessage className="text-red-500" />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -621,12 +637,14 @@ export default function AddNewPostForm() {
                       </FormLabel>
                       <FormControl>
                         <Input
-                          className="text-black bg-white border border-gray-300 rounded-lg p-4"
+                          className="text-black bg-white border border-gray-300
+
+ rounded-lg p-4"
                           placeholder="meta description"
                           {...field}
                         />
                       </FormControl>
-                         <FormMessage className="text-red-500" />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -647,7 +665,7 @@ export default function AddNewPostForm() {
                           placeholder="Description...."
                         />
                       </FormControl>
-                         <FormMessage className="text-red-500" />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -752,7 +770,7 @@ export default function AddNewPostForm() {
                           </div>
                         </div>
                       </FormControl>
-                         <FormMessage className="text-red-500" />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -785,9 +803,6 @@ export default function AddNewPostForm() {
     </ErrorBoundary>
   );
 }
-
-
-
 
 
 // "use client";
@@ -839,7 +854,7 @@ export default function AddNewPostForm() {
 //   image2?: string[];
 //   tags?: string[];
 //   author: string;
-//    meta_description?: string;
+//   meta_description?: string;
 //   meta_title?: string;
 //   heading: string;
 //   sub_heading: string;
@@ -863,7 +878,7 @@ export default function AddNewPostForm() {
 //     .max(10, "Maximum 10 images allowed"),
 //   tags: z.array(z.string().min(1)).max(10, "Max 10 tags"),
 //   author: z.string().min(2, "Author must be at least 2 characters"),
-//    meta_title: z.string().min(2, "Meta title must be at least 2 characters"),
+//   meta_title: z.string().min(2, "Meta title must be at least 2 characters"),
 //   meta_description: z
 //     .string()
 //     .min(2, "Meta description must be at least 2 characters"),
@@ -886,7 +901,7 @@ export default function AddNewPostForm() {
 //   date: Date;
 //   tags: string[];
 //   author: string;
-//    meta_title: string;
+//   meta_title: string;
 //   meta_description: string;
 //   heading: string;
 //   sub_heading: string;
@@ -910,6 +925,7 @@ export default function AddNewPostForm() {
 //   const [tagInput, setTagInput] = useState("");
 //   const [open, setOpen] = useState(false);
 //   const [month, setMonth] = useState<Date | undefined>(undefined);
+//   const [isDragging, setIsDragging] = useState(false);
 //   const router = useRouter();
 //   const session = useSession();
 //   const token = (session?.data?.user as { token: string })?.token;
@@ -944,18 +960,12 @@ export default function AddNewPostForm() {
 //       ),
 //   });
 
-//   // console.log(data?.data);
 //   const selectedCategory = watch("category_id");
-//   // console.log({ selectedCategory });
-//   // sub category
 //   const subCategory =
 //     data?.data?.find((c) => c.category_id === Number(selectedCategory))
 //       ?.subcategories || [];
 
-//   // console.log(subCategory);
-
-//   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     const files = event.target.files;
+//   const handleFileUpload = (files: FileList | null) => {
 //     if (files && files.length > 0) {
 //       const validFiles = Array.from(files).filter((file) => {
 //         const validType = [
@@ -985,6 +995,24 @@ export default function AddNewPostForm() {
 //       setImagePreviews((prev) => [...prev, ...newPreviews].slice(0, 10));
 //       setImageFiles((prev) => [...prev, ...validFiles].slice(0, 10));
 //     }
+//   };
+
+//   const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+//     e.preventDefault();
+//     setIsDragging(true);
+//   };
+
+//   const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
+//     e.preventDefault();
+//     setIsDragging(false);
+//   };
+
+//   // HTMLDivElement 
+//   const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+//     e.preventDefault();
+//     setIsDragging(false);
+//     const files = e.dataTransfer.files;
+//     handleFileUpload(files);
 //   };
 
 //   const removeImage = (index: number) => {
@@ -1035,7 +1063,6 @@ export default function AddNewPostForm() {
 //       formDataToSend.append("body1", formData.body1);
 //       formDataToSend.append("tags", JSON.stringify(formData.tags));
 
-//       // Handle images: append existing URLs and new files
 //       formData.image2.forEach((image, index) => {
 //         const file = imageFiles.find((f) => f.name === image);
 //         if (file) {
@@ -1100,7 +1127,6 @@ export default function AddNewPostForm() {
 //                 Add New Content
 //               </h2>
 //               <Link href="/dashboard">
-//                 {" "}
 //                 <Button
 //                   variant="outline"
 //                   className="bg-white text-[#0253F7] dark:text-[#0253F7] text-lg font-bold leading-normal border-2 border-[#0253F7]"
@@ -1164,7 +1190,7 @@ export default function AddNewPostForm() {
 //                           <Select
 //                             value={String(field.value)}
 //                             onValueChange={field.onChange}
-//                             disabled={!selectedCategory} // Disable if no category selected
+//                             disabled={!selectedCategory}
 //                           >
 //                             <SelectTrigger className="text-black dark:text-black bg-white border border-gray-300 rounded-lg px-3 py-5">
 //                               <SelectValue placeholder="Select a subcategory" />
@@ -1465,11 +1491,20 @@ export default function AddNewPostForm() {
 //                               </div>
 //                             ))}
 //                             {(!field.value || field.value.length < 10) && (
-//                               <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+//                               <label
+//                                 className={`flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
+//                                   isDragging
+//                                     ? "bg-blue-100 border-blue-500"
+//                                     : "border-gray-300 bg-gray-50 hover:bg-gray-100"
+//                                 }`}
+//                                 onDragOver={handleDragOver}
+//                                 onDragLeave={handleDragLeave}
+//                                 onDrop={handleDrop}
+//                               >
 //                                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
 //                                   <Upload className="w-8 h-8 text-gray-500" />
 //                                   <p className="mb-2 text-sm text-gray-500 dark:text-black">
-//                                     Click to upload
+//                                     Drag and drop or click to upload images
 //                                   </p>
 //                                   <p className="text-xs text-gray-500 dark:text-black">
 //                                     PNG, JPG, GIF, WEBP, AVIF (MAX. 10MB)
@@ -1479,7 +1514,7 @@ export default function AddNewPostForm() {
 //                                   type="file"
 //                                   multiple
 //                                   accept="image/*"
-//                                   onChange={handleFileUpload}
+//                                   onChange={(e) => handleFileUpload(e.target.files)}
 //                                   className="hidden"
 //                                 />
 //                               </label>
@@ -1557,3 +1592,6 @@ export default function AddNewPostForm() {
 //     </ErrorBoundary>
 //   );
 // }
+
+
+

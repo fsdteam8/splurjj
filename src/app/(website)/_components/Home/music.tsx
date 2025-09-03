@@ -327,10 +327,10 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 }}
                 className="flex items-center justify-center bg-contain bg-no-repeat bg-center aspect-[1.5/1] w-full duration-500 ease-in-out hover:scale-110 "
               >
-                <div className=" py-4 px-10 bg-black/40 rounded-[12px]">
+                <div className="container py-4 px-20 bg-black/40 rounded-[12px]">
                   <motion.p
                     dangerouslySetInnerHTML={{ __html: firstPost.heading }}
-                    className="font-medium white-text max-w-[800px]  text-3xl lg:text-5xl text-center text-white line-clamp-3"
+                    className="font-medium white-text text-3xl lg:text-5xl text-left text-white line-clamp-3"
                     whileHover={{
                       scaleX: 1.05,
                       transformOrigin: "left", // Ensures scaling happens from the left side
@@ -340,7 +340,7 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   />
                   <div
                     dangerouslySetInnerHTML={{ __html: firstPost.sub_heading }}
-                    className="md:text-lg font-medium white-text  text-center line-clamp-4 text-white"
+                    className="md:text-lg font-medium white-text  text-left line-clamp-4 text-white pt-2"
                   />
                 </div>
               </div>

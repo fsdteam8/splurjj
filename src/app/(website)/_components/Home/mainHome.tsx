@@ -63,7 +63,7 @@ function MainHome() {
 
           {/* Sticky sidebar */}
           <div className=" col-span-8 md:col-span-2">
-            <div className="sticky top-[120px] mb-2">
+            <div className="!sticky top-[120px] mb-2">
               <Vertical />
             </div>
           </div>

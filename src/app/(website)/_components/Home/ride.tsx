@@ -245,7 +245,7 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
   const secondPost = posts[1];
 
   return (
-    <div className="py-8">
+    <div className="py-8 ">
       {firstPost && (
         <div className="mb-8">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 ">
@@ -383,8 +383,8 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 <Image
                   src={getImageUrl(secondPost.image2?.[0] || "")}
                   alt={secondPost.heading || "Blog Image"}
-                  width={300}
-                  height={200}
+                  width={1200}
+                  height={800}
                   className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out bg-contain bg-no-repeat bg-center"
                 />
               </Link>

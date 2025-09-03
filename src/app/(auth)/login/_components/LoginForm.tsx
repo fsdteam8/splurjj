@@ -155,7 +155,7 @@ leading-[120%] p-4 outline-none ring-0 focus:outline-none focus:ring-0"
         </div>
 
         {/* Remember Me / Forgot Password */}
-        <div className="flex items-center justify-between mt-[16px] mb-6 md:mb-8">
+        <div className="flex items-center justify-between mt-[16px] mb-4 md:mb-6">
           <FormField
             control={form.control}
             name="rememberMe"
@@ -179,7 +179,7 @@ leading-[120%] p-4 outline-none ring-0 focus:outline-none focus:ring-0"
           <div>
             <Link
               href="/forgot-password"
-              className="text-sm font-normal  leading-[120%] text-[#131313] dark:text-white tracking-[0%]"
+              className="text-sm font-normal  leading-[120%] text-[#131313] dark:text-white tracking-[0%] hover:underline hover:font-medium"
             >
               Forgot password?
             </Link>
@@ -227,7 +227,7 @@ leading-[120%] p-4 outline-none ring-0 focus:outline-none focus:ring-0"
         </div>
 
         {/* sign up link  */}
-        <div className="text-center mt-6 md:mt-8 ">
+        <div className="text-center mt-4 md:mt-5 ">
           <p className="text-base text-[#272727] dark:text-white  font-normal leading-[150%] tracking-[0%]">
             <span className="text-[#272727] dark:text-white">
               Don’t have an account?
