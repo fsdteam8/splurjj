@@ -522,8 +522,8 @@ const ContentBlogDetails = ({
                         : "/assets/images/no-user.png"
                     }
                     alt={blogData.user?.first_name || "Author"}
-                    width={120}
-                    height={120}
+                    width={1220}
+                    height={1220}
                     className="w-[180px] h-[180px] object-cover rounded-full border"
                     onError={(e) =>
                       (e.currentTarget.src = "/assets/images/no-user.png")
