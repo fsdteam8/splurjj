@@ -405,10 +405,10 @@ const ContentBlogDetails = ({
               </div>
               <p
                 dangerouslySetInnerHTML={{
-                  __html: sanitizeHTML(blogData.body1 ?? ""),
+                  __html: sanitizeHTML(blogData?.body1 ?? ""),
                 }}
                 // className="text-base font-normal leading-[150%] tracking-[0%] text-[#424242] pb-5 md:pb-7 lg:pb-8"
-                className="list-item list-none"
+                className="list-item list-none "
               />
               <div className="w-full flex items-center justify-center">
                 <span className="w-2/3 h-[2px] bg-secondary" />
@@ -522,8 +522,8 @@ const ContentBlogDetails = ({
                         : "/assets/images/no-user.png"
                     }
                     alt={blogData.user?.first_name || "Author"}
-                    width={120}
-                    height={120}
+                    width={1220}
+                    height={1220}
                     className="w-[180px] h-[180px] object-cover rounded-full border"
                     onError={(e) =>
                       (e.currentTarget.src = "/assets/images/no-user.png")
