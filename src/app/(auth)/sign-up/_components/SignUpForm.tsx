@@ -98,7 +98,7 @@ export function SignUpForm() {
   return (
     <div className="">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 ">
           {/* First & Last Name */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
@@ -319,7 +319,7 @@ leading-[120%] p-4 outline-none ring-0 focus:outline-none focus:ring-0"
           />
 
           {/* Submit Button */}
-          <div className="py-[14px]">
+          <div className="py-[10px]">
             <Button
               type="submit"
               className="w-full h-[51px] bg-[#0253F7] hover:bg-[#2891d4] rounded-lg text-base font-normal  leading-[120%] tracking-[0%] text-white"
@@ -330,7 +330,7 @@ leading-[120%] p-4 outline-none ring-0 focus:outline-none focus:ring-0"
           </div>
 
           {/* Sign In Link */}
-          <div className="text-center mt-6 md:mt-8 ">
+          <div className="text-center mt-4 md:mt-5 ">
             <p className="text-base text-[#272727] dark:text-white  font-normal leading-[150%] tracking-[0%]">
               <span className="text-[#272727] dark:text-white">
                 Already have an account?
