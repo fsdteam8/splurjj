@@ -665,7 +665,7 @@ export default function AddNewPostForm() {
                           placeholder="Description...."
                         />
                       </FormControl>
-                      <FormMessage className="text-red-26-10-2024 red-500" />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />

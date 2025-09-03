@@ -200,8 +200,8 @@ export function RichTextEditor({
   };
 
   return (
-    <div className={ ` border border-[#B6B6B6] focus:border-none focus:ring-0 focus-visible:border-none rounded-md overflow-scroll `}>
-      <div className="rich-text-toolbar sticky top-0 z-20 overflow-x-auto">
+    <div className={ ` border border-[#B6B6B6] focus:border-none focus:ring-0 focus-visible:border-none rounded-md overflow-scroll  `}>
+      <div className="rich-text-toolbar sticky top-0 z-20 overflow-x-auto ">
         <div className="rich-text-toolbar-group">
           <select
             onChange={(e) => formatHeading(e.target.value)}
@@ -294,7 +294,7 @@ export function RichTextEditor({
           </button>
         </div>
 
-        <div className="rich-text-toolbar-group border-2 border-red-500">
+        <div className="rich-text-toolbar-group">
           <button
             onClick={() => execCommand("insertUnorderedList")}
             className={`rich-text-toolbar-button dark:text-black ${
