@@ -1,9 +1,8 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import React, { useState } from "react";
-import { FaInstagram, FaTwitter, FaFacebook, FaLinkedin } from "react-icons/fa";
-import { RiShareForwardLine } from "react-icons/ri";
+import React, { useEffect, useRef, useState } from "react";
+import { FaInstagram } from "react-icons/fa";
 import { FiTwitter } from "react-icons/fi";
 import { LuFacebook } from "react-icons/lu";
 import { PiYoutubeLogoLight } from "react-icons/pi";
@@ -16,6 +15,8 @@ import Horizontal from "@/components/adds/horizontal";
 import RelatedContent from "@/app/(website)/_components/RalatedBlog/RalatedBlog";
 import DOMPurify from "dompurify";
 import ContentsDetailsCarousel from "./contentsDetailsCarousel";
+import SocialShare from "@/components/ui/SocialShare";
+import { RiShareForwardLine } from "react-icons/ri";
 
 interface BlogData {
   status: boolean;
@@ -67,14 +68,45 @@ const ContentBlogDetails = ({
   const { data: session } = useSession();
   const commentAccess = session?.user?.role;
   const userEmail = session?.user?.email;
-  const [showShareMenu, setShowShareMenu] = useState<number | null>(null);
+  // const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
+  //   null
+  // );
 
-  // Generate share URL
+  // const toggleShare = (postId: number) => {
+  //   setActiveSharePostId(activeSharePostId === postId ? null : postId);
+  // };
+  const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
+    null
+  );
+  const shareRef = useRef<HTMLDivElement>(null);
+
+  // Toggle share modal
+  const toggleShare = (postId: number) => {
+    setActiveSharePostId(activeSharePostId === postId ? null : postId);
+  };
+
+  // Close on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        shareRef.current &&
+        !shareRef.current.contains(event.target as Node)
+      ) {
+        setActiveSharePostId(null);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const getShareUrl = (
     categoryId: number,
     subcategoryId: number,
     id: number
   ): string => {
+    if (typeof window === "undefined") return ""; // avoid SSR crash
     return `${window.location.origin}/${categoryId}/${subcategoryId}/${id}`;
   };
 
@@ -140,54 +172,6 @@ const ContentBlogDetails = ({
     if (!path) return "/fallback-image.jpg";
     if (path.startsWith("http")) return path;
     return `${process.env.NEXT_PUBLIC_BACKEND_URL}/${path.replace(/^\/+/, "")}`;
-  };
-
-  const handleShare = async (post: BlogData["data"]) => {
-    const shareUrl = getShareUrl(
-      post.category_id,
-      post.subcategory_id,
-      post.id
-    );
-    const shareData = {
-      title: post.heading,
-      text: post.sub_heading || "Check out this blog post!",
-      url: shareUrl,
-    };
-
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch (err) {
-        console.error("Error sharing:", err);
-      }
-    } else {
-      setShowShareMenu(showShareMenu === post.id ? null : post.id);
-    }
-  };
-
-  const shareToTwitter = (url: string, text: string) => {
-    window.open(
-      `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-        url
-      )}&text=${encodeURIComponent(text)}`,
-      "_blank"
-    );
-  };
-
-  const shareToFacebook = (url: string) => {
-    window.open(
-      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-      "_blank"
-    );
-  };
-
-  const shareToLinkedIn = (url: string, title: string) => {
-    window.open(
-      `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
-        url
-      )}&title=${encodeURIComponent(title)}`,
-      "_blank"
-    );
   };
 
   // Skeleton Loader Component
@@ -414,57 +398,31 @@ const ContentBlogDetails = ({
                 <span className="w-2/3 h-[2px] bg-secondary" />
               </div>
             </div>
-            <div className="flex items-center gap-3 relative mt-8">
-              <span
-                onClick={() => handleShare(blogData)}
-                className="cursor-pointer"
-              >
-                <RiShareForwardLine className="w-6 h-6" />
-              </span>
-              {showShareMenu === blogData.id && (
-                <div className="absolute top-8 right-0 bg-white shadow-md p-2 rounded flex gap-2 z-10">
-                  <FaTwitter
-                    className="w-6 h-6 cursor-pointer text-blue-500"
-                    onClick={() =>
-                      shareToTwitter(
-                        getShareUrl(
-                          blogData.category_id,
-                          blogData.subcategory_id,
-                          blogData.id
-                        ),
-                        blogData.heading
-                      )
-                    }
-                  />
-                  <FaFacebook
-                    className="w-6 h-6 cursor-pointer text-blue-700"
-                    onClick={() =>
-                      shareToFacebook(
-                        getShareUrl(
-                          blogData.category_id,
-                          blogData.subcategory_id,
-                          blogData.id
-                        )
-                      )
-                    }
-                  />
-                  <FaLinkedin
-                    className="w-6 h-6 cursor-pointer text-blue-600"
-                    onClick={() =>
-                      shareToLinkedIn(
-                        getShareUrl(
-                          blogData.category_id,
-                          blogData.subcategory_id,
-                          blogData.id
-                        ),
-                        blogData.heading
-                      )
-                    }
-                  />
-                </div>
-              )}
-              <TbTargetArrow className="w-6 h-6" />
-            </div>
+            <div className="flex items-center gap-3 relative mt-8" ref={shareRef}>
+      <RiShareForwardLine
+        className="w-6 h-6 cursor-pointer"
+        onClick={() => toggleShare(blogData.id)}
+      />
+
+      {activeSharePostId === blogData.id && (
+        <div
+          className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
+                     flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+        >
+          <SocialShare
+            url={getShareUrl(
+              blogData.category_id,
+              blogData.subcategory_id,
+              blogData.id
+            )}
+            title={blogData.heading}
+            summary={blogData.sub_heading || "Check out this post!"}
+          />
+        </div>
+      )}
+
+      <TbTargetArrow className="w-6 h-6 cursor-pointer" />
+    </div>
             {/* Second part */}
             <div className="mt-[25px]">
               {/* Posted in */}
