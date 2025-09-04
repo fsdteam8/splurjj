@@ -6,6 +6,7 @@ import { Metadata } from 'next';
 // This runs on the server before rendering
 export async function generateMetadata({params}: {params: {category_name: string}}): Promise<Metadata> {
   const categoryName = decodeURIComponent(params.category_name);
+  // console.log(categoryName, "categoryName");
 
   return {
     title: ` ${categoryName} | Splurjj`,
@@ -15,9 +16,11 @@ export async function generateMetadata({params}: {params: {category_name: string
 
 
 const Page = ({params}: {params: {category_name: string}}) => {
+  const slug = decodeURIComponent(params?.category_name);
+  // console.log(slug, "slug");
   return (
     <div>
-      <CategoryContainer categoryName={params.category_name}/>
+      <CategoryContainer categoryName={slug}/>
     </div>
   )
 }
