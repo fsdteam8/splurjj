@@ -481,7 +481,7 @@ const ContentBlogDetails = ({
                     src={
                       blogData.user?.profilePic
                         ? getImageUrl(blogData.user.profilePic)
-                        : "/assets/images/no-user.png"
+                        : "/assets/images/no-users.png"
                     }
                     alt={blogData.user?.first_name || "Author"}
                     width={1220}
