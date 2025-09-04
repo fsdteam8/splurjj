@@ -74,7 +74,7 @@ const NewsLetterForm = () => {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-red-500"/>
                 </FormItem>
               )}
             />
