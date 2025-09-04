@@ -4,14 +4,12 @@ import Link from "next/link";
 import { useEffect, useState, useRef, useCallback } from "react";
 import {
   FaRegCommentDots,
-  FaTwitter,
-  FaFacebook,
-  FaLinkedin,
 } from "react-icons/fa";
 import { RiShareForwardLine } from "react-icons/ri";
 import { TbTargetArrow } from "react-icons/tb";
 import { Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import SocialShare from "@/components/ui/SocialShare";
 
 // Interface for ContentItem (assuming SearchResult is compatible)
 interface ContentItem {
@@ -59,12 +57,49 @@ function Contents({ initialSearchQuery }: ContentsProps) {
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [showShareMenu, setShowShareMenu] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [totalItems, setTotalItems] = useState<number>(0);
   const observerRef = useRef<HTMLDivElement>(null);
   const limit = 9;
+
+    // share start
+    const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
+      null
+    );
+  
+    // Toggle share modal
+    const toggleShare = (postId: number) => {
+      setActiveSharePostId(activeSharePostId === postId ? null : postId);
+    };
+  
+    // Close on outside click
+    useEffect(() => {
+      function handleClickOutside(event: MouseEvent) {
+        const target = event.target as HTMLElement;
+  
+        // Close only if click is outside all share containers
+        if (!target.closest(".share-container")) {
+          setActiveSharePostId(null);
+        }
+      }
+  
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, []);
+  
+    const getShareUrl = (
+      categoryId: number,
+      subcategoryId: number,
+      id: number
+    ): string => {
+      if (typeof window === "undefined") return ""; // avoid SSR crash
+      return `${window.location.origin}/${categoryId}/${subcategoryId}/${id}`;
+    };
+  
+    // share close
 
   console.log(totalItems);
 
@@ -189,61 +224,7 @@ function Contents({ initialSearchQuery }: ContentsProps) {
     return "";
   }
 
-  const getShareUrl = (
-    categoryId: number,
-    subcategoryId: number,
-    postId: number
-  ): string => {
-    const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-    return `${baseUrl}/blogs/${categoryId}/${subcategoryId}/${postId}`;
-  };
-
-  const handleShare = async (post: ContentItem) => {
-    const shareUrl = getShareUrl(
-      post.category_id,
-      post.subcategory_id,
-      post.id
-    );
-    const shareData = {
-      title: post.heading,
-      text: post.sub_heading || "Check out this blog post!",
-      url: shareUrl,
-    };
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch (err) {
-        console.error("Error sharing:", err);
-      }
-    } else {
-      setShowShareMenu(showShareMenu === post.id ? null : post.id);
-    }
-  };
-
-  const shareToTwitter = (url: string, text: string) => {
-    window.open(
-      `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-        url
-      )}&text=${encodeURIComponent(text)}`,
-      "_blank"
-    );
-  };
-
-  const shareToFacebook = (url: string) => {
-    window.open(
-      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-      "_blank"
-    );
-  };
-
-  const shareToLinkedIn = (url: string, title: string) => {
-    window.open(
-      `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
-        url
-      )}&title=${encodeURIComponent(title)}`,
-      "_blank"
-    );
-  };
+  
 
   // Skeleton Loader Component
   const SkeletonLoader = () => (
@@ -331,61 +312,42 @@ function Contents({ initialSearchQuery }: ContentsProps) {
               <p className="text-sm font-semibold uppercase text-[#424242] mt-2">
                 {post.author} - {post.date}
               </p>
-              <div className="flex items-center gap-3 mt-2 relative">
-                <RiShareForwardLine
-                  className="w-6 h-6 cursor-pointer"
-                  onClick={() => handleShare(post)}
-                />
-                {showShareMenu === post.id && (
-                  <div className="absolute top-8 right-0 bg-white shadow-md p-2 rounded flex gap-2 z-10">
-                    <FaTwitter
-                      className="w-6 h-6 cursor-pointer text-blue-500"
-                      onClick={() =>
-                        shareToTwitter(
-                          getShareUrl(
+
+
+              {/* start  */}
+                  <div className="flex items-center gap-3 relative mt-2 share-container">
+                    <RiShareForwardLine
+                      className="w-6 h-6 cursor-pointer"
+                      onClick={() => toggleShare(post.id)}
+                    />
+                    {activeSharePostId === post.id && (
+                      <div
+                        className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
+                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+                      >
+                        <SocialShare
+                          url={getShareUrl(
                             post.category_id,
                             post.subcategory_id,
                             post.id
-                          ),
-                          post.heading
-                        )
-                      }
-                    />
-                    <FaFacebook
-                      className="w-6 h-6 cursor-pointer text-blue-700"
-                      onClick={() =>
-                        shareToFacebook(
-                          getShareUrl(
-                            post.category_id,
-                            post.subcategory_id,
-                            post.id
-                          )
-                        )
-                      }
-                    />
-                    <FaLinkedin
-                      className="w-6 h-6 cursor-pointer text-blue-600"
-                      onClick={() =>
-                        shareToLinkedIn(
-                          getShareUrl(
-                            post.category_id,
-                            post.subcategory_id,
-                            post.id
-                          ),
-                          post.heading
-                        )
-                      }
-                    />
-                  </div>
-                )}
-                <TbTargetArrow className="w-6 h-6" />
+                          )}
+                          title={post.heading}
+                          summary={
+                            post.sub_heading || "Check out this post!"
+                          }
+                        />
+                      </div>
+                    )}
+                     <TbTargetArrow className="w-6 h-6" />
                 <Link
                   href={`/${post.category_id}/${post.subcategory_id}/${post.id}#comment`}
                   className="cursor-pointer"
                 >
                   <FaRegCommentDots className="w-6 h-6" />
                 </Link>
-              </div>
+                  </div>
+
+                  {/* end  */}
               <p
                 dangerouslySetInnerHTML={{ __html: post.sub_heading }}
                 className="text-sm font-normal text-[#424242] line-clamp-3 mt-2"
