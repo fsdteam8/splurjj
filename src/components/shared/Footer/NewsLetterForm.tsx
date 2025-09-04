@@ -59,7 +59,7 @@ const NewsLetterForm = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full flex items-center"
+          className="w-full flex items-start"
         >
           <div className=" ">
             <FormField
