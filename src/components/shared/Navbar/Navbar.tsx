@@ -125,6 +125,30 @@ export default function Header() {
   const [activeDropdownId, setActiveDropdownId] = useState<number | null>(null);
   const dropdownCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  const slugify = (str: string) =>
+  str
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+
+
+
+//   const slugify = (str: string) => {
+//   const cleaned = str.trim().toLowerCase();
+
+//   // if it already has "-", return as-is
+//   if (cleaned.includes("-")) {
+//     return cleaned;
+//   }
+
+//   // else, replace spaces with "-"
+//   return cleaned.replace(/\s+/g, "-");
+// };
+
+
+    const formatSlug = (slug: string) =>
+  slug.replace(/-/g, " ");
+
   const {
     data: categories = [],
     isLoading: categoriesLoading,
@@ -349,7 +373,8 @@ export default function Header() {
                               "text-muted-foreground",
                         }}
                       >
-                        {category.category_name.toUpperCase()}
+                        {/* {category.category_name.toUpperCase()} */}
+                        {formatSlug(category.category_name.toUpperCase())}
                       </Link>
                     );
                   }
@@ -387,7 +412,12 @@ export default function Header() {
                           }}
                         >
                           <Link
-                            href={`/blogs/${category.category_name}`}
+                          // href={/blogs/${category?.category_name}}
+                        // href={`/blogs/${encodeURIComponent(category?.category_name.trim())}`}
+                        // href={`/blogs/${category?.category_name.replace(/\s+/g, " ")}`}
+                        href={`/blogs/${slugify(category?.category_name)}`}
+
+
                             className="text-sm lg:text-sm font-medium transition-colors hover:text-primary"
                             style={{
                               color:
