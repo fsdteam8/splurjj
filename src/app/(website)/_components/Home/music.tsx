@@ -5,14 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import {
-  FaFacebook,
-  FaLinkedin,
   FaRegCommentDots,
-  FaTwitter,
 } from "react-icons/fa";
 import { RiShareForwardLine } from "react-icons/ri";
 import { TbTargetArrow } from "react-icons/tb";
 import { motion } from "framer-motion";
+import SocialShare from "@/components/ui/SocialShare";
 
 // Interface for BlogPost
 interface BlogPost {
@@ -59,7 +57,44 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [showShareMenu, setShowShareMenu] = useState<number | null>(null);
+
+  // share start
+  const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
+    null
+  );
+
+  // Toggle share modal
+  const toggleShare = (postId: number) => {
+    setActiveSharePostId(activeSharePostId === postId ? null : postId);
+  };
+
+  // Close on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const target = event.target as HTMLElement;
+
+      // Close only if click is outside all share containers
+      if (!target.closest(".share-container")) {
+        setActiveSharePostId(null);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const getShareUrl = (
+    categoryId: number,
+    subcategoryId: number,
+    id: number
+  ): string => {
+    if (typeof window === "undefined") return ""; // avoid SSR crash
+    return `${window.location.origin}/${categoryId}/${subcategoryId}/${id}`;
+  };
+
+  // share close
 
   useEffect(() => {
     const fetchData = async () => {
@@ -86,7 +121,7 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
     fetchData();
   }, [categoryName.categoryName]);
 
-    function convertToCDNUrl(image2?: string): string {
+  function convertToCDNUrl(image2?: string): string {
     const image2BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
     const cdnBaseUrl = "https://dsfua14fu9fn0.cloudfront.net/images";
 
@@ -111,63 +146,6 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
 
     return "";
   }
-
-  const getShareUrl = (
-    categoryId: number,
-    subcategoryId: number,
-    postId: number
-  ): string => {
-    const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-    return `${baseUrl}/blogs/${categoryId}/${subcategoryId}/${postId}`;
-  };
-
-  const handleShare = async (post: BlogPost) => {
-    const shareUrl = getShareUrl(
-      post.category_id,
-      post.subcategory_id,
-      post.id
-    );
-    const shareData = {
-      title: post.heading,
-      text: post.sub_heading || "Check out this blog post!",
-      url: shareUrl,
-    };
-
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch (err) {
-        console.error("Error sharing:", err);
-      }
-    } else {
-      setShowShareMenu(showShareMenu === post.id ? null : post.id);
-    }
-  };
-
-  const shareToTwitter = (url: string, text: string) => {
-    window.open(
-      `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-        url
-      )}&text=${encodeURIComponent(text)}`,
-      "_blank"
-    );
-  };
-
-  const shareToFacebook = (url: string) => {
-    window.open(
-      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-      "_blank"
-    );
-  };
-
-  const shareToLinkedIn = (url: string, title: string) => {
-    window.open(
-      `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
-        url
-      )}&title=${encodeURIComponent(title)}`,
-      "_blank"
-    );
-  };
 
   // Skeleton Loading Component
   const SkeletonLoader = () => (
@@ -255,52 +233,26 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 {firstPost.sub_category_name || "Subcategory"}
               </Link>
             </div>
-            <div className="flex items-center gap-3 relative mt-4 md:mt-0 lg:mt-0">
-              <span
-                onClick={() => handleShare(firstPost)}
-                className="cursor-pointer"
-              >
-                <RiShareForwardLine className="w-6 h-6" />
-              </span>
-              {showShareMenu === firstPost.id && (
-                <div className="absolute top-8 right-0 bg-white shadow-md p-2 rounded flex gap-2 z-10">
-                  <FaTwitter
-                    className="w-6 h-6 cursor-pointer text-blue-500"
-                    onClick={() =>
-                      shareToTwitter(
-                        getShareUrl(
-                          firstPost.category_id,
-                          firstPost.subcategory_id,
-                          firstPost.id
-                        ),
-                        firstPost.heading
-                      )
-                    }
-                  />
-                  <FaFacebook
-                    className="w-6 h-6 cursor-pointer text-blue-700"
-                    onClick={() =>
-                      shareToFacebook(
-                        getShareUrl(
-                          firstPost.category_id,
-                          firstPost.subcategory_id,
-                          firstPost.id
-                        )
-                      )
-                    }
-                  />
-                  <FaLinkedin
-                    className="w-6 h-6 cursor-pointer text-blue-600"
-                    onClick={() =>
-                      shareToLinkedIn(
-                        getShareUrl(
-                          firstPost.category_id,
-                          firstPost.subcategory_id,
-                          firstPost.id
-                        ),
-                        firstPost.heading
-                      )
-                    }
+
+            {/* start  */}
+            <div className="flex items-center gap-3 relative mt-4 md:mt-0 lg:mt-0 share-container">
+              <RiShareForwardLine
+                className="w-6 h-6 cursor-pointer"
+                onClick={() => toggleShare(firstPost.id)}
+              />
+              {activeSharePostId === firstPost.id && (
+                <div
+                  className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
+                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+                >
+                  <SocialShare
+                    url={getShareUrl(
+                      firstPost.category_id,
+                      firstPost.subcategory_id,
+                      firstPost.id
+                    )}
+                    title={firstPost.heading}
+                    summary={firstPost.sub_heading || "Check out this post!"}
                   />
                 </div>
               )}
@@ -312,11 +264,12 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 <FaRegCommentDots className="w-6 h-6" />
               </Link>
             </div>
+
+            {/* end  */}
           </div>
           <div className="overflow-hidden">
             <Link
               href={`/${firstPost.category_id}/${firstPost.subcategory_id}/${firstPost.id}`}
-              
             >
               <div
                 style={{
@@ -397,51 +350,26 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                       {secondPost.sub_category_name || "Subcategory"}
                     </Link>
                   </div>
-                  <div className="flex items-center gap-3 relative">
-                    <span
-                      onClick={() => handleShare(secondPost)}
-                      className="cursor-pointer"
-                    >
-                      <RiShareForwardLine className="w-6 h-6" />
-                    </span>
-                    {showShareMenu === secondPost.id && (
-                      <div className="absolute top-8 right-0 bg-white shadow-md p-2 rounded flex gap-2 z-10">
-                        <FaTwitter
-                          className="w-6 h-6 cursor-pointer text-blue-500"
-                          onClick={() =>
-                            shareToTwitter(
-                              getShareUrl(
-                                secondPost.category_id,
-                                secondPost.subcategory_id,
-                                secondPost.id
-                              ),
-                              secondPost.heading
-                            )
-                          }
-                        />
-                        <FaFacebook
-                          className="w-6 h-6 cursor-pointer text-blue-700"
-                          onClick={() =>
-                            shareToFacebook(
-                              getShareUrl(
-                                secondPost.category_id,
-                                secondPost.subcategory_id,
-                                secondPost.id
-                              )
-                            )
-                          }
-                        />
-                        <FaLinkedin
-                          className="w-6 h-6 cursor-pointer text-blue-600"
-                          onClick={() =>
-                            shareToLinkedIn(
-                              getShareUrl(
-                                secondPost.category_id,
-                                secondPost.subcategory_id,
-                                secondPost.id
-                              ),
-                              secondPost.heading
-                            )
+                  {/* start  */}
+                  <div className="flex items-center gap-3 relative share-container">
+                    <RiShareForwardLine
+                      className="w-6 h-6 cursor-pointer"
+                      onClick={() => toggleShare(secondPost.id)}
+                    />
+                    {activeSharePostId === secondPost.id && (
+                      <div
+                        className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
+                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+                      >
+                        <SocialShare
+                          url={getShareUrl(
+                            secondPost.category_id,
+                            secondPost.subcategory_id,
+                            secondPost.id
+                          )}
+                          title={secondPost.heading}
+                          summary={
+                            secondPost.sub_heading || "Check out this post!"
                           }
                         />
                       </div>
@@ -454,6 +382,8 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                       <FaRegCommentDots className="w-6 h-6" />
                     </Link>
                   </div>
+
+                  {/* end  */}
                 </div>
                 <p
                   dangerouslySetInnerHTML={{ __html: secondPost.sub_heading }}
@@ -510,51 +440,26 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                       {thirdPost.sub_category_name || "Subcategory"}
                     </Link>
                   </div>
-                  <div className="flex items-center gap-3 relative">
-                    <span
-                      onClick={() => handleShare(thirdPost)}
-                      className="cursor-pointer"
-                    >
-                      <RiShareForwardLine className="w-6 h-6" />
-                    </span>
-                    {showShareMenu === thirdPost.id && (
-                      <div className="absolute top-8 right-0 bg-white shadow-md p-2 rounded flex gap-2 z-10">
-                        <FaTwitter
-                          className="w-6 h-6 cursor-pointer text-blue-500"
-                          onClick={() =>
-                            shareToTwitter(
-                              getShareUrl(
-                                thirdPost.category_id,
-                                thirdPost.subcategory_id,
-                                thirdPost.id
-                              ),
-                              thirdPost.heading
-                            )
-                          }
-                        />
-                        <FaFacebook
-                          className="w-6 h-6 cursor-pointer text-blue-700"
-                          onClick={() =>
-                            shareToFacebook(
-                              getShareUrl(
-                                thirdPost.category_id,
-                                thirdPost.subcategory_id,
-                                thirdPost.id
-                              )
-                            )
-                          }
-                        />
-                        <FaLinkedin
-                          className="w-6 h-6 cursor-pointer text-blue-600"
-                          onClick={() =>
-                            shareToLinkedIn(
-                              getShareUrl(
-                                thirdPost.category_id,
-                                thirdPost.subcategory_id,
-                                thirdPost.id
-                              ),
-                              thirdPost.heading
-                            )
+                  {/* start  */}
+                  <div className="flex items-center gap-3 relative mt-4 md:mt-0 lg:mt-0 share-container">
+                    <RiShareForwardLine
+                      className="w-6 h-6 cursor-pointer"
+                      onClick={() => toggleShare(thirdPost.id)}
+                    />
+                    {activeSharePostId === thirdPost.id && (
+                      <div
+                        className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
+                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+                      >
+                        <SocialShare
+                          url={getShareUrl(
+                            thirdPost.category_id,
+                            thirdPost.subcategory_id,
+                            thirdPost.id
+                          )}
+                          title={thirdPost.heading}
+                          summary={
+                            thirdPost.sub_heading || "Check out this post!"
                           }
                         />
                       </div>
@@ -567,6 +472,8 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                       <FaRegCommentDots className="w-6 h-6" />
                     </Link>
                   </div>
+
+                  {/* end  */}
                 </div>
                 <p
                   dangerouslySetInnerHTML={{ __html: thirdPost.sub_heading }}

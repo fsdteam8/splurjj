@@ -68,13 +68,9 @@ const ContentBlogDetails = ({
   const { data: session } = useSession();
   const commentAccess = session?.user?.role;
   const userEmail = session?.user?.email;
-  // const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
-  //   null
-  // );
 
-  // const toggleShare = (postId: number) => {
-  //   setActiveSharePostId(activeSharePostId === postId ? null : postId);
-  // };
+
+  // share start  
   const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
     null
   );
@@ -109,6 +105,9 @@ const ContentBlogDetails = ({
     if (typeof window === "undefined") return ""; // avoid SSR crash
     return `${window.location.origin}/${categoryId}/${subcategoryId}/${id}`;
   };
+
+
+  // share close 
 
   // Improved cleanTags function to handle malformed JSON strings
   const cleanTags = (tags: string[]): string[] => {
@@ -398,31 +397,36 @@ const ContentBlogDetails = ({
                 <span className="w-2/3 h-[2px] bg-secondary" />
               </div>
             </div>
-            <div className="flex items-center gap-3 relative mt-8" ref={shareRef}>
-      <RiShareForwardLine
-        className="w-6 h-6 cursor-pointer"
-        onClick={() => toggleShare(blogData.id)}
-      />
+            {/* start  */}
+            <div
+              className="flex items-center gap-3 relative mt-8"
+              ref={shareRef}
+            >
+              <RiShareForwardLine
+                className="w-6 h-6 cursor-pointer"
+                onClick={() => toggleShare(blogData.id)}
+              />
 
-      {activeSharePostId === blogData.id && (
-        <div
-          className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
+              {activeSharePostId === blogData.id && (
+                <div
+                  className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
                      flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
-        >
-          <SocialShare
-            url={getShareUrl(
-              blogData.category_id,
-              blogData.subcategory_id,
-              blogData.id
-            )}
-            title={blogData.heading}
-            summary={blogData.sub_heading || "Check out this post!"}
-          />
-        </div>
-      )}
+                >
+                  <SocialShare
+                    url={getShareUrl(
+                      blogData.category_id,
+                      blogData.subcategory_id,
+                      blogData.id
+                    )}
+                    title={blogData.heading}
+                    summary={blogData.sub_heading || "Check out this post!"}
+                  />
+                </div>
+              )}
 
-      <TbTargetArrow className="w-6 h-6 cursor-pointer" />
-    </div>
+              <TbTargetArrow className="w-6 h-6 cursor-pointer" />
+            </div>
+            {/* end  */}
             {/* Second part */}
             <div className="mt-[25px]">
               {/* Posted in */}
