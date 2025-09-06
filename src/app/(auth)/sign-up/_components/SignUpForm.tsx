@@ -20,6 +20,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
+import Image from "next/image";
+import { useTheme } from "next-themes";
 
 // ✅ Zod Schema
 const signUpFormSchema = z
@@ -55,6 +57,7 @@ export function SignUpForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   // const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { theme } = useTheme();
 
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpFormSchema),
@@ -97,6 +100,29 @@ export function SignUpForm() {
 
   return (
     <div className="">
+      <div className="w-full flex justify-center items-center">
+        <Link href="/">
+          <Image
+            src={
+              theme === "dark"
+                ? "/assets/images/white-logo.jpg"
+                : "/assets/images/black-logo.png"
+            }
+            alt="logo"
+            width={1900}
+            height={1200}
+            className="w-[100px] h-[60px] object-cover"
+          />
+        </Link>
+      </div>
+      <div className="pb-[15px] w-full md:w-[570px] pt-4">
+        <h1 className=" text-[32px] md:text-[36px] ld:text-[40px] font-bold leading-[120%] text-[#131313] tracking-[0%]">
+          Create New Account
+        </h1>
+        <p className=" text-base font-bold leading-[150%] text-[#424242] pt-[5px] tracking-[0%]">
+          Please enter details
+        </p>
+      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 ">
           {/* First & Last Name */}

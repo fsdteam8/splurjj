@@ -11,10 +11,14 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
+import { useTheme } from "next-themes";
 
 export default function OtpForm() {
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const { theme } = useTheme();
 
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
@@ -147,6 +151,32 @@ export default function OtpForm() {
 
   return (
     <div className="">
+      <div className="w-full flex justify-center items-center">
+        <Link href="/">
+          <Image
+            src={
+              theme === "dark"
+                ? "/assets/images/white-logo.jpg"
+                : "/assets/images/black-logo.png"
+              // ? "/assets/images/black-logo.png"
+              // : "/assets/images/white-logo.jpg"
+            }
+            alt="logo"
+            width={1900}
+            height={1200}
+            className="w-[100px] h-[60px] object-cover"
+          />
+        </Link>
+      </div>
+      <div className="pb-[30px] w-full md:w-[570px] pt-4">
+        <h1 className=" text-[32px] md:text-[36px] ld:text-[40px] font-bold leading-[120%] text-[#131313] tracking-[0%]">
+          Enter OTP
+        </h1>
+        <p className=" text-base font-bold leading-[150%] text-[#424242] pt-[5px] tracking-[0%]">
+          We have share a code of your registered email address
+          splurjj@gmail.com
+        </p>
+      </div>
       <div className="">
         {/* OTP Input Fields */}
         <div className="flex gap-[10px] md:gap-[24px] lg:gap-[30px] w-full justify-center">
