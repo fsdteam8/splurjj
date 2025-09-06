@@ -15,6 +15,9 @@ const config: Config = {
       // 		'sans-serif'
       // 	]
       // },
+      scale: {
+        102: "1.02", // custom scale value
+      },
       fontFamily: {
         roboto: ["var(--font-roboto)", "sans-serif"],
       },

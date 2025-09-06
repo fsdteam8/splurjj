@@ -18,6 +18,9 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
 import PasswordChangeSuccessFullModal from "@/components/shared/modals/PasswordChangeSuccessFullModal";
+import Link from "next/link";
+import Image from "next/image";
+import { useTheme } from "next-themes";
 
 // Password validation schema
 const passwordSchema = z
@@ -48,7 +51,7 @@ export default function UpdatePasswordForm() {
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
   const decodedEmail = decodeURIComponent(email || "");
-
+  const { theme } = useTheme();
   // Initialize form with React Hook Form and Zod validation
   const form = useForm<PasswordFormValues>({
     resolver: zodResolver(passwordSchema),
@@ -99,6 +102,31 @@ export default function UpdatePasswordForm() {
 
   return (
     <div className="">
+      <div className="w-full flex justify-center items-center">
+        <Link href="/">
+          <Image
+            src={
+              theme === "dark"
+                 ? "/assets/images/white-logo.jpg"
+              : "/assets/images/black-logo.png"
+                // ? "/assets/images/black-logo.png"
+                // : "/assets/images/white-logo.jpg"
+            }
+            alt="logo"
+            width={1900}
+            height={1200}
+            className="w-[100px] h-[60px] object-cover"
+          />
+        </Link>
+      </div>
+      <div className="pb-[30px] w-full md:w-[570px] pt-4">
+        <h1 className=" text-[32px] md:text-[36px] ld:text-[40px] font-bold leading-[120%] text-[#131313] tracking-[0%]">
+          Reset Password
+        </h1>
+        <p className=" text-base font-bold leading-[150%] text-[#424242] pt-[5px] tracking-[0%]">
+          Create your new password
+        </p>
+      </div>
       {/* Form */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="">
