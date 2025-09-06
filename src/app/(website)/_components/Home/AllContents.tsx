@@ -286,24 +286,27 @@ const AllContents: React.FC = () => {
                 className="content-heding-text"
                 href={`/${firstPost?.category_id}/${firstPost?.subcategory_id}/${firstPost?.id}`}
               >
+                <h1
+                  dangerouslySetInnerHTML={{ __html: firstPost.heading }}
+                  className="text-3xl md:text-[40px] lg:text-[60px] font-[400]  leading-[120%] line-clamp-2 transition-all duration-100 ease-in-out cursor-pointer hover:scale-102 hover:font-medium"
+                
+                />
                 {/* <motion.p
                   dangerouslySetInnerHTML={{ __html: firstPost.heading }}
-                  className="text-3xl md:text-[40px] lg:text-[60px] font-[400] leading-[120%] line-clamp-1"
+                  className="text-3xl md:text-[40px] lg:text-[60px] font-normal leading-[120%] line-clamp-2"
                   whileHover={{
                     scale: 1.02,
-                    fontWeight: 900,
-                    transition: { duration: 0.3 },
+                    letterSpacing: "0.5px",
+                    fontWeight: 500,
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 20,
+                    duration: 0.4,
+                    ease: "easeInOut",
                   }}
                 /> */}
-                 <motion.p
-                  dangerouslySetInnerHTML={{ __html: fourthPost.heading }}
-                  className="text-3xl md:text-[40px] lg:text-[60px] font-[400] leading-[120%] line-clamp-1"
-                  whileHover={{
-                    scale: 1.05,
-                    fontWeight: 900,
-                    transition: { duration: 0.3 },
-                  }}
-                />
               </Link>
 
               <p
@@ -374,9 +377,7 @@ const AllContents: React.FC = () => {
               </p>
 
               {/* start  */}
-              <div
-                className="flex items-center gap-3 mt-2 relative share-container"
-              >
+              <div className="flex items-center gap-3 mt-2 relative share-container">
                 <RiShareForwardLine
                   className="w-6 h-6 cursor-pointer"
                   onClick={() => toggleShare(secondPost.id)}
@@ -464,9 +465,7 @@ const AllContents: React.FC = () => {
                 {thirdPost.author} - {thirdPost.date}
               </p>
               {/* start  */}
-              <div
-                className="flex items-center gap-3 mt-2 relative share-container"
-              >
+              <div className="flex items-center gap-3 mt-2 relative share-container">
                 <RiShareForwardLine
                   className="w-6 h-6 cursor-pointer"
                   onClick={() => toggleShare(thirdPost.id)}
@@ -554,9 +553,7 @@ const AllContents: React.FC = () => {
                 {fourthPost.author} - {fourthPost.date}
               </p>
               {/* start  */}
-              <div
-                className="flex items-center gap-3 mt-2 relative share-container"
-              >
+              <div className="flex items-center gap-3 mt-2 relative share-container">
                 <RiShareForwardLine
                   className="w-6 h-6 cursor-pointer"
                   onClick={() => toggleShare(fourthPost.id)}

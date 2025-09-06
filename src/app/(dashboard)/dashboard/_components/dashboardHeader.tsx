@@ -105,7 +105,7 @@ export default function DashboardHeader() {
                     <Avatar>
                       <AvatarImage
                         src={
-                          data?.data?.profile_pic || ""
+                          data?.data?.profile_pic || "/assets/images/no-users.png"
                         }
                       />
                       <AvatarFallback className="text-base font-bold leading-normal text-black border rounded-full">

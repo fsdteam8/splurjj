@@ -1,3 +1,4 @@
+
 "use client";
 
 import type React from "react";
@@ -209,6 +210,8 @@ export default function ContentAddEditForm({
 
       setImagePreviews(initialImages);
       setImageFiles([]); // No files for URLs from backend
+      // Reset tagInput to empty when editing to avoid showing default tags
+      setTagInput("");
     }
 
     return () => {
@@ -283,14 +286,25 @@ export default function ContentAddEditForm({
   };
 
   const addTag = () => {
-    const newTag = tagInput.trim();
-    const currentTags = watch("tags");
+    const tagsToAdd = tagInput
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag && !watch("tags").includes(tag)); // Filter out empty tags and duplicates
 
-    if (newTag && !currentTags.includes(newTag)) {
-      const updatedTags = [...currentTags, newTag].slice(0, 10);
-      setValue("tags", updatedTags);
+    if (tagsToAdd.length === 0 && tagInput) {
+      toast.error("Duplicate or empty tags are not allowed");
       setTagInput("");
+      return;
     }
+
+    const currentTags = watch("tags") || [];
+    if (currentTags.length + tagsToAdd.length > 10) {
+      toast.error("Maximum 10 tags allowed");
+    }
+
+    const updatedTags = [...currentTags, ...tagsToAdd].slice(0, 10); // Limit to 10 tags
+    setValue("tags", updatedTags);
+    setTagInput(""); // Clear input after adding tags
   };
 
   const removeTag = (index: number) => {
@@ -553,7 +567,7 @@ export default function ContentAddEditForm({
                   <div className="flex items-center gap-2 mb-3 mt-2 relative">
                     <Input
                       className="text-black bg-white border border-gray-300 rounded-lg p-4"
-                      placeholder="Add a tag"
+                      placeholder="Add tags (comma-separated tags)"
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
                       onKeyDown={(e) => {
@@ -591,6 +605,7 @@ export default function ContentAddEditForm({
                       </div>
                     ))}
                   </div>
+                  <FormMessage className="text-red-500" />
                 </div>
 
                 {/* Meta Title */}
@@ -801,8 +816,6 @@ export default function ContentAddEditForm({
 
 
 
-
-
 // "use client";
 
 // import type React from "react";
@@ -869,11 +882,30 @@ export default function ContentAddEditForm({
 //   setShowForm?: React.Dispatch<React.SetStateAction<boolean>>;
 // }
 
+// // Utility function to format Date to DD-MM-YYYY
+// const formatDateToDDMMYYYY = (date: Date): string => {
+//   const day = String(date.getDate()).padStart(2, "0");
+//   const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+//   const year = date.getFullYear();
+//   return `${day}-${month}-${year}`;
+// };
+
+// // Utility function to parse DD-MM-YYYY string to Date
+// const parseDDMMYYYYToDate = (dateStr: string): Date | null => {
+//   const [day, month, year] = dateStr.split("-").map(Number);
+//   if (!day || !month || !year || isNaN(day) || isNaN(month) || isNaN(year)) {
+//     return null;
+//   }
+//   // Create date in local timezone to avoid UTC offset issues
+//   const date = new Date(year, month - 1, day); // Months are 0-based
+//   return isNaN(date.getTime()) ? null : date;
+// };
+
 // // Zod Schema
 // const formSchema = z.object({
 //   image2: z
 //     .array(z.string().min(1, "Image name or URL is required"))
-//     .min(0, "At least one image is required")
+//     .min(1, "At least one image is required")
 //     .max(10, "Maximum 10 images allowed"),
 //   tags: z.array(z.string().min(1)).max(10, "Max 10 tags"),
 //   author: z.string().min(2, "Author must be at least 2 characters"),
@@ -1108,7 +1140,11 @@ export default function ContentAddEditForm({
 //       formDataToSend.append("author", formData.author);
 //       formDataToSend.append("meta_title", formData.meta_title);
 //       formDataToSend.append("meta_description", formData.meta_description);
-//       formDataToSend.append("date", formData.date.toISOString().split("T")[0]);
+//       // Use local date parts to avoid timezone offset issues
+//       const year = formData.date.getFullYear();
+//       const month = String(formData.date.getMonth() + 1).padStart(2, "0");
+//       const day = String(formData.date.getDate()).padStart(2, "0");
+//       formDataToSend.append("date", `${year}-${month}-${day}`);
 //       formDataToSend.append("sub_heading", formData.sub_heading);
 //       formDataToSend.append("body1", formData.body1);
 //       formDataToSend.append("tags", JSON.stringify(formData.tags));
@@ -1208,7 +1244,7 @@ export default function ContentAddEditForm({
 //                           placeholder="Heading ...."
 //                         />
 //                       </FormControl>
-//                       <FormMessage className="text-red-500"/>
+//                       <FormMessage className="text-red-500" />
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1229,7 +1265,7 @@ export default function ContentAddEditForm({
 //                           placeholder="Sub Heading ...."
 //                         />
 //                       </FormControl>
-//                       <FormMessage className="text-red-500"/>
+//                       <FormMessage className="text-red-500" />
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1250,7 +1286,7 @@ export default function ContentAddEditForm({
 //                           {...field}
 //                         />
 //                       </FormControl>
-//                       <FormMessage className="text-red-500"/>
+//                       <FormMessage className="text-red-500" />
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1267,16 +1303,13 @@ export default function ContentAddEditForm({
 //                       <div className="relative flex gap-2">
 //                         <FormControl>
 //                           <Input
-//                             value={field.value.toLocaleDateString("en-US", {
-//                               day: "2-digit",
-//                               month: "long",
-//                               year: "numeric",
-//                             })}
+//                             value={field.value ? formatDateToDDMMYYYY(field.value) : ""}
 //                             onChange={(e) => {
-//                               const parsed = new Date(e.target.value);
-//                               if (!isNaN(parsed.getTime())) {
-//                                 field.onChange(parsed);
-//                                 setMonth(parsed);
+//                               const dateStr = e.target.value;
+//                               const parsedDate = parseDDMMYYYYToDate(dateStr);
+//                               if (parsedDate) {
+//                                 field.onChange(parsedDate);
+//                                 setMonth(parsedDate);
 //                               }
 //                             }}
 //                             onKeyDown={(e) => {
@@ -1286,7 +1319,7 @@ export default function ContentAddEditForm({
 //                               }
 //                             }}
 //                             className="bg-white border border-gray-300 text-black rounded-lg p-4"
-//                             placeholder="Select date"
+//                             placeholder="DD-MM-YYYY"
 //                           />
 //                         </FormControl>
 
@@ -1320,11 +1353,12 @@ export default function ContentAddEditForm({
 //                               month={month}
 //                               onMonthChange={setMonth}
 //                               captionLayout="dropdown"
+//                               disabled={(date) => date > new Date()}
 //                             />
 //                           </PopoverContent>
 //                         </Popover>
 //                       </div>
-//                       <FormMessage className="text-red-500"/>
+//                       <FormMessage className="text-red-500" />
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1393,7 +1427,7 @@ export default function ContentAddEditForm({
 //                           {...field}
 //                         />
 //                       </FormControl>
-//                       <FormMessage className="text-red-500"/>
+//                       <FormMessage className="text-red-500" />
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1414,7 +1448,7 @@ export default function ContentAddEditForm({
 //                           {...field}
 //                         />
 //                       </FormControl>
-//                       <FormMessage className="text-red-500"/>
+//                       <FormMessage className="text-red-500" />
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1435,7 +1469,7 @@ export default function ContentAddEditForm({
 //                           placeholder="Description...."
 //                         />
 //                       </FormControl>
-//                       <FormMessage className="text-red-500"/>
+//                       <FormMessage className="text-red-500" />
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1540,7 +1574,7 @@ export default function ContentAddEditForm({
 //                           </div>
 //                         </div>
 //                       </FormControl>
-//                       <FormMessage className="text-red-500"/>
+//                       <FormMessage className="text-red-500" />
 //                     </FormItem>
 //                   )}
 //                 />
@@ -1574,6 +1608,14 @@ export default function ContentAddEditForm({
 //     </ErrorBoundary>
 //   );
 // }
+
+
+
+
+
+
+
+
 
 
 
