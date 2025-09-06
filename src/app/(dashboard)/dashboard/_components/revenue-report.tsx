@@ -87,7 +87,7 @@ export function RevenueReport() {
             className={
               selectedPeriod === "Month"
                 ? "bg-blue-600 hover:bg-blue-700 text-white"
-                : "bg-white dark:text-white text-gray-600 hover:bg-gray-50"
+                : "bg-white dark:text-blue-700 text-gray-600 hover:bg-gray-50"
             }
           >
             Month
@@ -99,7 +99,7 @@ export function RevenueReport() {
             className={
               selectedPeriod === "Year"
                 ? "bg-blue-600 hover:bg-blue-700 text-white"
-                : "bg-white dark:text-white text-gray-600 hover:bg-gray-50"
+                : "bg-white dark:text-blue-700 text-gray-600 hover:bg-gray-50"
             }
           >
             Year
