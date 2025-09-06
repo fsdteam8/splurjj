@@ -42,37 +42,7 @@ export default function ImageViewer({ images, initialIndex, isOpen, onClose, tit
     setIsLoading(true)
   }, [currentIndex])
 
-  // Handle keyboard shortcuts
-  useEffect(() => {
-    if (!isOpen) return
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      switch (e.key) {
-        case "Escape":
-          onClose()
-          break
-        case "ArrowLeft":
-          handlePrevious()
-          break
-        case "ArrowRight":
-          handleNext()
-          break
-        case "=":
-        case "+":
-          handleZoomIn()
-          break
-        case "-":
-          handleZoomOut()
-          break
-        case "0":
-          handleReset()
-          break
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [isOpen, currentIndex])
 
   const handlePrevious = useCallback(() => {
     if (images.length > 1) {
@@ -162,6 +132,39 @@ export default function ImageViewer({ images, initialIndex, isOpen, onClose, tit
     },
     [scale, handleReset],
   )
+
+
+    // Handle keyboard shortcuts
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case "Escape":
+          onClose()
+          break
+        case "ArrowLeft":
+          handlePrevious()
+          break
+        case "ArrowRight":
+          handleNext()
+          break
+        case "=":
+        case "+":
+          handleZoomIn()
+          break
+        case "-":
+          handleZoomOut()
+          break
+        case "0":
+          handleReset()
+          break
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+ }, [isOpen, currentIndex, handleNext, handlePrevious, handleReset, handleZoomIn, handleZoomOut, onClose])
 
   if (!isOpen) return null
 

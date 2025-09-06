@@ -1001,7 +1001,7 @@
 // }
 
 "use client";
-import type * as React from "react";
+import * as React from "react";
 import { useState, useEffect } from "react";
 import {
   ChevronDown,
@@ -1107,8 +1107,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const isEditor = userRole === "editor";
   const isAuthor = userRole === "author";
 
-  const fetchCategories = async () => {
-    try {
+  const fetchCategories = React.useCallback(async () => {
+      try {
       setLoading(true);
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories`,
@@ -1130,13 +1130,38 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     } finally {
       setLoading(false);
     }
-  };
+}, [ token]);
+
+  // const fetchCategories = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await fetch(
+  //       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     const data: ApiResponse = await response.json();
+  //     if (data.success) {
+  //       setCategories(data.data);
+  //     } else {
+  //       toast.error("Failed to fetch categories");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching categories:", error);
+  //     toast.error("Error fetching categories");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   useEffect(() => {
     if (status === "authenticated" && token) {
       fetchCategories();
     }
-  }, [status, token]);
+  }, [status, token, fetchCategories]);
 
   useEffect(() => {
     const pathParts = pathname.split("/");
