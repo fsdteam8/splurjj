@@ -8,6 +8,7 @@ import SplurjjPagination from "@/components/ui/SplurjjPagination";
 import Vertical from "@/components/adds/vertical";
 import { motion } from "framer-motion";
 import SocialShare from "@/components/ui/SocialShare";
+import { SlLike } from "react-icons/sl";
 
 // Define the BlogPost type
 interface BlogPost {
@@ -183,6 +184,13 @@ useEffect(() => {
                     </div>
                     {/* start */}
                     <div className="flex items-center gap-3 relative share-container">
+                      <SlLike className="w-6 h-6 cursor-pointer" />
+                       <Link
+                        href={`/${post.category_id}/${post.subcategory_id}/${post.id}#comment`}
+                        className="cursor-pointer"
+                      >
+                        <FaRegCommentDots className="w-6 h-6" />
+                      </Link>
                       <RiShareForwardLine
                         className="w-6 h-6 cursor-pointer"
                         onClick={() => toggleShare(post.id)}
@@ -205,13 +213,8 @@ useEffect(() => {
                         </div>
                       )}
 
-                      <TbTargetArrow className="w-6 h-6" />
-                      <Link
-                        href={`/${post.category_id}/${post.subcategory_id}/${post.id}#comment`}
-                        className="cursor-pointer"
-                      >
-                        <FaRegCommentDots className="w-6 h-6" />
-                      </Link>
+                      <TbTargetArrow className="w-6 h-6 cursor-pointer" />
+                     
                     </div>
                     {/* end */}
                   </div>

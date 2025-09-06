@@ -11,6 +11,7 @@ import { RiShareForwardLine } from "react-icons/ri";
 import { TbTargetArrow } from "react-icons/tb";
 import { motion } from "framer-motion";
 import SocialShare from "@/components/ui/SocialShare";
+import { SlLike } from "react-icons/sl";
 
 // Interface for BlogPost
 interface BlogPost {
@@ -176,7 +177,7 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
       </div>
 
       {/* Skeleton for Three-Post Grid */}
-      <div className="py-8">
+      <div className="py-8 ">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map((_, index) => (
             <div key={index} className="max-h-[600px] relative">
@@ -243,6 +244,13 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
             </div>
 {/* start  */}
               <div className="flex items-center gap-3 relative mt-4 md:mt-0 lg:mt-0 share-container">
+                <SlLike className="w-6 h-6 cursor-pointer" />
+                  <Link
+                href={`/${firstPost.category_id}/${firstPost.subcategory_id}/${firstPost.id}#comment`}
+                className="cursor-pointer"
+              >
+                <FaRegCommentDots className="w-6 h-6" />
+              </Link>
                 <RiShareForwardLine
                   className="w-6 h-6 cursor-pointer"
                   onClick={() => toggleShare(firstPost.id)}
@@ -263,13 +271,8 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
                     />
                   </div>
                 )}
-             <TbTargetArrow className="w-6 h-6" />
-              <Link
-                href={`/${firstPost.category_id}/${firstPost.subcategory_id}/${firstPost.id}#comment`}
-                className="cursor-pointer"
-              >
-                <FaRegCommentDots className="w-6 h-6" />
-              </Link>
+        <TbTargetArrow className="w-6 h-6 cursor-pointer" />
+            
               </div>
 
               {/* end  */}
@@ -374,6 +377,13 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
                
 {/* start  */}
               <div className="flex items-center gap-3 relative mt-2 share-container">
+                <SlLike className="w-6 h-6 cursor-pointer" />
+                <Link
+                href={`/${thirdPost.category_id}/${thirdPost.subcategory_id}/${thirdPost.id}#comment`}
+                className="cursor-pointer"
+              >
+                <FaRegCommentDots className="w-6 h-6" />
+              </Link>
                 <RiShareForwardLine
                   className="w-6 h-6 cursor-pointer"
                   onClick={() => toggleShare(thirdPost.id)}
@@ -394,13 +404,8 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
                     />
                   </div>
                 )}
-             <TbTargetArrow className="w-6 h-6" />
-              <Link
-                href={`/${thirdPost.category_id}/${thirdPost.subcategory_id}/${thirdPost.id}#comment`}
-                className="cursor-pointer"
-              >
-                <FaRegCommentDots className="w-6 h-6" />
-              </Link>
+        <TbTargetArrow className="w-6 h-6 cursor-pointer" />
+              
               </div>
 
               {/* end  */}
@@ -463,6 +468,13 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 </p>
                 {/* start  */}
               <div className="flex items-center gap-3 relative mt-2 share-container">
+                <SlLike className="w-6 h-6 cursor-pointer" />
+                 <Link
+                href={`/${fourthPost.category_id}/${fourthPost.subcategory_id}/${fourthPost.id}#comment`}
+                className="cursor-pointer"
+              >
+                <FaRegCommentDots className="w-6 h-6" />
+              </Link>
                 <RiShareForwardLine
                   className="w-6 h-6 cursor-pointer"
                   onClick={() => toggleShare(fourthPost.id)}
@@ -483,13 +495,8 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
                     />
                   </div>
                 )}
-             <TbTargetArrow className="w-6 h-6" />
-              <Link
-                href={`/${fourthPost.category_id}/${fourthPost.subcategory_id}/${fourthPost.id}#comment`}
-                className="cursor-pointer"
-              >
-                <FaRegCommentDots className="w-6 h-6" />
-              </Link>
+        <TbTargetArrow className="w-6 h-6 cursor-pointer" />
+             
               </div>
 
               {/* end  */}
@@ -554,6 +561,13 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   </p>
                 {/* start  */}
               <div className="flex items-center gap-3 relative mt-2 share-container">
+                <SlLike className="w-6 h-6 cursor-pointer" />
+                <Link
+                href={`/${fifthPost.category_id}/${fifthPost.subcategory_id}/${fifthPost.id}#comment`}
+                className="cursor-pointer"
+              >
+                <FaRegCommentDots className="w-6 h-6" />
+              </Link>
                 <RiShareForwardLine
                   className="w-6 h-6 cursor-pointer"
                   onClick={() => toggleShare(fifthPost.id)}
@@ -574,13 +588,8 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
                     />
                   </div>
                 )}
-             <TbTargetArrow className="w-6 h-6" />
-              <Link
-                href={`/${fifthPost.category_id}/${fifthPost.subcategory_id}/${fifthPost.id}#comment`}
-                className="cursor-pointer"
-              >
-                <FaRegCommentDots className="w-6 h-6" />
-              </Link>
+        <TbTargetArrow className="w-6 h-6 cursor-pointer" />
+              
               </div>
 
               {/* end  */}

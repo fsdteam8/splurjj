@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import { FaRegCommentDots } from "react-icons/fa";
 import { RiShareForwardLine } from "react-icons/ri";
 import { TbTargetArrow } from "react-icons/tb";
+import { SlLike } from "react-icons/sl";
 import ImageCarousel from "./ImageCarousel";
 import { motion } from "framer-motion";
 import SocialShare from "@/components/ui/SocialShare";
@@ -250,8 +251,20 @@ const AllContents: React.FC = () => {
 
               {/* start  */}
               <div className="flex items-center gap-3 relative share-container">
+                <div className="flex items-center gap-2">
+                  <button>
+                    <SlLike className="w-6 h-6 cursor-pointer" />
+                  </button>
+                  {/* <p>10</p> */}
+                </div>
+                <Link
+                  href={`/${firstPost.category_id}/${firstPost.subcategory_id}/${firstPost.id}#comment`}
+                  className="cursor-pointer"
+                >
+                  <FaRegCommentDots className="w-6 h-6 cursor-pointer " />
+                </Link>
                 <RiShareForwardLine
-                  className="w-6 h-6 cursor-pointer"
+                  className="w-6 h-6 cursor-pointer "
                   onClick={() => toggleShare(firstPost.id)}
                 />
                 {activeSharePostId === firstPost.id && (
@@ -270,13 +283,7 @@ const AllContents: React.FC = () => {
                     />
                   </div>
                 )}
-                <TbTargetArrow className="w-6 h-6" />
-                <Link
-                  href={`/${firstPost.category_id}/${firstPost.subcategory_id}/${firstPost.id}#comment`}
-                  className="cursor-pointer"
-                >
-                  <FaRegCommentDots className="w-6 h-6 cursor-pointer" />
-                </Link>
+                <TbTargetArrow className="w-6 h-6 cursor-pointer " />
               </div>
 
               {/* end  */}
@@ -288,8 +295,7 @@ const AllContents: React.FC = () => {
               >
                 <h1
                   dangerouslySetInnerHTML={{ __html: firstPost.heading }}
-                  className="text-3xl md:text-[40px] lg:text-[60px] font-[400]  leading-[120%] line-clamp-2 transition-all duration-100 ease-in-out cursor-pointer hover:scale-102 hover:font-medium"
-                
+                  className="text-3xl md:text-[40px] lg:text-[60px] font-[400]  leading-[120%] transition-all duration-100 ease-in-out cursor-pointer hover:scale-102 hover:font-medium"
                 />
                 {/* <motion.p
                   dangerouslySetInnerHTML={{ __html: firstPost.heading }}
@@ -378,6 +384,15 @@ const AllContents: React.FC = () => {
 
               {/* start  */}
               <div className="flex items-center gap-3 mt-2 relative share-container">
+                <button>
+                  <SlLike className="w-6 h-6 cursor-pointer" />
+                </button>
+                <Link
+                  href={`/${secondPost.category_id}/${secondPost.subcategory_id}/${secondPost.id}#comment`}
+                  className="cursor-pointer"
+                >
+                  <FaRegCommentDots className="w-6 h-6 cursor-pointer" />
+                </Link>
                 <RiShareForwardLine
                   className="w-6 h-6 cursor-pointer"
                   onClick={() => toggleShare(secondPost.id)}
@@ -400,13 +415,7 @@ const AllContents: React.FC = () => {
                   </div>
                 )}
 
-                <TbTargetArrow className="w-6 h-6" />
-                <Link
-                  href={`/${secondPost.category_id}/${secondPost.subcategory_id}/${secondPost.id}#comment`}
-                  className="cursor-pointer"
-                >
-                  <FaRegCommentDots className="w-6 h-6 cursor-pointer" />
-                </Link>
+                <TbTargetArrow className="w-6 h-6 cursor-pointer" />
               </div>
               {/* end  */}
               <p
@@ -466,6 +475,13 @@ const AllContents: React.FC = () => {
               </p>
               {/* start  */}
               <div className="flex items-center gap-3 mt-2 relative share-container">
+                <SlLike className="w-6 h-6 cursor-pointer" />
+                <Link
+                  href={`/${thirdPost.category_id}/${thirdPost.subcategory_id}/${thirdPost.id}#comment`}
+                  className="cursor-pointer"
+                >
+                  <FaRegCommentDots className="w-6 h-6 cursor-pointer" />
+                </Link>
                 <RiShareForwardLine
                   className="w-6 h-6 cursor-pointer"
                   onClick={() => toggleShare(thirdPost.id)}
@@ -488,13 +504,7 @@ const AllContents: React.FC = () => {
                   </div>
                 )}
 
-                <TbTargetArrow className="w-6 h-6" />
-                <Link
-                  href={`/${thirdPost.category_id}/${thirdPost.subcategory_id}/${thirdPost.id}#comment`}
-                  className="cursor-pointer"
-                >
-                  <FaRegCommentDots className="w-6 h-6 cursor-pointer" />
-                </Link>
+                <TbTargetArrow className="w-6 h-6 cursor-pointer" />
               </div>
               {/* end  */}
               <p
@@ -554,6 +564,13 @@ const AllContents: React.FC = () => {
               </p>
               {/* start  */}
               <div className="flex items-center gap-3 mt-2 relative share-container">
+                <SlLike className="w-6 h-6 cursor-pointer" />
+                <Link
+                  href={`/${fourthPost.category_id}/${fourthPost.subcategory_id}/${fourthPost.id}#comment`}
+                  className="cursor-pointer"
+                >
+                  <FaRegCommentDots className="w-6 h-6 cursor-pointer" />
+                </Link>
                 <RiShareForwardLine
                   className="w-6 h-6 cursor-pointer"
                   onClick={() => toggleShare(fourthPost.id)}
@@ -576,13 +593,7 @@ const AllContents: React.FC = () => {
                   </div>
                 )}
 
-                <TbTargetArrow className="w-6 h-6" />
-                <Link
-                  href={`/${fourthPost.category_id}/${fourthPost.subcategory_id}/${fourthPost.id}#comment`}
-                  className="cursor-pointer"
-                >
-                  <FaRegCommentDots className="w-6 h-6 cursor-pointer" />
-                </Link>
+                <TbTargetArrow className="w-6 h-6 cursor-pointer" />
               </div>
               {/* end  */}
               <p

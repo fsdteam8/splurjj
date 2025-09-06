@@ -12,6 +12,7 @@ import { Loader2 } from "lucide-react";
 import DOMPurify from "dompurify";
 import { motion } from "framer-motion";
 import SocialShare from "@/components/ui/SocialShare";
+import { SlLike } from "react-icons/sl";
 
 interface BlogPost {
   id: number;
@@ -331,6 +332,12 @@ function ViewAuthorPost({ userId }: ViewAuthorPostProps) {
 
               {/* start  */}
             <div className="flex items-center gap-3 relative mt-2 share-container">
+              <SlLike className="w-6 h-6 cursor-pointer" />
+                 <Link
+                  href={`/${post.category_id}/${post.subcategory_id}/${post.id}#comment`}
+                >
+                  <FaRegCommentDots className="w-6 h-6" />
+                </Link>       
               <RiShareForwardLine
                 className="w-6 h-6 cursor-pointer"
                 onClick={() => toggleShare(post.id)}
@@ -351,12 +358,8 @@ function ViewAuthorPost({ userId }: ViewAuthorPostProps) {
                   />
                 </div>
               )}
-              <TbTargetArrow className="w-6 h-6" />
-                <Link
-                  href={`/${post.category_id}/${post.subcategory_id}/${post.id}#comment`}
-                >
-                  <FaRegCommentDots className="w-6 h-6" />
-                </Link>
+              <TbTargetArrow className="w-6 h-6 cursor-pointer" />
+             
             </div>
 
             {/* end  */}

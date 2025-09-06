@@ -3,14 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import {
-  FaRegCommentDots,
-} from "react-icons/fa";
+import { FaRegCommentDots } from "react-icons/fa";
 import { RiShareForwardLine } from "react-icons/ri";
 import { TbTargetArrow } from "react-icons/tb";
 import { motion } from "framer-motion";
 import { BlogPost } from "./blog-post-types"; // Import from blog-post-types.ts
 import SocialShare from "@/components/ui/SocialShare";
+import { SlLike } from "react-icons/sl";
 
 interface CategoryContentsProps {
   posts: BlogPost[];
@@ -18,12 +17,8 @@ interface CategoryContentsProps {
   error: string | null;
 }
 
-function CategoryContents({
-  posts,
-  loading,
-  error,
-}: CategoryContentsProps) {
-// share start
+function CategoryContents({ posts, loading, error }: CategoryContentsProps) {
+  // share start
   const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
     null
   );
@@ -91,8 +86,6 @@ function CategoryContents({
     return "";
   }
 
-  
-
   const SkeletonLoader = () => (
     <div className="animate-pulse">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -121,7 +114,8 @@ function CategoryContents({
     </div>
   );
 
-  if (error) return <div className="text-center py-8 text-red-500">{error}</div>;
+  if (error)
+    return <div className="text-center py-8 text-red-500">{error}</div>;
   if (loading) return <SkeletonLoader />;
   if (!posts.length)
     return <div className="text-center py-8">No content found</div>;
@@ -166,7 +160,7 @@ function CategoryContents({
               >
                 <motion.p
                   dangerouslySetInnerHTML={{ __html: post.heading ?? "" }}
-                  className="text-2xl font-medium"
+                  className="text-2xl font-medium pt-2"
                   whileHover={{
                     scaleX: 1.05,
                     transformOrigin: "left",
@@ -179,40 +173,39 @@ function CategoryContents({
                 {post.author} - {post.date}
               </p>
 
-             
-
               {/* start  */}
-            <div className="flex items-center gap-3 relative mt-2 share-container">
-              <RiShareForwardLine
-                className="w-6 h-6 cursor-pointer"
-                onClick={() => toggleShare(post.id)}
-              />
-              {activeSharePostId === post.id && (
-                <div
-                  className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
-                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+              <div className="flex items-center gap-3 relative mt-2 share-container">
+                <SlLike className="w-6 h-6 cursor-pointer" />
+                <Link
+                  href={`/${post.category_id}/${post.subcategory_id}/${post.id}#comment`}
+                  className="cursor-pointer"
                 >
-                  <SocialShare
-                    url={getShareUrl(
-                      post.category_id,
-                      post.subcategory_id,
-                      post.id
-                    )}
-                    title={post.heading}
-                    summary={post.sub_heading || "Check out this post!"}
-                  />
-                </div>
-              )}
-              <TbTargetArrow className="w-6 h-6" />
-              <Link
-                href={`/${post.category_id}/${post.subcategory_id}/${post.id}#comment`}
-                className="cursor-pointer"
-              >
-                <FaRegCommentDots className="w-6 h-6" />
-              </Link>
-            </div>
+                  <FaRegCommentDots className="w-6 h-6" />
+                </Link>
+                <RiShareForwardLine
+                  className="w-6 h-6 cursor-pointer"
+                  onClick={() => toggleShare(post.id)}
+                />
+                {activeSharePostId === post.id && (
+                  <div
+                    className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
+                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+                  >
+                    <SocialShare
+                      url={getShareUrl(
+                        post.category_id,
+                        post.subcategory_id,
+                        post.id
+                      )}
+                      title={post.heading}
+                      summary={post.sub_heading || "Check out this post!"}
+                    />
+                  </div>
+                )}
+                <TbTargetArrow className="w-6 h-6 cursor-pointer" />
+              </div>
 
-            {/* end  */}
+              {/* end  */}
               <p
                 dangerouslySetInnerHTML={{ __html: post.sub_heading }}
                 className="text-sm font-normal text-[#424242] line-clamp-3 mt-2"
