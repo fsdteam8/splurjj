@@ -2,14 +2,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, useRef, useCallback } from "react";
-import {
-  FaRegCommentDots,
-} from "react-icons/fa";
+import { FaRegCommentDots } from "react-icons/fa";
 import { RiShareForwardLine } from "react-icons/ri";
 import { TbTargetArrow } from "react-icons/tb";
 import { Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import SocialShare from "@/components/ui/SocialShare";
+import { SlLike } from "react-icons/sl";
 
 // Interface for ContentItem (assuming SearchResult is compatible)
 interface ContentItem {
@@ -63,43 +62,43 @@ function Contents({ initialSearchQuery }: ContentsProps) {
   const observerRef = useRef<HTMLDivElement>(null);
   const limit = 9;
 
-    // share start
-    const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
-      null
-    );
-  
-    // Toggle share modal
-    const toggleShare = (postId: number) => {
-      setActiveSharePostId(activeSharePostId === postId ? null : postId);
-    };
-  
-    // Close on outside click
-    useEffect(() => {
-      function handleClickOutside(event: MouseEvent) {
-        const target = event.target as HTMLElement;
-  
-        // Close only if click is outside all share containers
-        if (!target.closest(".share-container")) {
-          setActiveSharePostId(null);
-        }
+  // share start
+  const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
+    null
+  );
+
+  // Toggle share modal
+  const toggleShare = (postId: number) => {
+    setActiveSharePostId(activeSharePostId === postId ? null : postId);
+  };
+
+  // Close on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const target = event.target as HTMLElement;
+
+      // Close only if click is outside all share containers
+      if (!target.closest(".share-container")) {
+        setActiveSharePostId(null);
       }
-  
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }, []);
-  
-    const getShareUrl = (
-      categoryId: number,
-      subcategoryId: number,
-      id: number
-    ): string => {
-      if (typeof window === "undefined") return ""; // avoid SSR crash
-      return `${window.location.origin}/${categoryId}/${subcategoryId}/${id}`;
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-  
-    // share close
+  }, []);
+
+  const getShareUrl = (
+    categoryId: number,
+    subcategoryId: number,
+    id: number
+  ): string => {
+    if (typeof window === "undefined") return ""; // avoid SSR crash
+    return `${window.location.origin}/${categoryId}/${subcategoryId}/${id}`;
+  };
+
+  // share close
 
   console.log(totalItems);
 
@@ -224,8 +223,6 @@ function Contents({ initialSearchQuery }: ContentsProps) {
     return "";
   }
 
-  
-
   // Skeleton Loader Component
   const SkeletonLoader = () => (
     <div className="animate-pulse">
@@ -260,7 +257,7 @@ function Contents({ initialSearchQuery }: ContentsProps) {
   if (loading && contents.length === 0) return <SkeletonLoader />;
   if (error) return <div>Error: {error}</div>;
   if (!contents.length && !loading) return <div>No content found</div>;
-  console.log(contents)
+  console.log(contents);
 
   return (
     <div>
@@ -301,7 +298,7 @@ function Contents({ initialSearchQuery }: ContentsProps) {
               >
                 <motion.p
                   dangerouslySetInnerHTML={{ __html: post.heading }}
-                  className="text-2xl font-medium hover:underline"
+                  className="text-2xl font-medium hover:underline pt-2"
                   whileHover={{
                     scale: 1.05,
                     fontWeight: 900,
@@ -313,41 +310,39 @@ function Contents({ initialSearchQuery }: ContentsProps) {
                 {post.author} - {post.date}
               </p>
 
-
               {/* start  */}
-                  <div className="flex items-center gap-3 relative mt-2 share-container">
-                    <RiShareForwardLine
-                      className="w-6 h-6 cursor-pointer"
-                      onClick={() => toggleShare(post.id)}
-                    />
-                    {activeSharePostId === post.id && (
-                      <div
-                        className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
-                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
-                      >
-                        <SocialShare
-                          url={getShareUrl(
-                            post.category_id,
-                            post.subcategory_id,
-                            post.id
-                          )}
-                          title={post.heading}
-                          summary={
-                            post.sub_heading || "Check out this post!"
-                          }
-                        />
-                      </div>
-                    )}
-                     <TbTargetArrow className="w-6 h-6" />
+              <div className="flex items-center gap-3 relative mt-2 share-container">
+                <SlLike className="w-6 h-6 cursor-pointer" />
                 <Link
                   href={`/${post.category_id}/${post.subcategory_id}/${post.id}#comment`}
                   className="cursor-pointer"
                 >
-                  <FaRegCommentDots className="w-6 h-6" />
+                  <FaRegCommentDots className="w-6 h-6 cursor-pointer" />
                 </Link>
+                <RiShareForwardLine
+                  className="w-6 h-6 cursor-pointer"
+                  onClick={() => toggleShare(post.id)}
+                />
+                {activeSharePostId === post.id && (
+                  <div
+                    className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
+                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+                  >
+                    <SocialShare
+                      url={getShareUrl(
+                        post.category_id,
+                        post.subcategory_id,
+                        post.id
+                      )}
+                      title={post.heading}
+                      summary={post.sub_heading || "Check out this post!"}
+                    />
                   </div>
+                )}
+                <TbTargetArrow className="w-6 h-6 cursor-pointer" />
+              </div>
 
-                  {/* end  */}
+              {/* end  */}
               <p
                 dangerouslySetInnerHTML={{ __html: post.sub_heading }}
                 className="text-sm font-normal text-[#424242] line-clamp-3 mt-2"

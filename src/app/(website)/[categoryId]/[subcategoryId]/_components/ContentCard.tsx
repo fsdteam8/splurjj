@@ -3,13 +3,12 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { RiShareForwardLine } from "react-icons/ri";
-import {
-  FaRegCommentDots,
-} from "react-icons/fa";
+import { FaRegCommentDots } from "react-icons/fa";
 import { TbTargetArrow } from "react-icons/tb";
 import SkeletonLoader from "./SkeletonLoader";
 import { motion } from "framer-motion";
 import SocialShare from "@/components/ui/SocialShare";
+import { SlLike } from "react-icons/sl";
 
 interface Post {
   id: number;
@@ -56,85 +55,88 @@ const SecondContents = ({
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const observerRef = useRef<HTMLDivElement>(null);
-    // share start
-    const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
-      null
-    );
-  
-    // Toggle share modal
-    const toggleShare = (postId: number) => {
-      setActiveSharePostId(activeSharePostId === postId ? null : postId);
-    };
-  
-    // Close on outside click
-    useEffect(() => {
-      function handleClickOutside(event: MouseEvent) {
-        const target = event.target as HTMLElement;
-  
-        // Close only if click is outside all share containers
-        if (!target.closest(".share-container")) {
-          setActiveSharePostId(null);
-        }
-      }
-  
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }, []);
-  
-    const getShareUrl = (
-      categoryId: number,
-      subcategoryId: number,
-      id: number
-    ): string => {
-      if (typeof window === "undefined") return ""; // avoid SSR crash
-      return `${window.location.origin}/${categoryId}/${subcategoryId}/${id}`;
-    };
-  
-    // share close
+  // share start
+  const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
+    null
+  );
 
-  const fetchData = useCallback(async (page: number, isLoadMore = false) => {
-    if (isLoadMore) setLoadingMore(true);
-    setError(null);
+  // Toggle share modal
+  const toggleShare = (postId: number) => {
+    setActiveSharePostId(activeSharePostId === postId ? null : postId);
+  };
 
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${categoryId}/${subcategoryId}?page=${page}`
-      );
-      if (!response.ok) {
-        throw new Error(`Failed to fetch content: ${response.statusText}`);
-      }
+  // Close on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const target = event.target as HTMLElement;
 
-      const result: ContentAllDataTypeResponse = await response.json();
-      if (!result.success) {
-        throw new Error("API returned unsuccessful response");
-      }
-
-      const newPosts = result.data || [];
-
-      console.log(newPosts);
-      const filteredPosts = newPosts.map((post) => ({
-        ...post,
-        tags: post.tags.filter((tag) => tag.trim() !== ""),
-      }));
-
-      setPosts((prev) =>
-        isLoadMore ? [...prev, ...filteredPosts] : filteredPosts
-      );
-      setHasMore(page < result.meta.last_page);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setHasMore(false);
-      setError("Failed to load more content. Please try again later.");
-    } finally {
-      if (isLoadMore) {
-        setLoadingMore(false);
-      } else {
-        setLoading(false);
+      // Close only if click is outside all share containers
+      if (!target.closest(".share-container")) {
+        setActiveSharePostId(null);
       }
     }
-  }, [categoryId, subcategoryId]);
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const getShareUrl = (
+    categoryId: number,
+    subcategoryId: number,
+    id: number
+  ): string => {
+    if (typeof window === "undefined") return ""; // avoid SSR crash
+    return `${window.location.origin}/${categoryId}/${subcategoryId}/${id}`;
+  };
+
+  // share close
+
+  const fetchData = useCallback(
+    async (page: number, isLoadMore = false) => {
+      if (isLoadMore) setLoadingMore(true);
+      setError(null);
+
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${categoryId}/${subcategoryId}?page=${page}`
+        );
+        if (!response.ok) {
+          throw new Error(`Failed to fetch content: ${response.statusText}`);
+        }
+
+        const result: ContentAllDataTypeResponse = await response.json();
+        if (!result.success) {
+          throw new Error("API returned unsuccessful response");
+        }
+
+        const newPosts = result.data || [];
+
+        console.log(newPosts);
+        const filteredPosts = newPosts.map((post) => ({
+          ...post,
+          tags: post.tags.filter((tag) => tag.trim() !== ""),
+        }));
+
+        setPosts((prev) =>
+          isLoadMore ? [...prev, ...filteredPosts] : filteredPosts
+        );
+        setHasMore(page < result.meta.last_page);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setHasMore(false);
+        setError("Failed to load more content. Please try again later.");
+      } finally {
+        if (isLoadMore) {
+          setLoadingMore(false);
+        } else {
+          setLoading(false);
+        }
+      }
+    },
+    [categoryId, subcategoryId]
+  );
 
   useEffect(() => {
     fetchData(1);
@@ -160,7 +162,7 @@ const SecondContents = ({
     };
   }, [currentPage, hasMore, loadingMore, fetchData]);
 
-    function convertToCDNUrl(image2?: string): string {
+  function convertToCDNUrl(image2?: string): string {
     const image2BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
     const cdnBaseUrl = "https://dsfua14fu9fn0.cloudfront.net/images";
 
@@ -185,8 +187,6 @@ const SecondContents = ({
 
     return "";
   }
-
-  
 
   if (loading && !loadingMore) {
     return (
@@ -253,40 +253,40 @@ const SecondContents = ({
                       </div>
 
                       {/* start  */}
-            <div className="flex items-center gap-3 relative mt-4 md:mt-0 lg:mt-0 share-container">
-              <RiShareForwardLine
-                className="w-6 h-6 cursor-pointer"
-                onClick={() => toggleShare(post.id)}
-              />
-              {activeSharePostId === post.id && (
-                <div
-                  className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
-                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
-                >
-                  <SocialShare
-                    url={getShareUrl(
-                      post.category_id,
-                      post.subcategory_id,
-                      post.id
-                    )}
-                    title={post.heading}
-                    summary={post.sub_heading || "Check out this post!"}
-                  />
-                </div>
-              )}
-             <TbTargetArrow className="w-6 h-6" />
+                      <div className="flex items-center gap-3 relative mt-4 md:mt-0 lg:mt-0 share-container">
+                        <SlLike className="w-6 h-6 cursor-pointer" />
                         <Link
                           href={`/${post.category_id}/${post.subcategory_id}/${post.id}#comment`}
                           className="w-6 h-6"
                         >
                           <FaRegCommentDots className="w-6 h-6" />
                         </Link>
-            </div>
+                        <RiShareForwardLine
+                          className="w-6 h-6 cursor-pointer"
+                          onClick={() => toggleShare(post.id)}
+                        />
+                        {activeSharePostId === post.id && (
+                          <div
+                            className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
+                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+                          >
+                            <SocialShare
+                              url={getShareUrl(
+                                post.category_id,
+                                post.subcategory_id,
+                                post.id
+                              )}
+                              title={post.heading}
+                              summary={
+                                post.sub_heading || "Check out this post!"
+                              }
+                            />
+                          </div>
+                        )}
+                        <TbTargetArrow className="w-6 h-6 cursor-pointer" />
+                      </div>
 
-            {/* end  */}
-                   
-
-
+                      {/* end  */}
                     </div>
                     <div>
                       <Link
@@ -316,7 +316,7 @@ const SecondContents = ({
           {/* After loading, show posts from index 4 */}
           {!hasMore && !loadingMore && posts.length > 4 && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-              <h2 className="col-span-full text-2xl font-bold">More Content</h2>
+              {/* <h2 className="col-span-full text-2xl font-bold">More Content</h2> */}
               {posts.slice(4).map((post) => (
                 <article
                   key={post.id}
@@ -353,39 +353,41 @@ const SecondContents = ({
                           {post.sub_category_name || "Subcategory"}
                         </Link>
                       </div>
-                       {/* start  */}
-            <div className="flex items-center gap-3 relative mt-4 md:mt-0 lg:mt-0 share-container">
-              <RiShareForwardLine
-                className="w-6 h-6 cursor-pointer"
-                onClick={() => toggleShare(post.id)}
-              />
-              {activeSharePostId === post.id && (
-                <div
-                  className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
-                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
-                >
-                  <SocialShare
-                    url={getShareUrl(
-                      post.category_id,
-                      post.subcategory_id,
-                      post.id
-                    )}
-                    title={post.heading}
-                    summary={post.sub_heading || "Check out this post!"}
-                  />
-                </div>
-              )}
-             <TbTargetArrow className="w-6 h-6" />
+                      {/* start  */}
+                      <div className="flex items-center gap-3 relative mt-4 md:mt-0 lg:mt-0 share-container">
+                        <SlLike className="w-6 h-6 cursor-pointer" />
                         <Link
                           href={`/${post.category_id}/${post.subcategory_id}/${post.id}#comment`}
                           className="w-6 h-6"
                         >
                           <FaRegCommentDots className="w-6 h-6" />
                         </Link>
-            </div>
+                        <RiShareForwardLine
+                          className="w-6 h-6 cursor-pointer"
+                          onClick={() => toggleShare(post.id)}
+                        />
+                        {activeSharePostId === post.id && (
+                          <div
+                            className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
+                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+                          >
+                            <SocialShare
+                              url={getShareUrl(
+                                post.category_id,
+                                post.subcategory_id,
+                                post.id
+                              )}
+                              title={post.heading}
+                              summary={
+                                post.sub_heading || "Check out this post!"
+                              }
+                            />
+                          </div>
+                        )}
+                        <TbTargetArrow className="w-6 h-6 cursor-pointer" />
+                      </div>
 
-            {/* end  */}
-
+                      {/* end  */}
                     </div>
                     <div>
                       <Link
@@ -421,13 +423,13 @@ const SecondContents = ({
             </div>
           )}
 
-          {!hasMore && !loadingMore && (
+          {/* {!hasMore && !loadingMore && (
             <div className="col-span-full text-center py-8">
               <p className="text-gray-700">
                 You&apos;ve reached the end of the content.
               </p>
             </div>
-          )}
+          )} */}
         </>
       )}
     </div>

@@ -10,6 +10,7 @@ import { TbTargetArrow } from "react-icons/tb";
 import GearCarousel from "./GearCarousel";
 import { motion } from "framer-motion";
 import SocialShare from "@/components/ui/SocialShare";
+import { SlLike } from "react-icons/sl";
 
 // Interface for BlogPost
 interface BlogPost {
@@ -237,6 +238,13 @@ const Gear: React.FC<ArtCultureProps> = ({ categoryName }) => {
 
             {/* start  */}
             <div className="flex items-center gap-3 relative mt-4 md:mt-0 lg:mt-0 share-container">
+              <SlLike className="w-6 h-6 cursor-pointer" />
+              <Link
+                href={`/${firstPost.category_id}/${firstPost.subcategory_id}/${firstPost.id}#comment`}
+                className="cursor-pointer"
+              >
+                <FaRegCommentDots className="w-6 h-6" />
+              </Link>
               <RiShareForwardLine
                 className="w-6 h-6 cursor-pointer"
                 onClick={() => toggleShare(firstPost.id)}
@@ -257,13 +265,7 @@ const Gear: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   />
                 </div>
               )}
-              <TbTargetArrow className="w-6 h-6" />
-              <Link
-                href={`/${firstPost.category_id}/${firstPost.subcategory_id}/${firstPost.id}#comment`}
-                className="cursor-pointer"
-              >
-                <FaRegCommentDots className="w-6 h-6" />
-              </Link>
+         <TbTargetArrow className="w-6 h-6 cursor-pointer" />
             </div>
 
             {/* end  */}
@@ -317,7 +319,7 @@ const Gear: React.FC<ArtCultureProps> = ({ categoryName }) => {
                     }}
                   />
                 </Link>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3 justify-between">
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/blogs/${secondPost.category_name}`}
@@ -334,7 +336,14 @@ const Gear: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   </div>
 
                   {/* start  */}
-                  <div className="flex items-center gap-3 relative share-container">
+                  <div className="flex items-center gap-3 relative share-container ">
+                    <SlLike className="w-6 h-6 cursor-pointer" />
+                    <Link
+                      href={`/${secondPost.category_id}/${secondPost.subcategory_id}/${secondPost.id}#comment`}
+                      className="cursor-pointer"
+                    >
+                      <FaRegCommentDots className="w-6 h-6" />
+                    </Link>
                     <RiShareForwardLine
                       className="w-6 h-6 cursor-pointer"
                       onClick={() => toggleShare(secondPost.id)}
@@ -357,13 +366,7 @@ const Gear: React.FC<ArtCultureProps> = ({ categoryName }) => {
                         />
                       </div>
                     )}
-                    <TbTargetArrow className="w-6 h-6" />
-                    <Link
-                      href={`/${secondPost.category_id}/${secondPost.subcategory_id}/${secondPost.id}#comment`}
-                      className="cursor-pointer"
-                    >
-                      <FaRegCommentDots className="w-6 h-6" />
-                    </Link>
+               <TbTargetArrow className="w-6 h-6 cursor-pointer" />
                   </div>
 
                   {/* end  */}
@@ -426,6 +429,13 @@ const Gear: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   </div>
                   {/* start  */}
                   <div className="flex items-center gap-3 relative mt-4 md:mt-0 lg:mt-0 share-container">
+                    <SlLike className="w-6 h-6 cursor-pointer" />
+                    <Link
+                      href={`/${thirdPost.category_id}/${thirdPost.subcategory_id}/${thirdPost.id}#comment`}
+                      className="cursor-pointer"
+                    >
+                      <FaRegCommentDots className="w-6 h-6" />
+                    </Link>
                     <RiShareForwardLine
                       className="w-6 h-6 cursor-pointer"
                       onClick={() => toggleShare(thirdPost.id)}
@@ -448,13 +458,7 @@ const Gear: React.FC<ArtCultureProps> = ({ categoryName }) => {
                         />
                       </div>
                     )}
-                    <TbTargetArrow className="w-6 h-6" />
-                    <Link
-                      href={`/${thirdPost.category_id}/${thirdPost.subcategory_id}/${thirdPost.id}#comment`}
-                      className="cursor-pointer"
-                    >
-                      <FaRegCommentDots className="w-6 h-6" />
-                    </Link>
+               <TbTargetArrow className="w-6 h-6 cursor-pointer" />
                   </div>
 
                   {/* end  */}
