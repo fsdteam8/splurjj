@@ -4,12 +4,14 @@ import { DashboardOverviewResponse } from "@/components/types/DashboardOverviewD
 import { DashboardCardSkeleton } from "@/components/ui/DashboardCardSkeleton";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { GoDotFill } from "react-icons/go";
 
 const DashboardOverviewContainer = () => {
+  const { theme } = useTheme();
   const session = useSession();
   const token = (session?.data?.user as { token: string })?.token;
 
@@ -79,7 +81,11 @@ const DashboardOverviewContainer = () => {
             </div>
             <div>
               <Image
-                src="/assets/dashboard/revenue.png"
+                src={
+                  theme === "dark"
+                    ? "/assets/dashboard/white-revenue.png"
+                    : "/assets/dashboard/revenue.png"
+                }
                 alt="revenue icon"
                 width={48}
                 height={48}
@@ -101,7 +107,11 @@ const DashboardOverviewContainer = () => {
           </div>
           <div>
             <Image
-              src="/assets/dashboard/article.png"
+              src={
+                theme === "dark"
+                  ? "/assets/dashboard/white-article.png"
+                  : "/assets/dashboard/article.png"
+              }
               alt="article icon"
               width={48}
               height={48}
@@ -121,7 +131,11 @@ const DashboardOverviewContainer = () => {
           </div>
           <div>
             <Image
-              src="/assets/dashboard/pending-tasks.png"
+              src={
+                theme === "dark"
+                  ? "/assets/dashboard/white-pending.png"
+                  : "/assets/dashboard/pending-tasks.png"
+              }
               alt="pending icon"
               width={48}
               height={48}
@@ -143,7 +157,11 @@ const DashboardOverviewContainer = () => {
             </div>
             <div>
               <Image
-                src="/assets/dashboard/authors.png"
+                src={
+                  theme === "dark"
+                    ? "/assets/dashboard/white-users.png"
+                    : "/assets/dashboard/authors.png"
+                }
                 alt="total author icon"
                 width={48}
                 height={48}
@@ -164,7 +182,11 @@ const DashboardOverviewContainer = () => {
             </div>
             <div>
               <Image
-                src="/assets/dashboard/total_User.png"
+                src={
+                  theme === "dark"
+                    ? "/assets/dashboard/white-user.png"
+                    : "/assets/dashboard/total_User.png"
+                }
                 alt="total user icon"
                 width={48}
                 height={48}
@@ -185,7 +207,11 @@ const DashboardOverviewContainer = () => {
             </div>
             <div>
               <Image
-                src="/assets/dashboard/10k-followers.png"
+                src={
+                  theme === "dark"
+                    ? "/assets/dashboard/white-subscriber.png"
+                    : "/assets/dashboard/10k-followers.png"
+                }
                 alt="subscriber icon"
                 width={48}
                 height={48}
