@@ -2,7 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-import { FaInstagram } from "react-icons/fa";
+import { FaInstagram, FaRegCommentDots } from "react-icons/fa";
 import { FiTwitter } from "react-icons/fi";
 import { LuFacebook } from "react-icons/lu";
 import { PiYoutubeLogoLight } from "react-icons/pi";
@@ -17,6 +17,7 @@ import DOMPurify from "dompurify";
 import ContentsDetailsCarousel from "./contentsDetailsCarousel";
 import SocialShare from "@/components/ui/SocialShare";
 import { RiShareForwardLine } from "react-icons/ri";
+import { SlLike } from "react-icons/sl";
 
 interface BlogData {
   status: boolean;
@@ -402,6 +403,13 @@ const ContentBlogDetails = ({
               className="flex items-center gap-3 relative mt-8"
               ref={shareRef}
             >
+              <SlLike className="w-6 h-6 cursor-pointer" />
+                <Link
+                  href={`/${blogData.category_id}/${blogData.subcategory_id}/${blogData.id}#comment`}
+                  className="cursor-pointer"
+                >
+                  <FaRegCommentDots className="w-6 h-6" />
+                </Link>
               <RiShareForwardLine
                 className="w-6 h-6 cursor-pointer"
                 onClick={() => toggleShare(blogData.id)}
