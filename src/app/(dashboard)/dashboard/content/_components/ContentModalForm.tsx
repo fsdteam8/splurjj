@@ -1,8 +1,7 @@
-
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -160,7 +159,7 @@ export default function ContentAddEditForm({
     return image2 || "";
   }
 
-  function getImageUrl(image2?: string) {
+  const getImageUrl = useCallback((image2?: string) => {
     if (!image2) return "";
 
     try {
@@ -173,7 +172,21 @@ export default function ContentAddEditForm({
     }
 
     return "";
-  }
+  }, []);
+  // function getImageUrl(image2?: string) {
+  //   if (!image2) return "";
+
+  //   try {
+  //     const parsed = JSON.parse(image2);
+  //     if (parsed?.image2) {
+  //       return convertToCDNUrl(parsed.image2);
+  //     }
+  //   } catch {
+  //     return convertToCDNUrl(image2);
+  //   }
+
+  //   return "";
+  // }
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -219,7 +232,7 @@ export default function ContentAddEditForm({
         if (preview.startsWith("blob:")) URL.revokeObjectURL(preview);
       });
     };
-  }, [initialContent, form]);
+  }, [initialContent, form, getImageUrl, imagePreviews]);
 
   const { watch, setValue } = form;
   const tags = watch("tags");
@@ -499,7 +512,11 @@ export default function ContentAddEditForm({
                       <div className="relative flex gap-2">
                         <FormControl>
                           <Input
-                            value={field.value ? formatDateToDDMMYYYY(field.value) : ""}
+                            value={
+                              field.value
+                                ? formatDateToDDMMYYYY(field.value)
+                                : ""
+                            }
                             onChange={(e) => {
                               const dateStr = e.target.value;
                               const parsedDate = parseDDMMYYYYToDate(dateStr);
@@ -726,7 +743,9 @@ export default function ContentAddEditForm({
                                   type="file"
                                   multiple
                                   accept="image/*"
-                                  onChange={(e) => handleFileUpload(e.target.files)}
+                                  onChange={(e) =>
+                                    handleFileUpload(e.target.files)
+                                  }
                                   className="hidden"
                                 />
                               </label>
@@ -805,16 +824,6 @@ export default function ContentAddEditForm({
     </ErrorBoundary>
   );
 }
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 
@@ -1608,14 +1617,3 @@ export default function ContentAddEditForm({
 //     </ErrorBoundary>
 //   );
 // }
-
-
-
-
-
-
-
-
-
-
-

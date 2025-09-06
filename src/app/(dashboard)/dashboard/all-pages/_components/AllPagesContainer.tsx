@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import AddNewPage from "./AddNewPage";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,7 @@ const AllPagesContainer = () => {
   const token = session?.user?.token;
 
   // Fetch all pages
-  const fetchPages = async () => {
+  const fetchPages = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(
@@ -51,7 +51,32 @@ const AllPagesContainer = () => {
     } finally {
       setLoading(false);
     }
-  };
+}, [token]);
+  // const fetchPages = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await fetch(
+  //       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/pages`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setAllPagesData(data);
+  //     } else {
+  //       console.error("Failed to fetch pages");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching pages:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   // Delete page
   const handleDelete = async (id: number) => {
@@ -95,7 +120,7 @@ const AllPagesContainer = () => {
     if (token) {
       fetchPages();
     }
-  }, [token]);
+  }, [token, fetchPages]);
 
   if (loading) {
     return (

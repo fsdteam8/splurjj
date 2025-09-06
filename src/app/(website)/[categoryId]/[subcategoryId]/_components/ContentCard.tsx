@@ -134,7 +134,7 @@ const SecondContents = ({
         setLoading(false);
       }
     }
-  }, []);
+  }, [categoryId, subcategoryId]);
 
   useEffect(() => {
     fetchData(1);
