@@ -1,7 +1,6 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
 import { FaInstagram, FaRegCommentDots } from "react-icons/fa";
 import { FiTwitter } from "react-icons/fi";
 import { LuFacebook } from "react-icons/lu";
@@ -15,9 +14,9 @@ import Horizontal from "@/components/adds/horizontal";
 import RelatedContent from "@/app/(website)/_components/RalatedBlog/RalatedBlog";
 import DOMPurify from "dompurify";
 import ContentsDetailsCarousel from "./contentsDetailsCarousel";
-import SocialShare from "@/components/ui/SocialShare";
-import { RiShareForwardLine } from "react-icons/ri";
 import { SlLike } from "react-icons/sl";
+import { toast } from "react-toastify";
+import SocialShareContent from "@/components/ui/SocialShareContent";
 
 interface BlogData {
   status: boolean;
@@ -44,6 +43,9 @@ interface BlogData {
     status: string;
     image1_url: string | null;
     advertising_image_url: string | null;
+    likes_count: number;
+    shares_count: number;
+    comment_count: number;
     user: {
       id: number;
       description: string | null;
@@ -69,46 +71,28 @@ const ContentBlogDetails = ({
   const { data: session } = useSession();
   const commentAccess = session?.user?.role;
   const userEmail = session?.user?.email;
+  const token = (session?.user as { token: string })?.token;
+  const queryClient = useQueryClient();
 
-
-  // share start  
-  const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
-    null
-  );
-  const shareRef = useRef<HTMLDivElement>(null);
-
-  // Toggle share modal
-  const toggleShare = (postId: number) => {
-    setActiveSharePostId(activeSharePostId === postId ? null : postId);
-  };
-
-  // Close on outside click
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        shareRef.current &&
-        !shareRef.current.contains(event.target as Node)
-      ) {
-        setActiveSharePostId(null);
+  // Like post API logic
+  const { mutate: handleLike } = useMutation({
+    mutationKey: ["like-post"],
+    mutationFn: async (postId: number) =>
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${postId}/like`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      ).then((res) => res.json()),
+    onSuccess: (data) => {
+      if (!data?.success) {
+        toast.error(data?.message || "Something went wrong");
+        return;
       }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const getShareUrl = (
-    categoryId: number,
-    subcategoryId: number,
-    id: number
-  ): string => {
-    if (typeof window === "undefined") return ""; // avoid SSR crash
-    return `${window.location.origin}/${categoryId}/${subcategoryId}/${id}`;
-  };
-
-
-  // share close 
+      queryClient.invalidateQueries({ queryKey: ["single-blog"] });
+    },
+  });
 
   // Improved cleanTags function to handle malformed JSON strings
   const cleanTags = (tags: string[]): string[] => {
@@ -159,7 +143,7 @@ const ContentBlogDetails = ({
   };
 
   const { data, isLoading, error, isError } = useQuery<BlogData>({
-    queryKey: ["all-content", categoryId, subcategoryId, id],
+    queryKey: ["single-blog", categoryId, subcategoryId, id],
     queryFn: () =>
       fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${categoryId}/${subcategoryId}/${id}`
@@ -398,43 +382,45 @@ const ContentBlogDetails = ({
                 <span className="w-2/3 h-[2px] bg-secondary" />
               </div>
             </div>
-            {/* start  */}
-            <div
-              className="flex items-center gap-3 relative mt-8"
-              ref={shareRef}
-            >
-              <SlLike className="w-6 h-6 cursor-pointer" />
-                <Link
-                  href={`/${blogData.category_id}/${blogData.subcategory_id}/${blogData.id}#comment`}
-                  className="cursor-pointer"
-                >
-                  <FaRegCommentDots className="w-6 h-6" />
-                </Link>
-              <RiShareForwardLine
-                className="w-6 h-6 cursor-pointer"
-                onClick={() => toggleShare(blogData.id)}
-              />
+            
 
-              {activeSharePostId === blogData.id && (
-                <div
-                  className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
-                     flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
-                >
-                  <SocialShare
-                    url={getShareUrl(
-                      blogData.category_id,
-                      blogData.subcategory_id,
-                      blogData.id
-                    )}
-                    title={blogData.heading}
-                    summary={blogData.sub_heading || "Check out this post!"}
-                  />
+            {/* social icon start */}
+              <div className="flex items-center gap-3 relative mt-4">
+                <div className="flex items-center gap-2">
+                  <button onClick={() => handleLike(blogData?.id)}>
+                    <SlLike className="w-6 h-6 cursor-pointer" />
+                  </button>
+                  <p className="text-lg font-medium text-black dark:text-white leading-normal">
+                    {blogData?.likes_count || 0}
+                  </p>
                 </div>
-              )}
+                <div className="flex items-center gap-2 mt-1">
+                  <Link
+                    href={`/${blogData.category_id}/${blogData.subcategory_id}/${blogData.id}#comment`}
+                  >
+                    <button className="cursor-pointer">
+                      <FaRegCommentDots className="w-6 h-6 cursor-pointer" />
+                    </button>
+                  </Link>
+                  <p className="text-lg font-medium text-black dark:text-white leading-normal">
+                    {blogData?.comment_count || 0}
+                  </p>
+                </div>
+                <SocialShareContent
+                  postId={blogData.id}
+                  categoryId={blogData.category_id}
+                  subcategoryId={blogData.subcategory_id}
+                  heading={blogData.heading}
+                  subHeading={blogData.sub_heading}
+                  initialSharesCount={blogData.shares_count || 0}
+                  token={token} // Pass token to SocialShareContent
+                />
+                <TbTargetArrow className="w-6 h-6 cursor-pointer" />
+              </div>
 
-              <TbTargetArrow className="w-6 h-6 cursor-pointer" />
-            </div>
-            {/* end  */}
+              {/* social icon end  */}
+
+
             {/* Second part */}
             <div className="mt-[25px]">
               {/* Posted in */}
