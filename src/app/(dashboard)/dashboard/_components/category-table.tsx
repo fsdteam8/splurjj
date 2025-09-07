@@ -51,7 +51,8 @@ export default function CategoryTable({
   const isAuthor = userRole === "author";
 
   if (loading) {
-    return <div className="text-center py-8">Loading categories...</div>;
+    return null;
+    //  <div className="text-center py-8">Loading categories...</div>;
   }
 
   return (
