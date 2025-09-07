@@ -41,6 +41,7 @@ export type HeaderResponse = {
   message: string;
   data: {
     logo: string | null;
+    dark_logo: string | null;
     // border_color: string | null;
     bg_color: string | null;
     menu_item_color: string | null;
@@ -50,6 +51,7 @@ export type HeaderResponse = {
 
 export function HeaderForm() {
   const [logo, setLogo] = useState<File | null>(null);
+  const [darkLogo, setDarkLogo] = useState<File | null>(null);
 
   const session = useSession();
   const token = (session?.data?.user as { token?: string })?.token;
@@ -116,6 +118,9 @@ export function HeaderForm() {
     if (logo) {
       formData.append("logo", logo);
     }
+    if(darkLogo) {
+      formData.append("dark_logo", darkLogo);
+    }
     // console.log("Submitted Values:", values);
     mutate(formData);
   };
@@ -144,11 +149,11 @@ export function HeaderForm() {
               <FileUpload
                 type="image"
                 label="Add Dark Mode Logo"
-                file={logo}
-                setFile={setLogo}
+                file={darkLogo}
+                setFile={setDarkLogo}
                 existingUrl={
-                  data?.data?.logo
-                    ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/${data.data.logo}`
+                  data?.data?.dark_logo
+                    ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/${data.data.dark_logo}`
                     : undefined
                 }
               />

@@ -28,6 +28,7 @@ import {
 import { FooterSectionDataType } from "@/components/types/FooterSectionDataType";
 import { CategoryApiResponse } from "@/components/types/CategoryDataType";
 import { HeaderApiResponse } from "@/components/types/header-data-type";
+import { useTheme } from "next-themes";
 
 // footer data type start
 export type FooterData = {
@@ -62,6 +63,7 @@ export default function Header() {
   const role = session?.data?.user?.role;
   const [activeDropdownId, setActiveDropdownId] = useState<number | null>(null);
   const dropdownCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const {theme} = useTheme();
 
   const slugify = (str: string) =>
     str.trim().toLowerCase().replace(/\s+/g, " ");
@@ -277,7 +279,7 @@ export default function Header() {
               <div className="h-[35px] md:h-[40px] w-[70px] md:w-[90px] flex items-center justify-start">
                 <Link href="/" className="">
                   <Image
-                    src={getImageUrl(header?.logo || "/logo.png")}
+                    src={theme === "dark" ? getImageUrl(header?.dark_logo || "/assets/images/black-logo.png") : getImageUrl(header?.logo || "/assets/images/white-logo.jpg")}
                     alt="Logo"
                     width={50}
                     height={30}
