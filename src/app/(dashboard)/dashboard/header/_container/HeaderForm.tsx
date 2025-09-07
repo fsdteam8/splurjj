@@ -41,6 +41,7 @@ export type HeaderResponse = {
   message: string;
   data: {
     logo: string | null;
+    dark_logo: string | null;
     // border_color: string | null;
     bg_color: string | null;
     menu_item_color: string | null;
@@ -50,6 +51,7 @@ export type HeaderResponse = {
 
 export function HeaderForm() {
   const [logo, setLogo] = useState<File | null>(null);
+  const [darkLogo, setDarkLogo] = useState<File | null>(null);
 
   const session = useSession();
   const token = (session?.data?.user as { token?: string })?.token;
@@ -116,6 +118,9 @@ export function HeaderForm() {
     if (logo) {
       formData.append("logo", logo);
     }
+    if(darkLogo) {
+      formData.append("dark_logo", darkLogo);
+    }
     // console.log("Submitted Values:", values);
     mutate(formData);
   };
@@ -124,17 +129,31 @@ export function HeaderForm() {
     <div className="p-8 bg-white rounded-lg shadow-lg">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[20px]">
-            {/* logo  */}
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-[20px]">
+            {/*light mode logo  */}
             <div>
               <FileUpload
                 type="image"
-                label="Add Logo"
+                label="Add Light Mode Logo"
                 file={logo}
                 setFile={setLogo}
                 existingUrl={
                   data?.data?.logo
                     ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/${data.data.logo}`
+                    : undefined
+                }
+              />
+            </div>
+            {/* dark mode logo  */}
+            <div>
+              <FileUpload
+                type="image"
+                label="Add Dark Mode Logo"
+                file={darkLogo}
+                setFile={setDarkLogo}
+                existingUrl={
+                  data?.data?.dark_logo
+                    ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/${data.data.dark_logo}`
                     : undefined
                 }
               />

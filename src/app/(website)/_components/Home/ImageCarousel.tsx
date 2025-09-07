@@ -200,6 +200,8 @@ export default function ImageCarousel({ posts }: ImageCarouselProps) {
     return () => clearInterval(interval);
   }, [api]);
 
+  // image cdn start 
+
   /** ✅ Convert S3 → CloudFront */
   function convertToCDNUrl(image?: string | null): string {
     const s3BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
@@ -243,6 +245,8 @@ export default function ImageCarousel({ posts }: ImageCarouselProps) {
     const uniqueUrls = Array.from(new Set(urls));
     return uniqueUrls.length > 0 ? uniqueUrls : ["/fallback-image.jpg"];
   }
+
+  // image cdn end
 
   return (
     <div className="w-full">

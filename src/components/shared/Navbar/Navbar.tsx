@@ -26,24 +26,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { FooterSectionDataType } from "@/components/types/FooterSectionDataType";
+import { CategoryApiResponse } from "@/components/types/CategoryDataType";
+import { HeaderApiResponse } from "@/components/types/header-data-type";
+import { useTheme } from "next-themes";
 
-// Define search result type (assumed based on typical API response)
-// interface SearchResult {
-//   id: number
-//   heading: string
-//   sub_heading: string
-//   // Add other relevant fields as needed
-// }
-// interface SearchApiResponse {
-//   success: boolean
-//   data: SearchResult[]
-//   pagination: {
-//     current_page: number
-//     last_page: number
-//     per_page: number
-//     total: number
-//   }
-// }
+// footer data type start
 export type FooterData = {
   success: boolean;
   message: string;
@@ -59,56 +46,8 @@ export type FooterData = {
     copyright: string;
   };
 };
-interface Subcategory {
-  id: number;
-  name: string;
-}
-interface Category {
-  category_id: number;
-  category_name: string;
-  subcategories: Subcategory[];
-}
-interface ApiResponse {
-  success: boolean;
-  data: Category[];
-  pagination: {
-    current_page: number;
-    last_page: number;
-    per_page: number;
-    total: number;
-  };
-}
-interface ThemeHeader {
-  bg_color: string;
-  border_color: string;
-  logo: string;
-  menu_item_active_color: string;
-  menu_item_color: string;
-}
+// footer data type end
 
-// Fetch Functions
-const fetchCategories = async (): Promise<Category[]> => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories`
-  );
-  if (!response.ok) throw new Error("Failed to fetch categories");
-  const result: ApiResponse = await response.json();
-  return result.data;
-};
-const fetchHeader = async (): Promise<ThemeHeader> => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/header`
-  );
-  if (!response.ok) throw new Error("Failed to fetch header");
-  const result = await response.json();
-  return result.data;
-};
-// const fetchSearchResults = async (query: string): Promise<SearchApiResponse> => {
-//   const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/search?q=${encodeURIComponent(query)}`)
-//   if (!response.ok) throw new Error("Failed to fetch search results")
-//   const result: SearchApiResponse = await response.json()
-//   return result
-// }
 
 // Component
 export default function Header() {
@@ -124,47 +63,26 @@ export default function Header() {
   const role = session?.data?.user?.role;
   const [activeDropdownId, setActiveDropdownId] = useState<number | null>(null);
   const dropdownCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const {theme} = useTheme();
 
   const slugify = (str: string) =>
-  str
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, " ");
+    str.trim().toLowerCase().replace(/\s+/g, " ");
+
+  //   const slugify = (str: string) => {
+  //   const cleaned = str.trim().toLowerCase();
+
+  //   // if it already has "-", return as-is
+  //   if (cleaned.includes("-")) {
+  //     return cleaned;
+  //   }
+
+  //   // else, replace spaces with "-"
+  //   return cleaned.replace(/\s+/g, "-");
+  // };
+
+  const formatSlug = (slug: string) => slug.replace(/-/g, " ");
 
 
-
-//   const slugify = (str: string) => {
-//   const cleaned = str.trim().toLowerCase();
-
-//   // if it already has "-", return as-is
-//   if (cleaned.includes("-")) {
-//     return cleaned;
-//   }
-
-//   // else, replace spaces with "-"
-//   return cleaned.replace(/\s+/g, "-");
-// };
-
-
-    const formatSlug = (slug: string) =>
-  slug.replace(/-/g, " ");
-
-  const {
-    data: categories = [],
-    isLoading: categoriesLoading,
-    error: categoriesError,
-  } = useQuery({
-    queryKey: ["categories"],
-    queryFn: fetchCategories,
-  });
-  const {
-    data: header,
-    isLoading: headerLoading,
-    error: headerError,
-  } = useQuery({
-    queryKey: ["header"],
-    queryFn: fetchHeader,
-  });
   const staticMenuItems = [{ name: "LATEST", href: "/" }];
 
   // Initialize searchQuery from URL on component mount
@@ -214,6 +132,8 @@ export default function Header() {
     return `${process.env.NEXT_PUBLIC_BACKEND_URL}/${path.replace(/^\/+/, "")}`;
   };
 
+  // logout logic start
+
   const handLogout = () => {
     try {
       toast.success("Logout successful!");
@@ -226,14 +146,7 @@ export default function Header() {
     }
   };
 
-  const isCategoryActive = (categoryId: number) => {
-    return (
-      pathName === `/${categoryId}` ||
-      categories
-        .find((cat) => cat.category_id === categoryId)
-        ?.subcategories.some((sub) => pathName === `/${categoryId}/${sub.id}`)
-    );
-  };
+  // logout logic end
 
   const handleDropdownOpen = (categoryId: number) => {
     if (dropdownCloseTimeoutRef.current) {
@@ -252,14 +165,26 @@ export default function Header() {
     }, 150);
   };
 
-  // const { data } = useQuery<FooterData>({
-  //   queryKey: ["footerData"],
-  //   queryFn: () =>
-  //     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/footer`).then((res) =>
-  //       res.json()
-  //     ),
-  // });
-  // footer section
+
+
+  // header get api call
+  const {
+    data: headerData,
+    isLoading : headerLoading,
+    isError : headerIsError,
+    error : headerError,
+  } = useQuery<HeaderApiResponse>({
+    queryKey: ["header-section"],
+    queryFn: () =>
+      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/header`).then((res) =>
+        res.json()
+      ),
+  });
+
+  const header = headerData && headerData?.data; 
+  console.log(header)
+
+  // footer get api call
   const {
     data: footerbg,
     isLoading,
@@ -272,6 +197,31 @@ export default function Header() {
         res.json()
       ),
   });
+
+  // categories get api call
+  const {
+    data: categoriesData,
+    isLoading: categoriesLoading,
+    isError: categoriesIsError,
+    error: categoriesError,
+  } = useQuery<CategoryApiResponse>({
+    queryKey: ["categories-all"],
+    queryFn: () =>
+      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories`).then(
+        (res) => res.json()
+      ),
+  });
+  const categories = categoriesData && categoriesData?.data || [];
+
+  console.log(categories);
+
+  const isCategoryActive = (categoryId: number) => {
+    return (
+      pathName === `/${categoryId}` ||
+      categories?.find((cat) => cat.category_id === categoryId)
+        ?.subcategories.some((sub) => pathName === `/${categoryId}/${sub.id}`)
+    );
+  };
 
   const SkeletonLoader = () => (
     <div className="animate-pulse">
@@ -302,20 +252,15 @@ export default function Header() {
     </div>
   );
 
-  if (categoriesLoading || headerLoading) return <SkeletonLoader />;
-  if (categoriesError || headerError)
+  if (isLoading || categoriesLoading || headerLoading) {
+    return <SkeletonLoader />;
+  }
+  if (isError || categoriesIsError || headerIsError) {
     return (
-      <div className="text-center py-8 text-red-500">
-        Error:{" "}
-        {(categoriesError || headerError)?.message || "Failed to load header"}
+      <div className="text-black text-lg font-medium">
+        Error: {error?.message || categoriesError?.message || headerError?.message}
       </div>
     );
-
-  if (isLoading) {
-    return <div>loading...</div>;
-  }
-  if (isError) {
-    return <div>{error?.message}</div>;
   }
 
   return (
@@ -334,7 +279,7 @@ export default function Header() {
               <div className="h-[35px] md:h-[40px] w-[70px] md:w-[90px] flex items-center justify-start">
                 <Link href="/" className="">
                   <Image
-                    src={getImageUrl(header?.logo || "/logo.png")}
+                    src={theme === "dark" ? getImageUrl(header?.dark_logo || "/assets/images/black-logo.png") : getImageUrl(header?.logo || "/assets/images/white-logo.jpg")}
                     alt="Logo"
                     width={50}
                     height={30}
@@ -358,7 +303,7 @@ export default function Header() {
                     {item.name}
                   </Link>
                 ))}
-                {categories?.map((category) => {
+                {categories && categories?.map((category) => {
                   const isActive = isCategoryActive(category.category_id);
                   if (category.subcategories.length === 0) {
                     return (
@@ -412,12 +357,10 @@ export default function Header() {
                           }}
                         >
                           <Link
-                          // href={/blogs/${category?.category_name}}
-                        // href={`/blogs/${encodeURIComponent(category?.category_name.trim())}`}
-                        // href={`/blogs/${category?.category_name.replace(/\s+/g, " ")}`}
-                        href={`/blogs/${slugify(category?.category_name)}`}
-
-
+                            // href={/blogs/${category?.category_name}}
+                            // href={`/blogs/${encodeURIComponent(category?.category_name.trim())}`}
+                            // href={`/blogs/${category?.category_name.replace(/\s+/g, " ")}`}
+                            href={`/blogs/${slugify(category?.category_name)}`}
                             className="text-sm lg:text-sm font-medium transition-colors hover:text-primary"
                             style={{
                               color:

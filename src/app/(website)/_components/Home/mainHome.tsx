@@ -11,37 +11,33 @@ import Horizontal from "@/components/adds/horizontal";
 import Vertical from "@/components/adds/vertical";
 import { useQuery } from "@tanstack/react-query";
 import QuitCalm from "./quitCalm";
+import { CategoryApiResponse } from "@/components/types/CategoryDataType";
 
-interface Category {
-  category_id: number;
-  category_name: string;
-}
-
-interface ApiResponse {
-  success: boolean;
-  data: Category[];
-  pagination: {
-    current_page: number;
-    last_page: number;
-    per_page: number;
-    total: number;
-  };
-}
-
-const fetchCategories = async (): Promise<Category[]> => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories`
-  );
-  if (!response.ok) throw new Error("Failed to fetch categories");
-  const result: ApiResponse = await response.json();
-  return result.data;
-};
 
 function MainHome() {
-  const { data: categories = [] } = useQuery({
+
+  const {
+    data: categoriesData,
+    isLoading,
+    isError,
+    error,
+  } = useQuery<CategoryApiResponse>({
     queryKey: ["categories"],
-    queryFn: fetchCategories,
+    queryFn: () =>
+      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories`).then(
+        (res) => res.json()
+      ),
   });
+  if (isLoading) {
+    console.log("loading categories...");
+    return null;
+  }
+  if (isError) {
+    return <div className="text-black text-lg font-medium">Error: {error?.message}</div>;
+  }
+
+  // console.log(categories[0]?.category_name);
+    const categories = categoriesData && categoriesData?.data || [];
 
   const firstCategory = categories[0]?.category_name;
   const secoundCategory = categories[1]?.category_name;

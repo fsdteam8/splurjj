@@ -1042,6 +1042,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useQuery } from "@tanstack/react-query";
 import { HeaderResponse } from "../header/_container/HeaderForm";
+import { useTheme } from "next-themes";
 // import type { HeaderResponse } from "./dashboardHeader"
 
 interface Subcategory {
@@ -1088,6 +1089,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar();
   const userRole = session?.user?.role;
   const token = session?.user?.token;
+  const { theme } = useTheme();
 
   console.log(loading);
 
@@ -1108,7 +1110,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const isAuthor = userRole === "author";
 
   const fetchCategories = React.useCallback(async () => {
-      try {
+    try {
       setLoading(true);
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories`,
@@ -1130,7 +1132,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     } finally {
       setLoading(false);
     }
-}, [ token]);
+  }, [token]);
 
   // const fetchCategories = async () => {
   //   try {
@@ -1336,7 +1338,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <Link href="/" className="transition-opacity hover:opacity-80">
                 {headerData?.data?.logo ? (
                   <Image
-                    src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/${headerData.data.logo}`}
+                    // src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/${headerData.data.logo}`}
+                    src={
+                      theme === "dark"
+                        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/${headerData?.data.dark_logo}` ||
+                          "/assets/images/white-logo.jpg"
+                        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/${headerData?.data.logo}` ||
+                          "/assets/images/black-logo.png"
+                    }
                     alt="Company Logo"
                     width={90}
                     height={55}
