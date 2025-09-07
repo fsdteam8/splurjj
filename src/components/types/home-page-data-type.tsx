@@ -22,6 +22,9 @@ export interface Content {
   status: string;
   meta_title: string;
   meta_description: string;
+  likes_count: number;
+  shares_count: number;
+  comment_count: number;
 }
 
 export interface Pagination {

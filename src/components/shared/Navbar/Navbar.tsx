@@ -279,7 +279,7 @@ export default function Header() {
               <div className="h-[35px] md:h-[40px] w-[70px] md:w-[90px] flex items-center justify-start">
                 <Link href="/" className="">
                   <Image
-                    src={theme === "dark" ? getImageUrl(header?.logo || "/assets/images/black-logo.png") : getImageUrl(header?.dark_logo || "/assets/images/white-logo.jpg")}
+                    src={theme === "dark" ? getImageUrl(header?.dark_logo || "/assets/images/black-logo.png") : getImageUrl(header?.logo || "/assets/images/white-logo.jpg")}
                     alt="Logo"
                     width={50}
                     height={30}
