@@ -11,50 +11,52 @@ import { SlLike } from "react-icons/sl";
 import ImageCarousel from "./ImageCarousel";
 import { motion } from "framer-motion";
 import SocialShare from "@/components/ui/SocialShare";
+import { useQuery } from "@tanstack/react-query";
+import { HomeContentApiResponse } from "@/components/types/home-page-data-type";
 
 // Interface for ContentItem
-interface ContentItem {
-  id: number;
-  category_id: number;
-  subcategory_id: number;
-  category_name?: string;
-  sub_category_name?: string;
-  heading: string;
-  author: string;
-  date: string;
-  sub_heading: string;
-  meta_title: string;
-  meta_description: string;
-  body1: string;
-  image1: string | null;
-  image2?: string | string[] | null;
-  advertising_image: string | null;
-  tags: string[];
-  created_at: string;
-  updated_at: string;
-  imageLink: string | null;
-  advertisingLink: string | null;
-  user_id: number;
-  status: string;
-}
+// interface ContentItem {
+//   id: number;
+//   category_id: number;
+//   subcategory_id: number;
+//   category_name?: string;
+//   sub_category_name?: string;
+//   heading: string;
+//   author: string;
+//   date: string;
+//   sub_heading: string;
+//   meta_title: string;
+//   meta_description: string;
+//   body1: string;
+//   image1: string | null;
+//   image2?: string | string[] | null;
+//   advertising_image: string | null;
+//   tags: string[];
+//   created_at: string;
+//   updated_at: string;
+//   imageLink: string | null;
+//   advertisingLink: string | null;
+//   user_id: number;
+//   status: string;
+// }
 
-// Interface for API Response
-interface ApiResponse {
-  success: boolean;
-  message: string;
-  data: ContentItem[];
-  meta: {
-    current_page: number;
-    per_page: number;
-    total: number;
-    last_page: number;
-  };
-}
+// // Interface for API Response
+// interface ApiResponse {
+//   success: boolean;
+//   message: string;
+//   data: ContentItem[];
+//   meta: {
+//     current_page: number;
+//     per_page: number;
+//     total: number;
+//     last_page: number;
+//   };
+// }
 
 const AllContents: React.FC = () => {
-  const [contents, setContents] = useState<ContentItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [contents, setContents] = useState<ContentItem[]>([]);
+  // const [loading, setLoading] = useState<boolean>(true);
+  // const [error, setError] = useState<string | null>(null);
 
   // share start
   const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
@@ -121,34 +123,44 @@ const AllContents: React.FC = () => {
     return "";
   }
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          }
-        );
-        if (!response.ok) {
-          throw new Error(`Failed to fetch data: ${response.statusText}`);
-        }
-        const data: ApiResponse = await response.json();
-        setContents(data.data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "An unknown error occurred"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+  // get api call 
+  const {data, isLoading, isError, error} = useQuery<HomeContentApiResponse>({
+    queryKey: ["home-hero-section"], 
+    queryFn : async ()=> await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home`).then(res => res.json())
+})
 
-    fetchData();
-  }, []);
+// console.log("response data", data)
+const contents = data?.data || [];
+// console.log("contes data",contents)
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home`,
+  //         {
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             Accept: "application/json",
+  //           },
+  //         }
+  //       );
+  //       if (!response.ok) {
+  //         throw new Error(`Failed to fetch data: ${response.statusText}`);
+  //       }
+  //       const data: ApiResponse = await response.json();
+  //       setContents(data.data);
+  //     } catch (err) {
+  //       setError(
+  //         err instanceof Error ? err.message : "An unknown error occurred"
+  //       );
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
 
   // const getImageUrl = (path: string | null): string => {
   //   if (!path) return "/fallback-image.jpg";
@@ -218,15 +230,20 @@ const AllContents: React.FC = () => {
     </div>
   );
 
-  if (loading) return <SkeletonLoader />;
-  if (error) return <div>Error: {error}</div>;
-  if (!contents.length) return <div>No content found</div>;
+  if (isLoading) return <SkeletonLoader />;
+    if (isError) {
+    return <div className="text-black text-lg font-medium">Error: {error?.message}</div>;
+  }
+  // if (error) return <div>Error: {error}</div>;
+  // if (!contents.length) return <div>No content found</div>;
 
   const firstPost = contents[0];
   const secondPost = contents[1];
   const thirdPost = contents[2];
   const fourthPost = contents[3];
   // const otherPosts = contents.slice(1); // All posts except the first
+
+  // console.log(firstPost)
 
   return (
     <div className="">
@@ -297,22 +314,6 @@ const AllContents: React.FC = () => {
                   dangerouslySetInnerHTML={{ __html: firstPost.heading }}
                   className="text-3xl md:text-[40px] lg:text-[60px] font-[400]  leading-[120%] transition-all duration-100 ease-in-out cursor-pointer hover:scale-102 hover:font-medium"
                 />
-                {/* <motion.p
-                  dangerouslySetInnerHTML={{ __html: firstPost.heading }}
-                  className="text-3xl md:text-[40px] lg:text-[60px] font-normal leading-[120%] line-clamp-2"
-                  whileHover={{
-                    scale: 1.02,
-                    letterSpacing: "0.5px",
-                    fontWeight: 500,
-                  }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 20,
-                    duration: 0.4,
-                    ease: "easeInOut",
-                  }}
-                /> */}
               </Link>
 
               <p

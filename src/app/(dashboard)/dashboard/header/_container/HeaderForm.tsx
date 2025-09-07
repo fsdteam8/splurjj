@@ -124,12 +124,26 @@ export function HeaderForm() {
     <div className="p-8 bg-white rounded-lg shadow-lg">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[20px]">
-            {/* logo  */}
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-[20px]">
+            {/*light mode logo  */}
             <div>
               <FileUpload
                 type="image"
-                label="Add Logo"
+                label="Add Light Mode Logo"
+                file={logo}
+                setFile={setLogo}
+                existingUrl={
+                  data?.data?.logo
+                    ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/${data.data.logo}`
+                    : undefined
+                }
+              />
+            </div>
+            {/* dark mode logo  */}
+            <div>
+              <FileUpload
+                type="image"
+                label="Add Dark Mode Logo"
                 file={logo}
                 setFile={setLogo}
                 existingUrl={

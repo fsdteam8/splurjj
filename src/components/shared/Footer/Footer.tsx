@@ -1,11 +1,9 @@
 "use client";
 import React from "react";
-// import { Instagram, Facebook, Linkedin, Twitter, Minus, Youtube } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import NewsLetterForm from "./NewsLetterForm";
 import { FooterSectionDataType } from "@/components/types/FooterSectionDataType";
 import { FaXTwitter } from "react-icons/fa6";
@@ -14,12 +12,7 @@ import { FaLinkedinIn } from "react-icons/fa";
 import { IoLogoInstagram } from "react-icons/io5";
 import { FaYoutube } from "react-icons/fa6";
 import { Minus } from "lucide-react";
-
-interface Category {
-  id: number;
-  category_id: number;
-  category_name: string;
-}
+import {  CategoryApiResponse } from "@/components/types/CategoryDataType";
 
 interface PageData {
   id: number;
@@ -39,19 +32,6 @@ interface FooterSection {
   page_data: PageData[];
 }
 
-// interface FooterData {
-//   app_store_link: string
-//   bg_color: string
-//   text_color: string
-//   copyright: string
-//   facebook_link: string
-//   google_play_link: string
-//   instagram_link: string
-//   linkedin_link: string
-//   twitter_link: string
-//   footer_links: string
-// }
-
 export type FooterData = {
   success: boolean;
   message: string;
@@ -70,18 +50,6 @@ export type FooterData = {
   };
 };
 
-// API fetch functions
-const fetchCategories = async (): Promise<Category[]> => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories`
-  );
-  if (!response.ok) {
-    throw new Error("Failed to fetch categories");
-  }
-  const result: { data: Category[] } = await response.json();
-  return result.data;
-};
-
 const fetchFooterSections = async (): Promise<FooterSection[]> => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/footer-sections`
@@ -91,17 +59,6 @@ const fetchFooterSections = async (): Promise<FooterSection[]> => {
   }
   return response.json();
 };
-
-// const fetchFooter = async (): Promise<FooterData> => {
-//   const response = await fetch(
-//     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/footer`
-//   );
-//   if (!response.ok) {
-//     throw new Error("Failed to fetch footer data");
-//   }
-//   const result: { data: FooterData } = await response.json();
-//   return result.data;
-// };
 
 // Loading skeleton components
 const FooterSectionSkeleton = () => (
@@ -116,7 +73,9 @@ const FooterSectionSkeleton = () => (
 );
 
 const Footer = () => {
-  // footer section
+
+
+  // footer get api logic start
   const {
     data: footerbg,
     isLoading,
@@ -125,24 +84,31 @@ const Footer = () => {
   } = useQuery<FooterSectionDataType>({
     queryKey: ["footer-section"],
     queryFn: () =>
-      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/footer`).then(
+      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/footer`).then((res) =>
+        res.json()
+      ),
+  });
+
+  // footer get api logic end
+
+  // categories get api logic start 
+
+  const {
+    data: categoriesData,
+    isLoading: categoriesLoading,
+    isError: categoriesIsError,
+    error: categoriesError,
+  } = useQuery<CategoryApiResponse>({
+    queryKey: ["categories"],
+    queryFn: () =>
+      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories`).then(
         (res) => res.json()
       ),
   });
 
+   const categories = categoriesData && categoriesData?.data || [];
 
-  // console.log("footer bg color", footerbg?.data?.bg_color);
-  // TanStack Query hooks
-  const {
-    data: categories = [],
-    isLoading: categoriesLoading,
-    error: categoriesError,
-  } = useQuery<Category[]>({
-    queryKey: ["categories"],
-    queryFn: fetchCategories,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: 2,
-  });
+  // category get api logic end 
 
   const {
     data: footerSections = [],
@@ -154,13 +120,6 @@ const Footer = () => {
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 2,
   });
-
-  // const { data: footer, error: footerError } = useQuery<FooterData>({
-  //   queryKey: ["footerData"],
-  //   queryFn: fetchFooter,
-  //   staleTime: 5 * 60 * 1000, // 5 minutes
-  //   retry: 2,
-  // });
 
   // Static shop data
   const shopData = [
@@ -197,26 +156,16 @@ const Footer = () => {
     );
   }, [footerSections]);
 
-  // Error handling
-  if (categoriesError || sectionsError) {
+  if (isLoading ) {
+    // console.log("loading categories...");
+    return null;
+  }
+  if (isError || categoriesIsError || sectionsError) {
     return (
-      <div className="w-full p-8">
-        <Alert variant="destructive">
-          <AlertDescription>
-            Failed to load footer data. Please try refreshing the page.
-          </AlertDescription>
-        </Alert>
+      <div className="text-black text-lg font-medium">
+        Error: {error?.message || categoriesError?.message || sectionsError?.message}
       </div>
     );
-  }
-
-  
-  if (isError) {
-    console.log(error);
-  }
-
-  if (isLoading) {
-    return <div>Loading...</div>;
   }
 
   // console.log("footer bg color", footer?.data?.bg_color);
@@ -224,7 +173,7 @@ const Footer = () => {
   return (
     <div
       className="h-full lg:h-auto w-full pt-14 pb-3"
-      style={{ backgroundColor: footerbg?.data?.bg_color || "#C9C3C3"}}
+      style={{ backgroundColor: footerbg?.data?.bg_color || "#C9C3C3" }}
       // style={
       //   footerbg?.data?.bg_color
       //     ? { backgroundColor: footerbg?.data?.bg_color }
@@ -245,8 +194,8 @@ const Footer = () => {
               <FooterSectionSkeleton />
             ) : (
               <ul>
-                {categories?.map((item) => (
-                  <li key={`category-${item.id}`}>
+                {categories && categories?.map((item) => (
+                  <li key={`category-${item.category_name}`}>
                     <Link
                       href={`/blogs/${item.category_name}`}
                       style={{ color: footerbg?.data?.text_color || "#1a1a1a" }}
@@ -363,7 +312,7 @@ const Footer = () => {
                 className="bg-black p-3 rounded-full"
               >
                 {/* <Twitter className="text-white w-8 h-8 cursor-pointer" /> */}
-                <FaXTwitter className="text-white w-8 h-8 cursor-pointer"/>
+                <FaXTwitter className="text-white w-8 h-8 cursor-pointer" />
               </Link>
               <Link
                 href={
@@ -373,7 +322,7 @@ const Footer = () => {
                 className="bg-black p-3 rounded-full"
               >
                 {/* <Instagram className="text-white w-8 h-8 cursor-pointer" /> */}
-                <IoLogoInstagram className="text-white w-8 h-8 cursor-pointer"/>
+                <IoLogoInstagram className="text-white w-8 h-8 cursor-pointer" />
               </Link>
               <Link
                 href={
@@ -383,7 +332,7 @@ const Footer = () => {
                 className="bg-black p-3 rounded-full"
               >
                 {/* <Youtube className="text-white w-8 h-8 cursor-pointer" /> */}
-                <FaYoutube className="text-white w-8 h-8 cursor-pointer"/>
+                <FaYoutube className="text-white w-8 h-8 cursor-pointer" />
               </Link>
               <Link
                 href={
@@ -393,7 +342,7 @@ const Footer = () => {
                 className="bg-black p-3 rounded-full"
               >
                 {/* <Linkedin className="text-white w-8 h-8 cursor-pointer" /> */}
-                <FaLinkedinIn className="text-white w-8 h-8 cursor-pointer"/>
+                <FaLinkedinIn className="text-white w-8 h-8 cursor-pointer" />
               </Link>
               <Link
                 href={
@@ -403,7 +352,7 @@ const Footer = () => {
                 className="bg-black p-3 rounded-full"
               >
                 {/* <Facebook className="text-white w-8 h-8 cursor-pointer" /> */}
-                <FaFacebookF className="text-white w-8 h-8 cursor-pointer"/>
+                <FaFacebookF className="text-white w-8 h-8 cursor-pointer" />
               </Link>
             </div>
             <div
