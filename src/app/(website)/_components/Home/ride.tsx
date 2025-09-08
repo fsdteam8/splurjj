@@ -4,124 +4,70 @@ import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import {
-  FaRegCommentDots,
-} from "react-icons/fa";
+import { FaRegCommentDots } from "react-icons/fa";
 import { RiShareForwardLine } from "react-icons/ri";
 import { TbTargetArrow } from "react-icons/tb";
 import { motion } from "framer-motion";
 import SocialShare from "@/components/ui/SocialShare";
 import { SlLike } from "react-icons/sl";
-
-// Interface for BlogPost
-interface BlogPost {
-  id: number;
-  category_id: number;
-  subcategory_id: number;
-  category_name?: string;
-  sub_category_name?: string;
-  heading: string;
-  author: string;
-  date: string;
-  sub_heading: string;
-  body1: string;
-  image1: string | null;
-  image2?: string[] | null;
-  advertising_image: string | null;
-  tags: string[];
-  created_at: string;
-  updated_at: string;
-  imageLink: string | null;
-  advertisingLink: string | null;
-  user_id: number;
-  status: string;
-}
-
-// Interface for API Response
-interface ApiResponse {
-  success: boolean;
-  message: string;
-  data: BlogPost[];
-  meta?: {
-    current_page: number;
-    per_page: number;
-    total: number;
-    last_page: number;
-  };
-}
+import { useQuery } from "@tanstack/react-query";
+import { HomeContentApiResponse } from "@/components/types/home-page-data-type";
 
 interface ArtCultureProps {
   categoryName: { categoryName: string };
 }
 
 const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-    // share start
-    const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
-      null
-    );
-  
-    // Toggle share modal
-    const toggleShare = (postId: number) => {
-      setActiveSharePostId(activeSharePostId === postId ? null : postId);
-    };
-  
-    // Close on outside click
-    useEffect(() => {
-      function handleClickOutside(event: MouseEvent) {
-        const target = event.target as HTMLElement;
-  
-        // Close only if click is outside all share containers
-        if (!target.closest(".share-container")) {
-          setActiveSharePostId(null);
-        }
-      }
-  
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }, []);
-  
-    const getShareUrl = (
-      categoryId: number,
-      subcategoryId: number,
-      id: number
-    ): string => {
-      if (typeof window === "undefined") return ""; // avoid SSR crash
-      return `${window.location.origin}/${categoryId}/${subcategoryId}/${id}`;
-    };
-  
-    // share close
+  // share start
+  const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
+    null
+  );
 
+  // Toggle share modal
+  const toggleShare = (postId: number) => {
+    setActiveSharePostId(activeSharePostId === postId ? null : postId);
+  };
+
+  // Close on outside click
   useEffect(() => {
-    const fetchData = async () => {
-      if (categoryName.categoryName) {
-        try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/${categoryName.categoryName}`
-          );
-          if (!response.ok) {
-            throw new Error(`Failed to fetch data: ${response.statusText}`);
-          }
-          const data: ApiResponse = await response.json();
-          setPosts(data.data || []); // Set posts from data.data, default to empty array
-        } catch (err) {
-          setError(
-            err instanceof Error ? err.message : "An unknown error occurred"
-          );
-        } finally {
-          setLoading(false);
-        }
+    function handleClickOutside(event: MouseEvent) {
+      const target = event.target as HTMLElement;
+
+      // Close only if click is outside all share containers
+      if (!target.closest(".share-container")) {
+        setActiveSharePostId(null);
       }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
     };
+  }, []);
 
-    fetchData();
-  }, [categoryName.categoryName]);
+  const getShareUrl = (
+    categoryId: number,
+    subcategoryId: number,
+    id: number
+  ): string => {
+    if (typeof window === "undefined") return ""; // avoid SSR crash
+    return `${window.location.origin}/${categoryId}/${subcategoryId}/${id}`;
+  };
 
-    function convertToCDNUrl(image2?: string): string {
+  // share close
+
+  // Get API call for home page
+  const { data, isLoading, isError, error } = useQuery<HomeContentApiResponse>({
+    queryKey: ["ride"],
+    queryFn: async () =>
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/${categoryName?.categoryName}`
+      ).then((res) => res.json()),
+  });
+
+  const posts = data?.data || [];
+
+  function convertToCDNUrl(image2?: string): string {
     const image2BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
     const cdnBaseUrl = "https://dsfua14fu9fn0.cloudfront.net/images";
 
@@ -146,8 +92,6 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
 
     return "";
   }
-
-  
 
   // Skeleton Loading Component
   const SkeletonLoader = () => (
@@ -213,11 +157,14 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
     </div>
   );
 
-  if (loading) return <SkeletonLoader />;
-  if (error)
+  if (isLoading) return <SkeletonLoader />;
+  if (isError) {
     return (
-      <div className="error text-center py-8 text-red-500">Error: {error}</div>
+      <div className="text-black text-lg font-medium">
+        Error: {error.message || "Something went wrong"}
+      </div>
     );
+  }
   if (posts.length === 0)
     return <div className="error text-center py-8">No posts found</div>;
 
@@ -261,42 +208,40 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 </div>
 
                 {/* start  */}
-            <div className="flex items-center gap-3 relative mt-4 md:mt-0 lg:mt-0 share-container">
+                <div className="flex items-center gap-3 relative mt-4 md:mt-0 lg:mt-0 share-container">
                   <SlLike className="w-6 h-6 cursor-pointer" />
-                   <Link
+                  <Link
                     href={`/${firstPost.category_id}/${firstPost.subcategory_id}/${firstPost.id}#comment`}
                     className="cursor-pointer"
                   >
                     <FaRegCommentDots className="w-6 h-6" />
                   </Link>
-              <RiShareForwardLine
-                className="w-6 h-6 cursor-pointer"
-                onClick={() => toggleShare(firstPost.id)}
-              />
-              {activeSharePostId === firstPost.id && (
-                <div
-                  className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
-                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
-                >
-                  <SocialShare
-                    url={getShareUrl(
-                      firstPost.category_id,
-                      firstPost.subcategory_id,
-                      firstPost.id
-                    )}
-                    title={firstPost.heading}
-                    summary={firstPost.sub_heading || "Check out this post!"}
+                  <RiShareForwardLine
+                    className="w-6 h-6 cursor-pointer"
+                    onClick={() => toggleShare(firstPost.id)}
                   />
+                  {activeSharePostId === firstPost.id && (
+                    <div
+                      className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
+                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+                    >
+                      <SocialShare
+                        url={getShareUrl(
+                          firstPost.category_id,
+                          firstPost.subcategory_id,
+                          firstPost.id
+                        )}
+                        title={firstPost.heading}
+                        summary={
+                          firstPost.sub_heading || "Check out this post!"
+                        }
+                      />
+                    </div>
+                  )}
+                  <TbTargetArrow className="w-6 h-6 cursor-pointer" />
                 </div>
-              )}
-         <TbTargetArrow className="w-6 h-6 cursor-pointer" />
-                 
-            </div>
 
-            {/* end  */}
-             
-
-
+                {/* end  */}
               </div>
               <motion.p
                 dangerouslySetInnerHTML={{ __html: firstPost.sub_heading }}
@@ -379,8 +324,8 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                     {secondPost.sub_category_name || "Subcategory"}
                   </Link>
                 </div>
-                 {/* start  */}
-            <div className="flex items-center gap-3 relative share-container">
+                {/* start  */}
+                <div className="flex items-center gap-3 relative share-container">
                   <SlLike className="w-6 h-6 cursor-pointer" />
                   <Link
                     href={`/${secondPost.category_id}/${secondPost.subcategory_id}/${secondPost.id}#comment`}
@@ -388,31 +333,32 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   >
                     <FaRegCommentDots className="w-6 h-6" />
                   </Link>
-              <RiShareForwardLine
-                className="w-6 h-6 cursor-pointer"
-                onClick={() => toggleShare(secondPost.id)}
-              />
-              {activeSharePostId === secondPost.id && (
-                <div
-                  className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
-                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
-                >
-                  <SocialShare
-                    url={getShareUrl(
-                      secondPost.category_id,
-                      secondPost.subcategory_id,
-                      secondPost.id
-                    )}
-                    title={secondPost.heading}
-                    summary={secondPost.sub_heading || "Check out this post!"}
+                  <RiShareForwardLine
+                    className="w-6 h-6 cursor-pointer"
+                    onClick={() => toggleShare(secondPost.id)}
                   />
+                  {activeSharePostId === secondPost.id && (
+                    <div
+                      className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
+                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+                    >
+                      <SocialShare
+                        url={getShareUrl(
+                          secondPost.category_id,
+                          secondPost.subcategory_id,
+                          secondPost.id
+                        )}
+                        title={secondPost.heading}
+                        summary={
+                          secondPost.sub_heading || "Check out this post!"
+                        }
+                      />
+                    </div>
+                  )}
+                  <TbTargetArrow className="w-6 h-6 cursor-pointer" />
                 </div>
-              )}
-         <TbTargetArrow className="w-6 h-6 cursor-pointer" />
-                  
-            </div>
 
-            {/* end  */}
+                {/* end  */}
               </div>
               <p
                 dangerouslySetInnerHTML={{ __html: secondPost.sub_heading }}
