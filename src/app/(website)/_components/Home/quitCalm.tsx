@@ -10,52 +10,14 @@ import { TbTargetArrow } from "react-icons/tb";
 import { motion } from "framer-motion";
 import SocialShare from "@/components/ui/SocialShare";
 import { SlLike } from "react-icons/sl";
-
-// Interface for BlogPost
-interface BlogPost {
-  id: number;
-  category_id: number;
-  subcategory_id: number;
-  category_name?: string;
-  sub_category_name?: string;
-  heading: string;
-  author: string;
-  date: string;
-  sub_heading: string;
-  body1: string;
-  image1: string | null;
-  image2?: string[] | null;
-  advertising_image: string | null;
-  tags: string[];
-  created_at: string;
-  updated_at: string;
-  imageLink: string | null;
-  advertisingLink: string | null;
-  user_id: number;
-  status: string;
-}
-
-// Interface for API Response
-interface ApiResponse {
-  success: boolean;
-  message: string;
-  data: BlogPost[];
-  meta?: {
-    current_page: number;
-    per_page: number;
-    total: number;
-    last_page: number;
-  };
-}
+import { useQuery } from "@tanstack/react-query";
+import { HomeContentApiResponse } from "@/components/types/home-page-data-type";
 
 interface ArtCultureProps {
   categoryName: { categoryName: string };
 }
 
 const QuitCalm: React.FC<ArtCultureProps> = ({ categoryName }) => {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   // share start
   const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
     null
@@ -94,30 +56,16 @@ const QuitCalm: React.FC<ArtCultureProps> = ({ categoryName }) => {
 
   // share close
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (categoryName.categoryName) {
-        try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/${categoryName.categoryName}`
-          );
-          if (!response.ok) {
-            throw new Error(`Failed to fetch data: ${response.statusText}`);
-          }
-          const data: ApiResponse = await response.json();
-          setPosts(data.data || []); // Set posts from data.data, default to empty array
-        } catch (err) {
-          setError(
-            err instanceof Error ? err.message : "An unknown error occurred"
-          );
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
+  // Get API call for home page
+  const { data, isLoading, isError, error } = useQuery<HomeContentApiResponse>({
+    queryKey: ["quit-calm"],
+    queryFn: async () =>
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/${categoryName?.categoryName}`
+      ).then((res) => res.json()),
+  });
 
-    fetchData();
-  }, [categoryName.categoryName]);
+  const posts = data?.data || [];
 
   function convertToCDNUrl(image2?: string): string {
     const image2BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
@@ -201,11 +149,14 @@ const QuitCalm: React.FC<ArtCultureProps> = ({ categoryName }) => {
     </div>
   );
 
-  if (loading) return <SkeletonLoader />;
-  if (error)
+  if (isLoading) return <SkeletonLoader />;
+  if (isError) {
     return (
-      <div className="error text-center py-8 text-red-600">Error: {error}</div>
+      <div className="text-black text-lg font-medium">
+        Error: {error.message || "Something went wrong"}
+      </div>
     );
+  }
   if (posts.length === 0)
     return <div className="error text-center py-8 ">No posts found</div>;
 
