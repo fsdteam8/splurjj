@@ -2,15 +2,20 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { FaRegCommentDots } from "react-icons/fa";
-import { RiShareForwardLine } from "react-icons/ri";
 import { TbTargetArrow } from "react-icons/tb";
 import { Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import SocialShare from "@/components/ui/SocialShare";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { SlLike } from "react-icons/sl";
+import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
+import SocialShareContent from "@/components/ui/SocialShareContent";
 
 // Interface for ContentItem
 interface ContentItem {
@@ -34,6 +39,9 @@ interface ContentItem {
   advertisingLink: string | null;
   user_id: number;
   status: string;
+  likes_count: number;
+  shares_count: number;
+  comment_count: number;
 }
 
 // Interface for API Response
@@ -54,38 +62,11 @@ interface ContentsProps {
 }
 
 function Contents({ initialSearchQuery }: ContentsProps) {
+  const session = useSession();
+  const token = (session?.data?.user as { token: string })?.token;
+  const queryClient = useQueryClient();
   const limit = 9;
   const observerRef = useRef<HTMLDivElement>(null);
-  const [activeSharePostId, setActiveSharePostId] = useState<number | null>(null);
-
-  // Toggle share modal
-  const toggleShare = (postId: number) => {
-    setActiveSharePostId(activeSharePostId === postId ? null : postId);
-  };
-
-  // Close share modal on outside click
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      const target = event.target as HTMLElement;
-      if (!target.closest(".share-container")) {
-        setActiveSharePostId(null);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const getShareUrl = (
-    categoryId: number,
-    subcategoryId: number,
-    id: number
-  ): string => {
-    if (typeof window === "undefined") return "";
-    return `${window.location.origin}/${categoryId}/${subcategoryId}/${id}`;
-  };
 
   // Fetch function for TanStack Query
   const fetchContents = async ({ pageParam = 1 }) => {
@@ -158,6 +139,26 @@ function Contents({ initialSearchQuery }: ContentsProps) {
     };
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+  // Like post API logic
+  const { mutate: handleLike } = useMutation({
+    mutationKey: ["like-post"],
+    mutationFn: async (postId: number) =>
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${postId}/like`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      ).then((res) => res.json()),
+    onSuccess: (data) => {
+      if (!data?.success) {
+        toast.error(data?.message || "Something went wrong");
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ["contents"] });
+    },
+  });
+
   function convertToCDNUrl(image2?: string): string {
     const image2BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
     const cdnBaseUrl = "https://dsfua14fu9fn0.cloudfront.net/images";
@@ -217,28 +218,36 @@ function Contents({ initialSearchQuery }: ContentsProps) {
     </div>
   );
 
-  if (error) return <div className="text-center py-8 text-red-500">Error: {error.message}</div>;
+  if (error)
+    return (
+      <div className="text-center py-8 text-red-500">
+        Error: {error.message}
+      </div>
+    );
   if (isLoading) return <SkeletonLoader />;
-  if (!contents.length) return <div className="text-center py-8">No content found</div>;
+  if (!contents.length)
+    return <div className="text-center py-8">No content found</div>;
 
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {contents?.map((post) => (
-          <Link
-            href={`/${post?.category_id}/${post?.subcategory_id}/${post.id}`}
-            key={post.id}
-            className="relative"
-          >
+          <div key={post.id}>
             <div className="overflow-hidden">
-              <Image
-                src={getImageUrl(post.image2) || "/placeholder.svg"}
-                alt={post.heading}
-                width={400}
-                height={300}
-                className="w-full h-[300px] object-contain hover:scale-150 transition-all duration-500 ease-in-out"
-                priority
-              />
+              <Link
+                href={`/${post?.category_id}/${post?.subcategory_id}/${post.id}`}
+
+                // className="relative"
+              >
+                <Image
+                  src={getImageUrl(post.image2) || "/placeholder.svg"}
+                  alt={post.heading}
+                  width={400}
+                  height={300}
+                  className="w-full h-[300px] object-contain hover:scale-150 transition-all duration-500 ease-in-out"
+                  priority
+                />
+              </Link>
             </div>
             <div className="p-4">
               <div className="flex items-center gap-2">
@@ -271,47 +280,48 @@ function Contents({ initialSearchQuery }: ContentsProps) {
               <p className="text-sm font-semibold uppercase text-[#424242] mt-2">
                 {post.author} - {post.date}
               </p>
-
-              <div className="flex items-center gap-3 relative mt-2 share-container">
-                <SlLike className="w-6 h-6 cursor-pointer" />
-                <Link
-                  href={`/${post.category_id}/${post.subcategory_id}/${post.id}#comment`}
-                  className="cursor-pointer"
-                >
-                  <FaRegCommentDots className="w-6 h-6 cursor-pointer" />
-                </Link>
-                <RiShareForwardLine
-                  className="w-6 h-6 cursor-pointer"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    toggleShare(post.id);
-                  }}
-                />
-                {activeSharePostId === post.id && (
-                  <div
-                    className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
-                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+              {/* social icon start */}
+              <div className="flex items-center gap-3 mt-2 relative">
+                <div className="flex items-center gap-2">
+                  <button onClick={() => handleLike(post?.id)}>
+                    <SlLike className="w-6 h-6 cursor-pointer" />
+                  </button>
+                  <p className="text-lg font-medium text-black dark:text-white leading-normal">
+                    {post?.likes_count || 0}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/${post.category_id}/${post.subcategory_id}/${post.id}#comment`}
                   >
-                    <SocialShare
-                      url={getShareUrl(
-                        post.category_id,
-                        post.subcategory_id,
-                        post.id
-                      )}
-                      title={post.heading}
-                      summary={post.sub_heading || "Check out this post!"}
-                    />
-                  </div>
-                )}
+                    <button className="cursor-pointer">
+                      <FaRegCommentDots className="w-6 h-6 cursor-pointer mt-1" />
+                    </button>
+                  </Link>
+                  <p className="text-lg font-medium text-black dark:text-white leading-normal">
+                    {post?.comment_count || 0}
+                  </p>
+                </div>
+                <SocialShareContent
+                  postId={post.id}
+                  categoryId={post.category_id}
+                  subcategoryId={post.subcategory_id}
+                  heading={post.heading}
+                  subHeading={post.sub_heading}
+                  initialSharesCount={post.shares_count || 0}
+                  token={token}
+                />
                 <TbTargetArrow className="w-6 h-6 cursor-pointer" />
               </div>
+
+              {/* social icon end  */}
 
               <p
                 dangerouslySetInnerHTML={{ __html: post.sub_heading }}
                 className="text-sm font-normal text-[#424242] line-clamp-3 mt-2"
               />
             </div>
-          </Link>
+          </div>
         ))}
       </div>
       {isFetchingNextPage && (
@@ -328,22 +338,6 @@ function Contents({ initialSearchQuery }: ContentsProps) {
 }
 
 export default Contents;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 // import Image from "next/image";
@@ -672,7 +666,7 @@ export default Contents;
 //                 />
 //                 {activeSharePostId === post.id && (
 //                   <div
-//                     className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
+//                     className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3
 //                     flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
 //                   >
 //                     <SocialShare

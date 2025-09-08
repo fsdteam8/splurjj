@@ -203,7 +203,7 @@ const AllContents: React.FC = () => {
                   heading={firstPost.heading}
                   subHeading={firstPost.sub_heading}
                   initialSharesCount={firstPost.shares_count || 0}
-                  token={token} // Pass token to SocialShareContent
+                  token={token}
                 />
                 <TbTargetArrow className="w-6 h-6 cursor-pointer" />
               </div>
