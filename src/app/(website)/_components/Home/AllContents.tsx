@@ -152,6 +152,7 @@ const AllContents: React.FC = () => {
   const secondPost = contents[1];
   const thirdPost = contents[2];
   const fourthPost = contents[3];
+  console.log(firstPost);
 
   return (
     <div className="">
@@ -167,7 +168,7 @@ const AllContents: React.FC = () => {
                   {firstPost.category_name || "Category"}
                 </Link>
                 <Link
-                  href={`/${firstPost.category_id}/${firstPost.subcategory_id}`}
+                  href={`/${firstPost?.cat_slug}/${firstPost?.sub_slug}`}
                   className="bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
                 >
                   {firstPost.sub_category_name || "Subcategory"}
@@ -186,7 +187,7 @@ const AllContents: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Link
-                    href={`/${firstPost.category_id}/${firstPost.subcategory_id}/${firstPost.id}#comment`}
+                    href={`/${firstPost?.cat_slug}/${firstPost?.sub_slug}/${firstPost?.slug}#comment`}
                   >
                     <button className="cursor-pointer">
                       <FaRegCommentDots className="w-6 h-6 cursor-pointer" />
@@ -213,7 +214,7 @@ const AllContents: React.FC = () => {
             <div className="">
               <Link
                 className="content-heding-text"
-                href={`/${firstPost?.category_id}/${firstPost?.subcategory_id}/${firstPost?.id}`}
+                href={`/${firstPost?.cat_slug}/${firstPost?.sub_slug}/${firstPost?.slug}`}
               >
                 <h1
                   dangerouslySetInnerHTML={{ __html: firstPost.heading }}

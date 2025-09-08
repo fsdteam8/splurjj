@@ -22,6 +22,9 @@ export interface Content {
   status: string;
   meta_title: string;
   meta_description: string;
+  cat_slug: string;
+  sub_slug: string;
+  slug: string;
   likes_count: number;
   shares_count: number;
   comment_count: number;

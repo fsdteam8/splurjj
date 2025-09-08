@@ -74,25 +74,7 @@ const ContentBlogDetails = ({
   const token = (session?.user as { token: string })?.token;
   const queryClient = useQueryClient();
 
-  // Like post API logic
-  const { mutate: handleLike } = useMutation({
-    mutationKey: ["like-post"],
-    mutationFn: async (postId: number) =>
-      await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${postId}/like`,
-        {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      ).then((res) => res.json()),
-    onSuccess: (data) => {
-      if (!data?.success) {
-        toast.error(data?.message || "Something went wrong");
-        return;
-      }
-      queryClient.invalidateQueries({ queryKey: ["single-blog"] });
-    },
-  });
+
 
   // Improved cleanTags function to handle malformed JSON strings
   const cleanTags = (tags: string[]): string[] => {
@@ -142,6 +124,8 @@ const ContentBlogDetails = ({
     });
   };
 
+  // single blog api logic 
+
   const { data, isLoading, error, isError } = useQuery<BlogData>({
     queryKey: ["single-blog", categoryId, subcategoryId, id],
     queryFn: () =>
@@ -151,6 +135,27 @@ const ContentBlogDetails = ({
   });
 
   const blogData = data?.data || null;
+
+    // Like post API logic
+  const { mutate: handleLike } = useMutation({
+    mutationKey: ["like-post"],
+    mutationFn: async (postId: number) =>
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${postId}/like`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      ).then((res) => res.json()),
+    onSuccess: (data) => {
+      if (!data?.success) {
+        toast.error(data?.message || "Something went wrong");
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ["single-blog"] });
+      queryClient.invalidateQueries({ queryKey: ["home-hero-section"] });
+    },
+  });
 
   const getImageUrl = (path: string | null): string => {
     if (!path) return "/fallback-image.jpg";
@@ -317,6 +322,8 @@ const ContentBlogDetails = ({
   }
 
   const cleanedTags = cleanTags(blogData.tags || []);
+
+  console.log("comments", blogData)
 
   return (
     <div>
@@ -560,7 +567,7 @@ const ContentBlogDetails = ({
               {commentAccess && (
                 <div>
                   <section id="comment" className="py-5">
-                    <CommentSection UserEmail={userEmail} blogId={Number(id)} />
+                    <CommentSection UserEmail={userEmail} blogId={Number(blogData?.id)} />
                   </section>
                 </div>
               )}
