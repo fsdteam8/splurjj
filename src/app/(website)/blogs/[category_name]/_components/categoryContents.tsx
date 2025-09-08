@@ -123,7 +123,7 @@ function CategoryContents({ posts, loading, error }: CategoryContentsProps) {
   return (
     <div className="">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {posts.map((post) => (
+        {posts?.map((post) => (
           <div key={post.id} className="relative">
             <div className="overflow-hidden">
               <Link
