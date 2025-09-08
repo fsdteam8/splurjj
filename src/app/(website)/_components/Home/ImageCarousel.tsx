@@ -146,8 +146,6 @@
 //   );
 // }
 
-
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -181,6 +179,12 @@ interface ContentItem {
   advertisingLink: string | null;
   user_id: number;
   status: string;
+  cat_slug: string;
+  sub_slug: string;
+  slug: string;
+  likes_count: number;
+  shares_count: number;
+  comment_count: number;
 }
 
 interface ImageCarouselProps {
@@ -200,7 +204,7 @@ export default function ImageCarousel({ posts }: ImageCarouselProps) {
     return () => clearInterval(interval);
   }, [api]);
 
-  // image cdn start 
+  // image cdn start
 
   /** ✅ Convert S3 → CloudFront */
   function convertToCDNUrl(image?: string | null): string {
@@ -265,7 +269,7 @@ export default function ImageCarousel({ posts }: ImageCarouselProps) {
                 <CarouselItem key={`${post.id}-${index}`}>
                   <div className="mt-8">
                     <Link
-                      href={`/${post.category_id}/${post.subcategory_id}/${post.id}`}
+                      href={`/${post.cat_slug}/${post.sub_slug}/${post.slug}`}
                     >
                       <ImageWithFallback
                         src={imageUrl}
