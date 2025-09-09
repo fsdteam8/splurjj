@@ -12,6 +12,8 @@ import Vertical from "@/components/adds/vertical";
 import { useQuery } from "@tanstack/react-query";
 import QuitCalm from "./quitCalm";
 import { CategoryApiResponse } from "@/components/types/CategoryDataType";
+import BodyForm from "./body-form";
+import EtcByeond from "./etc-beyond";
 
 
 function MainHome() {
@@ -38,6 +40,8 @@ function MainHome() {
 
   // console.log(categories[0]?.category_name);
     const categories = categoriesData && categoriesData?.data || [];
+
+    // console.log(categories , "categories");
 
   const firstCategory = categories[0]?.cat_slug;
   const secoundCategory = categories[1]?.cat_slug;
@@ -159,7 +163,7 @@ function MainHome() {
           <div className="grid grid-cols-8 gap-4 pt-4">
             {/* Main content */}
             <div className="col-span-8 md:col-span-6 pb-2">
-              <QuitCalm categoryName={{ categoryName: sevenPost }} />
+              <BodyForm categoryName={{ categoryName: sevenPost }} />
             </div>
 
             {/* Sticky sidebar */}
@@ -172,7 +176,7 @@ function MainHome() {
         </div>
       </div>
 
-      <div>
+      <div className="">
         <div className="hidden md:block">
           <Horizontal />
         </div>
@@ -180,7 +184,7 @@ function MainHome() {
           <div className="grid grid-cols-8 gap-4 pt-4">
             {/* Main content */}
             <div className="col-span-8 md:col-span-6 pb-2">
-              <QuitCalm categoryName={{ categoryName: eightPost }} />
+              <EtcByeond categoryName={{ categoryName: eightPost }} />
             </div>
 
             {/* Sticky sidebar */}

@@ -162,7 +162,7 @@ const AllContents: React.FC = () => {
             <div className="md:flex items-center gap-4 mb-4">
               <div className="flex items-center gap-2">
                 <Link
-                  href={`/blogs/${firstPost.category_name}`}
+                  href={`/blogs/${firstPost.cat_slug}`}
                   className="bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
                 >
                   {firstPost.category_name || "Category"}
@@ -198,9 +198,9 @@ const AllContents: React.FC = () => {
                   </p>
                 </div>
                 <SocialShareContent
-                  postId={firstPost.id}
-                  categoryId={firstPost.category_id}
-                  subcategoryId={firstPost.subcategory_id}
+                  postId={firstPost.slug}
+                  categoryId={firstPost.cat_slug}
+                  subcategoryId={firstPost.sub_slug}
                   heading={firstPost.heading}
                   subHeading={firstPost.sub_heading}
                   initialSharesCount={firstPost.shares_count || 0}
@@ -241,13 +241,13 @@ const AllContents: React.FC = () => {
           <div className="relative">
             <div className="flex items-center gap-2 mb-2">
               <Link
-                href={`/blogs/${secondPost.category_name}`}
+                href={`/blogs/${secondPost.cat_slug}`}
                 className="bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
               >
                 {secondPost.category_name || "Category"}
               </Link>
               <Link
-                href={`/${secondPost.category_id}/${secondPost.subcategory_id}`}
+                href={`/${secondPost.cat_slug}/${secondPost.sub_slug}`}
                 className="bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
               >
                 {secondPost.sub_category_name || "Subcategory"}
@@ -255,7 +255,7 @@ const AllContents: React.FC = () => {
             </div>
             <div className="overflow-hidden">
               <Link
-                href={`/${secondPost.category_id}/${secondPost.subcategory_id}/${secondPost.id}`}
+                href={`/${secondPost.cat_slug}/${secondPost.sub_slug}/${secondPost.slug}`}
               >
                 <Image
                   src={getImageUrl(secondPost.image2?.[0] || "")}
@@ -269,7 +269,7 @@ const AllContents: React.FC = () => {
             </div>
             <div className="p-4">
               <Link
-                href={`/${secondPost.category_id}/${secondPost.subcategory_id}/${secondPost.id}`}
+                href={`/${secondPost.cat_slug}/${secondPost.sub_slug}/${secondPost.slug}`}
               >
                 <motion.p
                   dangerouslySetInnerHTML={{ __html: secondPost.heading }}
@@ -295,7 +295,7 @@ const AllContents: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Link
-                    href={`/${secondPost.category_id}/${secondPost.subcategory_id}/${secondPost.id}#comment`}
+                    href={`/${secondPost.cat_slug}/${secondPost.sub_slug}/${secondPost.slug}#comment`}
                   >
                     <FaRegCommentDots className="w-6 h-6 cursor-pointer" />
                   </Link>
@@ -304,9 +304,9 @@ const AllContents: React.FC = () => {
                   </p>
                 </div>
                 <SocialShareContent
-                  postId={secondPost.id}
-                  categoryId={secondPost.category_id}
-                  subcategoryId={secondPost.subcategory_id}
+                  postId={secondPost.slug}
+                  categoryId={secondPost.cat_slug}
+                  subcategoryId={secondPost.sub_slug}
                   heading={secondPost.heading}
                   subHeading={secondPost.sub_heading}
                   initialSharesCount={secondPost.shares_count || 0}
@@ -326,13 +326,13 @@ const AllContents: React.FC = () => {
           <div className="relative">
             <div className="flex items-center gap-2 mb-2">
               <Link
-                href={`/blogs/${thirdPost.category_name}`}
+                href={`/blogs/${thirdPost.cat_slug}`}
                 className="bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
               >
                 {thirdPost.category_name || "Category"}
               </Link>
               <Link
-                href={`/${thirdPost.category_id}/${thirdPost.subcategory_id}`}
+                href={`/${thirdPost.cat_slug}/${thirdPost.sub_slug}`}
                 className="bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
               >
                 {thirdPost.sub_category_name || "Subcategory"}
@@ -340,7 +340,7 @@ const AllContents: React.FC = () => {
             </div>
             <div className="overflow-hidden">
               <Link
-                href={`/${thirdPost.category_id}/${thirdPost.subcategory_id}/${thirdPost.id}`}
+                href={`/${thirdPost.cat_slug}/${thirdPost.sub_slug}/${thirdPost.slug}`}
               >
                 <Image
                   src={getImageUrl(thirdPost.image2?.[0] || "")}
@@ -354,7 +354,7 @@ const AllContents: React.FC = () => {
             </div>
             <div className="p-4">
               <Link
-                href={`/${thirdPost.category_id}/${thirdPost.subcategory_id}/${thirdPost.id}`}
+                href={`/${thirdPost.cat_slug}/${thirdPost.sub_slug}/${thirdPost.slug}`}
               >
                 <motion.p
                   dangerouslySetInnerHTML={{ __html: thirdPost.heading }}
@@ -381,7 +381,7 @@ const AllContents: React.FC = () => {
 
                 <div className="flex items-center gap-2">
                   <Link
-                    href={`/${thirdPost.category_id}/${thirdPost.subcategory_id}/${thirdPost.id}#comment`}
+                    href={`/${thirdPost.cat_slug}/${thirdPost.sub_slug}/${thirdPost.slug}#comment`}
                     className="cursor-pointer"
                   >
                     <FaRegCommentDots className="w-6 h-6 cursor-pointer" />
@@ -391,9 +391,9 @@ const AllContents: React.FC = () => {
                   </p>
                 </div>
                 <SocialShareContent
-                  postId={thirdPost.id}
-                  categoryId={thirdPost.category_id}
-                  subcategoryId={thirdPost.subcategory_id}
+                  postId={thirdPost.slug}
+                  categoryId={thirdPost.cat_slug}
+                  subcategoryId={thirdPost.sub_slug}
                   heading={thirdPost.heading}
                   subHeading={thirdPost.sub_heading}
                   initialSharesCount={thirdPost.shares_count || 0}
@@ -413,13 +413,13 @@ const AllContents: React.FC = () => {
           <div className="relative">
             <div className="flex items-center gap-2 mb-2">
               <Link
-                href={`/blogs/${fourthPost.category_name}`}
+                href={`/blogs/${fourthPost.cat_slug}`}
                 className="bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
               >
                 {fourthPost.category_name || "Category"}
               </Link>
               <Link
-                href={`/${fourthPost.category_id}/${fourthPost.subcategory_id}`}
+                href={`/${fourthPost.cat_slug}/${fourthPost.sub_slug}`}
                 className="bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
               >
                 {fourthPost.sub_category_name || "Subcategory"}
@@ -427,7 +427,7 @@ const AllContents: React.FC = () => {
             </div>
             <div className="overflow-hidden">
               <Link
-                href={`/${fourthPost.category_id}/${fourthPost.subcategory_id}/${fourthPost.id}`}
+                href={`/${fourthPost.cat_slug}/${fourthPost.sub_slug}/${fourthPost.slug}`}
               >
                 <Image
                   src={getImageUrl(fourthPost.image2?.[0] || "")}
@@ -441,7 +441,7 @@ const AllContents: React.FC = () => {
             </div>
             <div className="p-4">
               <Link
-                href={`/${fourthPost.category_id}/${fourthPost.subcategory_id}/${fourthPost.id}`}
+                href={`/${fourthPost.cat_slug}/${fourthPost.sub_slug}/${fourthPost.slug}`}
               >
                 <motion.p
                   dangerouslySetInnerHTML={{ __html: fourthPost.heading }}
@@ -467,7 +467,7 @@ const AllContents: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Link
-                    href={`/${fourthPost.category_id}/${fourthPost.subcategory_id}/${fourthPost.id}#comment`}
+                    href={`/${fourthPost.cat_slug}/${fourthPost.sub_slug}/${fourthPost.slug}#comment`}
                     className="cursor-pointer"
                   >
                     <FaRegCommentDots className="w-6 h-6 cursor-pointer" />
@@ -477,9 +477,9 @@ const AllContents: React.FC = () => {
                   </p>
                 </div>
                 <SocialShareContent
-                  postId={fourthPost.id}
-                  categoryId={fourthPost.category_id}
-                  subcategoryId={fourthPost.subcategory_id}
+                  postId={fourthPost.slug}
+                  categoryId={fourthPost.cat_slug}
+                  subcategoryId={fourthPost.sub_slug}
                   heading={fourthPost.heading}
                   subHeading={fourthPost.sub_heading}
                   initialSharesCount={fourthPost.shares_count || 0}

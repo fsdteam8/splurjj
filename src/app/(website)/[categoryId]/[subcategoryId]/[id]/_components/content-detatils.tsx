@@ -46,6 +46,9 @@ interface BlogData {
     likes_count: number;
     shares_count: number;
     comment_count: number;
+    cat_slug: string;
+    sub_slug: string;
+    slug: string;
     user: {
       id: number;
       description: string | null;
@@ -403,7 +406,7 @@ const ContentBlogDetails = ({
                 </div>
                 <div className="flex items-center gap-2 mt-1">
                   <Link
-                    href={`/${blogData.category_id}/${blogData.subcategory_id}/${blogData.id}#comment`}
+                    href={`/${blogData.cat_slug}/${blogData.sub_slug}/${blogData.slug}#comment`}
                   >
                     <button className="cursor-pointer">
                       <FaRegCommentDots className="w-6 h-6 cursor-pointer" />
@@ -414,9 +417,9 @@ const ContentBlogDetails = ({
                   </p>
                 </div>
                 <SocialShareContent
-                  postId={blogData.id}
-                  categoryId={blogData.category_id}
-                  subcategoryId={blogData.subcategory_id}
+                  postId={blogData.slug}
+                  categoryId={blogData.cat_slug}
+                  subcategoryId={blogData.sub_slug}
                   heading={blogData.heading}
                   subHeading={blogData.sub_heading}
                   initialSharesCount={blogData.shares_count || 0}
@@ -437,13 +440,13 @@ const ContentBlogDetails = ({
                 </h4>
                 <div className="md:col-span-5 w-full flex items-center gap-2">
                   <Link
-                    href={`/blogs/${blogData.category_name}`}
+                    href={`/blogs/${blogData.cat_slug}`}
                     className="bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
                   >
                     {blogData?.category_name || ""}
                   </Link>
                   <Link
-                    href={`/${blogData.category_id}/${blogData.subcategory_id}`}
+                    href={`/${blogData.cat_slug}/${blogData.sub_slug}`}
                     className="bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
                   >
                     {blogData?.sub_category_name || ""}

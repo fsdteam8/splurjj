@@ -42,6 +42,9 @@ interface ContentItem {
   likes_count: number;
   shares_count: number;
   comment_count: number;
+  cat_slug: string;
+  sub_slug: string;
+  slug: string;
 }
 
 // Interface for API Response
@@ -235,7 +238,7 @@ function Contents({ initialSearchQuery }: ContentsProps) {
           <div key={post.id}>
             <div className="overflow-hidden">
               <Link
-                href={`/${post?.category_id}/${post?.subcategory_id}/${post.id}`}
+                href={`/${post?.cat_slug}/${post?.sub_slug}/${post.slug}`}
 
                 // className="relative"
               >
@@ -252,20 +255,20 @@ function Contents({ initialSearchQuery }: ContentsProps) {
             <div className="p-4">
               <div className="flex items-center gap-2">
                 <Link
-                  href={`/blogs/${post.category_name}`}
+                  href={`/blogs/${post.cat_slug}`}
                   className="bg-primary py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
                 >
                   {post.category_name || "Category"}
                 </Link>
                 <Link
-                  href={`/${post.category_id}/${post.subcategory_id}`}
+                  href={`/${post.cat_slug}/${post.sub_slug}`}
                   className="bg-primary py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
                 >
                   {post.sub_category_name || "Subcategory"}
                 </Link>
               </div>
               <Link
-                href={`/${post.category_id}/${post.subcategory_id}/${post.id}`}
+                href={`/${post.cat_slug}/${post.sub_slug}/${post.slug}`}
               >
                 <motion.p
                   dangerouslySetInnerHTML={{ __html: post.heading }}
@@ -292,7 +295,7 @@ function Contents({ initialSearchQuery }: ContentsProps) {
                 </div>
                 <div className="flex items-center gap-2">
                   <Link
-                    href={`/${post.category_id}/${post.subcategory_id}/${post.id}#comment`}
+                    href={`/${post.cat_slug}/${post.sub_slug}/${post.slug}#comment`}
                   >
                     <button className="cursor-pointer">
                       <FaRegCommentDots className="w-6 h-6 cursor-pointer mt-1" />
@@ -303,9 +306,9 @@ function Contents({ initialSearchQuery }: ContentsProps) {
                   </p>
                 </div>
                 <SocialShareContent
-                  postId={post.id}
-                  categoryId={post.category_id}
-                  subcategoryId={post.subcategory_id}
+                  postId={post.slug}
+                  categoryId={post.cat_slug}
+                  subcategoryId={post.sub_slug}
                   heading={post.heading}
                   subHeading={post.sub_heading}
                   initialSharesCount={post.shares_count || 0}

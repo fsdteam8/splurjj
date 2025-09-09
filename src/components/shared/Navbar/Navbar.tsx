@@ -65,22 +65,6 @@ export default function Header() {
   const dropdownCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const {theme} = useTheme();
 
-  const slugify = (str: string) =>
-    str.trim().toLowerCase().replace(/\s+/g, " ");
-
-  //   const slugify = (str: string) => {
-  //   const cleaned = str.trim().toLowerCase();
-
-  //   // if it already has "-", return as-is
-  //   if (cleaned.includes("-")) {
-  //     return cleaned;
-  //   }
-
-  //   // else, replace spaces with "-"
-  //   return cleaned.replace(/\s+/g, "-");
-  // };
-
-  const formatSlug = (slug: string) => slug.replace(/-/g, " ");
 
 
   const staticMenuItems = [{ name: "LATEST", href: "/" }];
@@ -309,8 +293,8 @@ export default function Header() {
                     return (
                       <Link
                         key={category.category_id}
-                        href={`/blogs/${category.category_name}`}
-                        className="text-xs lg:text-sm font-medium transition-colors hover:text-primary "
+                        href={`/blogs/${category.cat_slug}`}
+                        className="text-xs lg:text-sm font-medium transition-colors hover:text-primary"
                         style={{
                           color: isActive
                             ? header?.menu_item_active_color || "#0253F7"
@@ -318,8 +302,7 @@ export default function Header() {
                               "text-muted-foreground",
                         }}
                       >
-                        {/* {category.category_name.toUpperCase()} */}
-                        {formatSlug(category.category_name.toUpperCase())}
+                        {category.category_name.toUpperCase()}
                       </Link>
                     );
                   }
@@ -357,10 +340,7 @@ export default function Header() {
                           }}
                         >
                           <Link
-                            // href={/blogs/${category?.category_name}}
-                            // href={`/blogs/${encodeURIComponent(category?.category_name.trim())}`}
-                            // href={`/blogs/${category?.category_name.replace(/\s+/g, " ")}`}
-                            href={`/blogs/${slugify(category?.category_name)}`}
+                            href={`/blogs/${category?.cat_slug}`}
                             className="text-sm lg:text-sm font-medium transition-colors hover:text-primary"
                             style={{
                               color:
@@ -390,7 +370,7 @@ export default function Header() {
                         {category.subcategories.map((subcategory) => (
                           <DropdownMenuItem key={subcategory.id} asChild>
                             <Link
-                              href={`/${category.category_id}/${subcategory.id}`}
+                              href={`/${category.cat_slug}/${subcategory.sub_slug}`}
                               className="cursor-pointer"
                               style={{
                                 color:
@@ -564,7 +544,7 @@ export default function Header() {
                       return (
                         <Link
                           key={category.category_id}
-                          href={`/blogs/${category.category_name}`}
+                          href={`/blogs/${category.cat_slug}`}
                           className="text-sm font-medium py-2"
                           style={{
                             color: isActive
@@ -592,7 +572,7 @@ export default function Header() {
                           }}
                         >
                           <Link
-                            href={`/blogs/${category.category_name}`}
+                            href={`/blogs/${category.cat_slug}`}
                             className="flex-grow text-left"
                             style={{
                               color: isActive
