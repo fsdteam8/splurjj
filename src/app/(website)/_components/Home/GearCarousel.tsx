@@ -32,6 +32,12 @@ interface BlogPost {
   advertisingLink: string | null;
   user_id: number;
   status: string;
+  cat_slug: string;
+  sub_slug: string;
+  slug: string;
+  likes_count: number;
+  shares_count: number;
+  comment_count: number;
 }
 
 interface GearCarouselProps {
@@ -70,12 +76,12 @@ export default function GearCarousel({
       >
         <CarouselContent>
           {posts && posts.length > 0 ? (
-            posts.flatMap((post, postIndex) =>
+            posts.flatMap((post: BlogPost, postIndex) =>
               post.image2 && post.image2.length > 0
                 ? post.image2.map((image, imageIndex) => (
                     <CarouselItem key={`${post.id}-${imageIndex}`}>
                       <Link
-                        href={`/${post.category_id}/${post.subcategory_id}/${post.id}`}
+                        href={`/${post.cat_slug}/${post.sub_slug}/${post.slug}`}
                         aria-label={`View post: ${
                           post.heading || "Untitled Post"
                         }`}
@@ -114,7 +120,7 @@ export default function GearCarousel({
                 ? [
                     <CarouselItem key={`${post.id}-${postIndex}`}>
                       <Link
-                        href={`/${post.category_id}/${post.subcategory_id}/${post.id}`}
+                        href={`/${post.cat_slug}/${post.sub_slug}/${post.slug}`}
                         aria-label={`View post: ${
                           post.heading || "Untitled Post"
                         }`}

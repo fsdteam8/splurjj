@@ -12,6 +12,8 @@ import Vertical from "@/components/adds/vertical";
 import { useQuery } from "@tanstack/react-query";
 import QuitCalm from "./quitCalm";
 import { CategoryApiResponse } from "@/components/types/CategoryDataType";
+import BodyForm from "./body-form";
+import EtcByeond from "./etc-beyond";
 
 
 function MainHome() {
@@ -39,14 +41,16 @@ function MainHome() {
   // console.log(categories[0]?.category_name);
     const categories = categoriesData && categoriesData?.data || [];
 
-  const firstCategory = categories[0]?.category_name;
-  const secoundCategory = categories[1]?.category_name;
-  const thirdPost = categories[2]?.category_name;
-  const forthPost = categories[3]?.category_name;
-  const fifthPost = categories[4]?.category_name;
-  const sixthPost = categories[5]?.category_name;
-  const sevenPost = categories[6]?.category_name;
-  const eightPost = categories[7]?.category_name;
+    // console.log(categories , "categories");
+
+  const firstCategory = categories[0]?.cat_slug;
+  const secoundCategory = categories[1]?.cat_slug;
+  const thirdPost = categories[2]?.cat_slug;
+  const forthPost = categories[3]?.cat_slug;
+  const fifthPost = categories[4]?.cat_slug;
+  const sixthPost = categories[5]?.cat_slug;
+  const sevenPost = categories[6]?.cat_slug;
+  const eightPost = categories[7]?.cat_slug;
 
   return (
     <div>
@@ -107,7 +111,6 @@ function MainHome() {
           </div>
         </div>
       </div>
-
       <div>
         <div className="hidden md:block">
           <Horizontal />
@@ -160,7 +163,7 @@ function MainHome() {
           <div className="grid grid-cols-8 gap-4 pt-4">
             {/* Main content */}
             <div className="col-span-8 md:col-span-6 pb-2">
-              <QuitCalm categoryName={{ categoryName: sevenPost }} />
+              <BodyForm categoryName={{ categoryName: sevenPost }} />
             </div>
 
             {/* Sticky sidebar */}
@@ -173,7 +176,7 @@ function MainHome() {
         </div>
       </div>
 
-      <div>
+      <div className="">
         <div className="hidden md:block">
           <Horizontal />
         </div>
@@ -181,7 +184,7 @@ function MainHome() {
           <div className="grid grid-cols-8 gap-4 pt-4">
             {/* Main content */}
             <div className="col-span-8 md:col-span-6 pb-2">
-              <QuitCalm categoryName={{ categoryName: eightPost }} />
+              <EtcByeond categoryName={{ categoryName: eightPost }} />
             </div>
 
             {/* Sticky sidebar */}

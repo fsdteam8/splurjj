@@ -3,63 +3,26 @@
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import {
-  FaRegCommentDots,
-} from "react-icons/fa";
-import { RiShareForwardLine } from "react-icons/ri";
+import { FaRegCommentDots } from "react-icons/fa";
 import { TbTargetArrow } from "react-icons/tb";
 import { motion } from "framer-motion";
-import SocialShare from "@/components/ui/SocialShare";
 import { SlLike } from "react-icons/sl";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { HomeContentApiResponse } from "@/components/types/home-page-data-type";
+import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
+import SocialShareContent from "@/components/ui/SocialShareContent";
 
 interface ArtCultureProps {
   categoryName: { categoryName: string };
 }
 
 const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
+  const session = useSession();
+  const token = (session?.data?.user as { token: string })?.token;
+  const queryClient = useQueryClient();
 
-  // share start
-  const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
-    null
-  );
-
-  // Toggle share modal
-  const toggleShare = (postId: number) => {
-    setActiveSharePostId(activeSharePostId === postId ? null : postId);
-  };
-
-  // Close on outside click
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      const target = event.target as HTMLElement;
-
-      // Close only if click is outside all share containers
-      if (!target.closest(".share-container")) {
-        setActiveSharePostId(null);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const getShareUrl = (
-    categoryId: number,
-    subcategoryId: number,
-    id: number
-  ): string => {
-    if (typeof window === "undefined") return ""; // avoid SSR crash
-    return `${window.location.origin}/${categoryId}/${subcategoryId}/${id}`;
-  };
-
-  // share close
-
- // Get API call for home page
+  // Get API call for home page
   const { data, isLoading, isError, error } = useQuery<HomeContentApiResponse>({
     queryKey: ["music"],
     queryFn: async () =>
@@ -69,6 +32,26 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
   });
 
   const posts = data?.data || [];
+
+  // Like post API logic
+  const { mutate: handleLike } = useMutation({
+    mutationKey: ["like-post"],
+    mutationFn: async (postId: number) =>
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${postId}/like`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      ).then((res) => res.json()),
+    onSuccess: (data) => {
+      if (!data?.success) {
+        toast.error(data?.message || "Something went wrong");
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ["music"] });
+    },
+  });
 
   function convertToCDNUrl(image2?: string): string {
     const image2BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
@@ -173,57 +156,58 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
           <div className="md:flex items-center gap-2 mb-4">
             <div className="flex items-center gap-2 ">
               <Link
-                href={`/blogs/${firstPost.category_name}`}
+                href={`/blogs/${firstPost.cat_slug}`}
                 className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-sm font-extrabold uppercase text-white"
               >
                 {firstPost.category_name || "Category"}
               </Link>
               <Link
-                href={`/${firstPost.category_id}/${firstPost.subcategory_id}`}
+                href={`/${firstPost.cat_slug}/${firstPost.sub_slug}`}
                 className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-sm font-extrabold uppercase text-white"
               >
                 {firstPost.sub_category_name || "Subcategory"}
               </Link>
             </div>
 
-            {/* start  */}
-            <div className="flex items-center gap-3 relative mt-4 md:mt-0 lg:mt-0 share-container">
-              <SlLike className="w-6 h-6 cursor-pointer" />
-               <Link
-                href={`/${firstPost.category_id}/${firstPost.subcategory_id}/${firstPost.id}#comment`}
-                className="cursor-pointer"
-              >
-                <FaRegCommentDots className="w-6 h-6" />
-              </Link>
-              <RiShareForwardLine
-                className="w-6 h-6 cursor-pointer"
-                onClick={() => toggleShare(firstPost.id)}
-              />
-              {activeSharePostId === firstPost.id && (
-                <div
-                  className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
-                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+            {/* social icon start */}
+            <div className="flex items-center gap-3 relative">
+              <div className="flex items-center gap-2">
+                <button onClick={() => handleLike(firstPost?.id)}>
+                  <SlLike className="w-6 h-6 cursor-pointer" />
+                </button>
+                <p className="text-lg font-medium text-black dark:text-white leading-normal">
+                  {firstPost?.likes_count || 0}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link
+                  href={`/${firstPost.cat_slug}/${firstPost.sub_slug}/${firstPost.slug}#comment`}
                 >
-                  <SocialShare
-                    url={getShareUrl(
-                      firstPost.category_id,
-                      firstPost.subcategory_id,
-                      firstPost.id
-                    )}
-                    title={firstPost.heading}
-                    summary={firstPost.sub_heading || "Check out this post!"}
-                  />
-                </div>
-              )}
-         <TbTargetArrow className="w-6 h-6 cursor-pointer" />
-             
+                  <button className="cursor-pointer">
+                    <FaRegCommentDots className="w-6 h-6 mt-1 cursor-pointer" />
+                  </button>
+                </Link>
+                <p className="text-lg font-medium text-black dark:text-white leading-normal">
+                  {firstPost?.comment_count || 0}
+                </p>
+              </div>
+              <SocialShareContent
+                postId={firstPost.slug}
+                categoryId={firstPost.cat_slug}
+                subcategoryId={firstPost.sub_slug}
+                heading={firstPost.heading}
+                subHeading={firstPost.sub_heading}
+                initialSharesCount={firstPost.shares_count || 0}
+                token={token}
+              />
+              <TbTargetArrow className="w-6 h-6 cursor-pointer" />
             </div>
 
-            {/* end  */}
+            {/* social icon end  */}
           </div>
           <div className="overflow-hidden">
             <Link
-              href={`/${firstPost.category_id}/${firstPost.subcategory_id}/${firstPost.id}`}
+              href={`/${firstPost.cat_slug}/${firstPost.sub_slug}/${firstPost.slug}`}
             >
               <div
                 style={{
@@ -263,7 +247,7 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
               <div className="col-span-5 lg:col-span-2 overflow-hidden">
                 <div>
                   <Link
-                    href={`/${secondPost.category_id}/${secondPost.subcategory_id}/${secondPost.id}`}
+                    href={`/${secondPost.cat_slug}/${secondPost.sub_slug}/${secondPost.slug}`}
                   >
                     <Image
                       src={getImageUrl(secondPost.image2?.[0] || "")}
@@ -277,7 +261,7 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
               </div>
               <div className="col-span-5 lg:col-span-3 space-y-4">
                 <Link
-                  href={`/${secondPost.category_id}/${secondPost.subcategory_id}/${secondPost.id}`}
+                  href={`/${secondPost.cat_slug}/${secondPost.sub_slug}/${secondPost.slug}`}
                 >
                   <motion.p
                     dangerouslySetInnerHTML={{ __html: secondPost.heading }}
@@ -289,57 +273,56 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                     }}
                   />
                 </Link>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col items-start gap-2">
                   <div className="flex items-center gap-2">
                     <Link
-                      href={`/blogs/${secondPost.category_name}`}
+                      href={`/blogs/${secondPost.cat_slug}`}
                       className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
                     >
                       {secondPost.category_name || "Category"}
                     </Link>
                     <Link
-                      href={`/${secondPost.category_id}/${secondPost.subcategory_id}`}
+                      href={`/${secondPost.cat_slug}/${secondPost.sub_slug}`}
                       className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
                     >
                       {secondPost.sub_category_name || "Subcategory"}
                     </Link>
                   </div>
-                  {/* start  */}
-                  <div className="flex items-center gap-3 relative share-container">
-                    <SlLike className="w-6 h-6 cursor-pointer" />
-                       <Link
-                      href={`/${secondPost.category_id}/${secondPost.subcategory_id}/${secondPost.id}#comment`}
-                      className="cursor-pointer"
-                    >
-                      <FaRegCommentDots className="w-6 h-6" />
-                    </Link>
-                    <RiShareForwardLine
-                      className="w-6 h-6 cursor-pointer"
-                      onClick={() => toggleShare(secondPost.id)}
-                    />
-                    {activeSharePostId === secondPost.id && (
-                      <div
-                        className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
-                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+                  {/* social icon start */}
+                  <div className="flex items-center gap-3 relative">
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => handleLike(secondPost?.id)}>
+                        <SlLike className="w-6 h-6 cursor-pointer" />
+                      </button>
+                      <p className="text-lg font-medium text-black dark:text-white leading-normal">
+                        {secondPost?.likes_count || 0}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={`/${secondPost.cat_slug}/${secondPost.sub_slug}/${secondPost.slug}#comment`}
                       >
-                        <SocialShare
-                          url={getShareUrl(
-                            secondPost.category_id,
-                            secondPost.subcategory_id,
-                            secondPost.id
-                          )}
-                          title={secondPost.heading}
-                          summary={
-                            secondPost.sub_heading || "Check out this post!"
-                          }
-                        />
-                      </div>
-                    )}
-               <TbTargetArrow className="w-6 h-6 cursor-pointer" />
-                 
+                        <button className="cursor-pointer">
+                          <FaRegCommentDots className="w-6 h-6 mt-1 cursor-pointer" />
+                        </button>
+                      </Link>
+                      <p className="text-lg font-medium text-black dark:text-white leading-normal">
+                        {secondPost?.comment_count || 0}
+                      </p>
+                    </div>
+                    <SocialShareContent
+                      postId={secondPost.slug}
+                      categoryId={secondPost.cat_slug}
+                      subcategoryId={secondPost.sub_slug}
+                      heading={secondPost.heading}
+                      subHeading={secondPost.sub_heading}
+                      initialSharesCount={secondPost.shares_count || 0}
+                      token={token}
+                    />
+                    <TbTargetArrow className="w-6 h-6 cursor-pointer" />
                   </div>
 
-                  {/* end  */}
+                  {/* social icon end  */}
                 </div>
                 <p
                   dangerouslySetInnerHTML={{ __html: secondPost.sub_heading }}
@@ -356,7 +339,7 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
             <div className="grid grid-cols-5 gap-4">
               <div className="col-span-5 lg:col-span-2 overflow-hidden">
                 <Link
-                  href={`/${thirdPost.category_id}/${thirdPost.subcategory_id}/${thirdPost.id}`}
+                  href={`/${thirdPost.cat_slug}/${thirdPost.sub_slug}/${thirdPost.slug}`}
                 >
                   <Image
                     src={getImageUrl(thirdPost.image2?.[0] || "")}
@@ -369,7 +352,7 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
               </div>
               <div className="col-span-5 lg:col-span-3 space-y-4">
                 <Link
-                  href={`/${thirdPost.category_id}/${thirdPost.subcategory_id}/${thirdPost.id}`}
+                  href={`/${thirdPost.cat_slug}/${thirdPost.sub_slug}/${thirdPost.slug}`}
                 >
                   <motion.p
                     dangerouslySetInnerHTML={{ __html: thirdPost.heading }}
@@ -381,57 +364,56 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                     }}
                   />
                 </Link>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col items-start gap-2">
                   <div className="flex items-center gap-2">
                     <Link
-                      href={`/blogs/${thirdPost.category_name}`}
+                      href={`/blogs/${thirdPost.cat_slug}`}
                       className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
                     >
                       {thirdPost.category_name || "Category"}
                     </Link>
                     <Link
-                      href={`/${thirdPost.category_id}/${thirdPost.subcategory_id}`}
+                      href={`/${thirdPost.cat_slug}/${thirdPost.sub_slug}`}
                       className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
                     >
                       {thirdPost.sub_category_name || "Subcategory"}
                     </Link>
                   </div>
-                  {/* start  */}
-                  <div className="flex items-center gap-3 relative mt-4 md:mt-0 lg:mt-0 share-container">
-                    <SlLike className="w-6 h-6 cursor-pointer" />
-                       <Link
-                      href={`/${thirdPost.category_id}/${thirdPost.subcategory_id}/${thirdPost.id}#comment`}
-                      className="cursor-pointer"
-                    >
-                      <FaRegCommentDots className="w-6 h-6" />
-                    </Link>
-                    <RiShareForwardLine
-                      className="w-6 h-6 cursor-pointer"
-                      onClick={() => toggleShare(thirdPost.id)}
-                    />
-                    {activeSharePostId === thirdPost.id && (
-                      <div
-                        className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
-                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+                  {/* social icon start */}
+                  <div className="flex items-center gap-3 relative">
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => handleLike(thirdPost?.id)}>
+                        <SlLike className="w-6 h-6 cursor-pointer" />
+                      </button>
+                      <p className="text-lg font-medium text-black dark:text-white leading-normal">
+                        {thirdPost?.likes_count || 0}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={`/${thirdPost.cat_slug}/${thirdPost.sub_slug}/${thirdPost.slug}#comment`}
                       >
-                        <SocialShare
-                          url={getShareUrl(
-                            thirdPost.category_id,
-                            thirdPost.subcategory_id,
-                            thirdPost.id
-                          )}
-                          title={thirdPost.heading}
-                          summary={
-                            thirdPost.sub_heading || "Check out this post!"
-                          }
-                        />
-                      </div>
-                    )}
-               <TbTargetArrow className="w-6 h-6 cursor-pointer" />
-                 
+                        <button className="cursor-pointer">
+                          <FaRegCommentDots className="w-6 h-6 mt-1 cursor-pointer" />
+                        </button>
+                      </Link>
+                      <p className="text-lg font-medium text-black dark:text-white leading-normal">
+                        {thirdPost?.comment_count || 0}
+                      </p>
+                    </div>
+                    <SocialShareContent
+                      postId={thirdPost.slug}
+                      categoryId={thirdPost.cat_slug}
+                      subcategoryId={thirdPost.sub_slug}
+                      heading={thirdPost.heading}
+                      subHeading={thirdPost.sub_heading}
+                      initialSharesCount={thirdPost.shares_count || 0}
+                      token={token}
+                    />
+                    <TbTargetArrow className="w-6 h-6 cursor-pointer" />
                   </div>
 
-                  {/* end  */}
+                  {/* social icon end  */}
                 </div>
                 <p
                   dangerouslySetInnerHTML={{ __html: thirdPost.sub_heading }}
@@ -446,7 +428,7 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
         </div>
         <div className="flex justify-end py-4">
           <Link
-            href={`/blogs/${firstPost?.category_name}`}
+            href={`/blogs/${firstPost?.cat_slug}`}
             className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-sm font-extrabold uppercase text-white flex items-center gap-2"
           >
             EXPLORE MORE <ArrowRight size={16} />

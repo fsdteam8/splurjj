@@ -12,7 +12,7 @@ import { FaLinkedinIn } from "react-icons/fa";
 import { IoLogoInstagram } from "react-icons/io5";
 import { FaYoutube } from "react-icons/fa6";
 import { Minus } from "lucide-react";
-import {  CategoryApiResponse } from "@/components/types/CategoryDataType";
+import { CategoryApiResponse } from "@/components/types/CategoryDataType";
 
 interface PageData {
   id: number;
@@ -73,8 +73,6 @@ const FooterSectionSkeleton = () => (
 );
 
 const Footer = () => {
-
-
   // footer get api logic start
   const {
     data: footerbg,
@@ -91,7 +89,7 @@ const Footer = () => {
 
   // footer get api logic end
 
-  // categories get api logic start 
+  // categories get api logic start
 
   const {
     data: categoriesData,
@@ -106,9 +104,9 @@ const Footer = () => {
       ),
   });
 
-   const categories = categoriesData && categoriesData?.data || [];
+  const categories = (categoriesData && categoriesData?.data) || [];
 
-  // category get api logic end 
+  // category get api logic end
 
   const {
     data: footerSections = [],
@@ -156,14 +154,15 @@ const Footer = () => {
     );
   }, [footerSections]);
 
-  if (isLoading ) {
+  if (isLoading) {
     // console.log("loading categories...");
     return null;
   }
   if (isError || categoriesIsError || sectionsError) {
     return (
       <div className="text-black text-lg font-medium">
-        Error: {error?.message || categoriesError?.message || sectionsError?.message}
+        Error:{" "}
+        {error?.message || categoriesError?.message || sectionsError?.message}
       </div>
     );
   }
@@ -194,17 +193,20 @@ const Footer = () => {
               <FooterSectionSkeleton />
             ) : (
               <ul>
-                {categories && categories?.map((item) => (
-                  <li key={`category-${item.category_name}`}>
-                    <Link
-                      href={`/blogs/${item.category_name}`}
-                      style={{ color: footerbg?.data?.text_color || "#1a1a1a" }}
-                      className="text-sm font-semibold cursor-pointer hover:underline tracking-[0%] leading-[120%] py-2 block"
-                    >
-                      {item.category_name}
-                    </Link>
-                  </li>
-                ))}
+                {categories &&
+                  categories?.map((item) => (
+                    <li key={`category-${item.category_name}`}>
+                      <Link
+                        href={`/blogs/${item.cat_slug}`}
+                        style={{
+                          color: footerbg?.data?.text_color || "#1a1a1a",
+                        }}
+                        className="text-sm font-semibold cursor-pointer hover:underline tracking-[0%] leading-[120%] py-2 block"
+                      >
+                        {item.category_name}
+                      </Link>
+                    </li>
+                  ))}
               </ul>
             )}
           </div>

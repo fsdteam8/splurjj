@@ -46,6 +46,9 @@ interface BlogData {
     likes_count: number;
     shares_count: number;
     comment_count: number;
+    cat_slug: string;
+    sub_slug: string;
+    slug: string;
     user: {
       id: number;
       description: string | null;
@@ -74,25 +77,7 @@ const ContentBlogDetails = ({
   const token = (session?.user as { token: string })?.token;
   const queryClient = useQueryClient();
 
-  // Like post API logic
-  const { mutate: handleLike } = useMutation({
-    mutationKey: ["like-post"],
-    mutationFn: async (postId: number) =>
-      await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${postId}/like`,
-        {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      ).then((res) => res.json()),
-    onSuccess: (data) => {
-      if (!data?.success) {
-        toast.error(data?.message || "Something went wrong");
-        return;
-      }
-      queryClient.invalidateQueries({ queryKey: ["single-blog"] });
-    },
-  });
+
 
   // Improved cleanTags function to handle malformed JSON strings
   const cleanTags = (tags: string[]): string[] => {
@@ -142,6 +127,8 @@ const ContentBlogDetails = ({
     });
   };
 
+  // single blog api logic 
+
   const { data, isLoading, error, isError } = useQuery<BlogData>({
     queryKey: ["single-blog", categoryId, subcategoryId, id],
     queryFn: () =>
@@ -151,6 +138,27 @@ const ContentBlogDetails = ({
   });
 
   const blogData = data?.data || null;
+
+    // Like post API logic
+  const { mutate: handleLike } = useMutation({
+    mutationKey: ["like-post"],
+    mutationFn: async (postId: number) =>
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${postId}/like`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      ).then((res) => res.json()),
+    onSuccess: (data) => {
+      if (!data?.success) {
+        toast.error(data?.message || "Something went wrong");
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ["single-blog"] });
+      queryClient.invalidateQueries({ queryKey: ["home-hero-section"] });
+    },
+  });
 
   const getImageUrl = (path: string | null): string => {
     if (!path) return "/fallback-image.jpg";
@@ -318,6 +326,8 @@ const ContentBlogDetails = ({
 
   const cleanedTags = cleanTags(blogData.tags || []);
 
+  console.log("comments", blogData)
+
   return (
     <div>
       <div className="container py-[30px] md:py-[50px] lg:py-[72px] ">
@@ -396,7 +406,7 @@ const ContentBlogDetails = ({
                 </div>
                 <div className="flex items-center gap-2 mt-1">
                   <Link
-                    href={`/${blogData.category_id}/${blogData.subcategory_id}/${blogData.id}#comment`}
+                    href={`/${blogData.cat_slug}/${blogData.sub_slug}/${blogData.slug}#comment`}
                   >
                     <button className="cursor-pointer">
                       <FaRegCommentDots className="w-6 h-6 cursor-pointer" />
@@ -407,9 +417,9 @@ const ContentBlogDetails = ({
                   </p>
                 </div>
                 <SocialShareContent
-                  postId={blogData.id}
-                  categoryId={blogData.category_id}
-                  subcategoryId={blogData.subcategory_id}
+                  postId={blogData.slug}
+                  categoryId={blogData.cat_slug}
+                  subcategoryId={blogData.sub_slug}
                   heading={blogData.heading}
                   subHeading={blogData.sub_heading}
                   initialSharesCount={blogData.shares_count || 0}
@@ -430,13 +440,13 @@ const ContentBlogDetails = ({
                 </h4>
                 <div className="md:col-span-5 w-full flex items-center gap-2">
                   <Link
-                    href={`/blogs/${blogData.category_name}`}
+                    href={`/blogs/${blogData.cat_slug}`}
                     className="bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
                   >
                     {blogData?.category_name || ""}
                   </Link>
                   <Link
-                    href={`/${blogData.category_id}/${blogData.subcategory_id}`}
+                    href={`/${blogData.cat_slug}/${blogData.sub_slug}`}
                     className="bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
                   >
                     {blogData?.sub_category_name || ""}
@@ -560,7 +570,7 @@ const ContentBlogDetails = ({
               {commentAccess && (
                 <div>
                   <section id="comment" className="py-5">
-                    <CommentSection UserEmail={userEmail} blogId={Number(id)} />
+                    <CommentSection UserEmail={userEmail} blogId={Number(blogData?.id)} />
                   </section>
                 </div>
               )}
