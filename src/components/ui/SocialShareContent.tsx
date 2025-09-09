@@ -18,9 +18,9 @@ import {
 import { RiShareForwardLine } from "react-icons/ri";
 
 interface ShareComponentProps {
-  postId: number;
-  categoryId: number;
-  subcategoryId: number;
+  postId: string;
+  categoryId: string;
+  subcategoryId: string;
   heading: string;
   subHeading?: string;
   initialSharesCount?: number;
@@ -37,8 +37,8 @@ const SocialShare = ({
   url: string;
   title: string;
   summary?: string;
-  postId: number;
-  onShare: (postId: number) => void;
+  postId: string;
+  onShare: (postId: string) => void;
 }) => {
   return (
     <div className="flex gap-3 mt-4">
@@ -61,7 +61,7 @@ const SocialShare = ({
   );
 };
 
-const useSharePost = (postId: number, token?: string) => {
+const useSharePost = (postId: string, token?: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -87,7 +87,7 @@ const useSharePost = (postId: number, token?: string) => {
   });
 };
 
-const useShareCount = (postId: number, token?: string) => {
+const useShareCount = (postId: string, token?: string) => {
   return useQuery({
     queryKey: ["share-count", postId],
     queryFn: async () =>
@@ -114,7 +114,7 @@ const SocialShareContent: React.FC<ShareComponentProps> = ({
   initialSharesCount = 0,
   token,
 }) => {
-  const [activeSharePostId, setActiveSharePostId] = useState<number | null>(null);
+  const [activeSharePostId, setActiveSharePostId] = useState<string | null>(null);
   const { mutate: sharePost } = useSharePost(postId, token);
   const { data: shareCountData } = useShareCount(postId, token);
 

@@ -17,14 +17,14 @@ interface ArtCultureProps {
   categoryName: { categoryName: string };
 }
 
-const QuitCalm: React.FC<ArtCultureProps> = ({ categoryName }) => {
+const BodyForm: React.FC<ArtCultureProps> = ({ categoryName }) => {
   const session = useSession();
   const token = (session?.data?.user as { token: string })?.token;
   const queryClient = useQueryClient();
 
   // Get API call for home page
   const { data, isLoading, isError, error } = useQuery<HomeContentApiResponse>({
-    queryKey: ["quit-calm"],
+    queryKey: ["body-form-section"],
     queryFn: async () =>
       await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/${categoryName?.categoryName}`
@@ -49,7 +49,7 @@ const QuitCalm: React.FC<ArtCultureProps> = ({ categoryName }) => {
         toast.error(data?.message || "Something went wrong");
         return;
       }
-      queryClient.invalidateQueries({ queryKey: ["quit-calm"] });
+      queryClient.invalidateQueries({ queryKey: ["body-form-section"] });
     },
   });
 
@@ -536,4 +536,4 @@ const QuitCalm: React.FC<ArtCultureProps> = ({ categoryName }) => {
   );
 };
 
-export default QuitCalm;
+export default BodyForm;

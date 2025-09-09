@@ -167,13 +167,13 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
           <div className="md:flex items-center gap-2 mb-4 ">
             <div className="flex items-center gap-2">
               <Link
-                href={`/blogs/${firstPost.category_name}`}
+                href={`/blogs/${firstPost.cat_slug}`}
                 className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-sm font-extrabold uppercase text-white"
               >
                 {firstPost.category_name || "Category"}
               </Link>
               <Link
-                href={`/${firstPost.category_id}/${firstPost.subcategory_id}`}
+                href={`/${firstPost.cat_slug}/${firstPost.sub_slug}`}
                 className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-sm font-extrabold uppercase text-white"
               >
                 {firstPost.sub_category_name || "Subcategory"}
@@ -192,7 +192,7 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
               </div>
               <div className="flex items-center gap-2">
                 <Link
-                  href={`/${firstPost.category_id}/${firstPost.subcategory_id}/${firstPost.id}#comment`}
+                  href={`/${firstPost.cat_slug}/${firstPost.sub_slug}/${firstPost.slug}#comment`}
                 >
                   <button className="cursor-pointer">
                     <FaRegCommentDots className="w-6 h-6 cursor-pointer mt-1" />
@@ -203,9 +203,9 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 </p>
               </div>
               <SocialShareContent
-                postId={firstPost.id}
-                categoryId={firstPost.category_id}
-                subcategoryId={firstPost.subcategory_id}
+                postId={firstPost.slug}
+                categoryId={firstPost.cat_slug}
+                subcategoryId={firstPost.sub_slug}
                 heading={firstPost.heading}
                 subHeading={firstPost.sub_heading}
                 initialSharesCount={firstPost.shares_count || 0}
@@ -219,7 +219,7 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 rounded overflow-hidden">
             <div className="bg-[#DDD618] aspect-[1.5/1] w-full flex items-center justify-center p-4 ">
               <Link
-                href={`/${firstPost.category_id}/${firstPost.subcategory_id}/${firstPost.id}`}
+                href={`/${firstPost.cat_slug}/${firstPost.sub_slug}/${firstPost.slug}`}
                 className="text-2xl font-medium text-[#131313] "
               >
                 <motion.p
@@ -236,7 +236,7 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
             </div>
             <div className="overflow-hidden">
               <Link
-                href={`/${firstPost.category_id}/${firstPost.subcategory_id}/${firstPost.id}`}
+                href={`/${firstPost.cat_slug}/${firstPost.sub_slug}/${firstPost.slug}`}
                 className="overflow-hidden"
               >
                 <Image
@@ -263,13 +263,13 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
             <div className="max-h-[600px] relative">
               <div className="flex items-center gap-2 mb-2">
                 <Link
-                  href={`/blogs/${thirdPost.category_name}`}
+                  href={`/blogs/${thirdPost.cat_slug}`}
                   className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
                 >
                   {thirdPost.category_name || "Category"}
                 </Link>
                 <Link
-                  href={`/${thirdPost.category_id}/${thirdPost.subcategory_id}`}
+                  href={`/${thirdPost.cat_slug}/${thirdPost.sub_slug}`}
                   className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
                 >
                   {thirdPost.sub_category_name || "Subcategory"}
@@ -277,7 +277,7 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
               </div>
               <div className="overflow-hidden ">
                 <Link
-                  href={`/${thirdPost.category_id}/${thirdPost.subcategory_id}/${thirdPost.id}`}
+                  href={`/${thirdPost.cat_slug}/${thirdPost.sub_slug}/${thirdPost.slug}`}
                 >
                   <Image
                     src={getImageUrl(thirdPost.image2?.[0] || "")}
@@ -292,7 +292,7 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
 
               <div className="p-4">
                 <Link
-                  href={`/${thirdPost.category_id}/${thirdPost.subcategory_id}/${thirdPost.id}`}
+                  href={`/${thirdPost.cat_slug}/${thirdPost.sub_slug}/${thirdPost.slug}`}
                 >
                   <motion.p
                     dangerouslySetInnerHTML={{ __html: thirdPost.heading }}
@@ -321,7 +321,7 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Link
-                      href={`/${thirdPost.category_id}/${thirdPost.subcategory_id}/${thirdPost.id}#comment`}
+                      href={`/${thirdPost.cat_slug}/${thirdPost.sub_slug}/${thirdPost.slug}#comment`}
                     >
                       <button className="cursor-pointer">
                         <FaRegCommentDots className="w-6 h-6 cursor-pointer mt-1" />
@@ -332,9 +332,9 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
                     </p>
                   </div>
                   <SocialShareContent
-                    postId={thirdPost.id}
-                    categoryId={thirdPost.category_id}
-                    subcategoryId={thirdPost.subcategory_id}
+                    postId={thirdPost.slug}
+                    categoryId={thirdPost.cat_slug}
+                    subcategoryId={thirdPost.sub_slug}
                     heading={thirdPost.heading}
                     subHeading={thirdPost.sub_heading}
                     initialSharesCount={thirdPost.shares_count || 0}
@@ -356,13 +356,13 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
             <div className="max-h-[600px] relative">
               <div className="flex items-center gap-2 mb-2">
                 <Link
-                  href={`/blogs/${fourthPost.category_name}`}
+                  href={`/blogs/${fourthPost.cat_slug}`}
                   className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
                 >
                   {fourthPost.category_name || "Category"}
                 </Link>
                 <Link
-                  href={`/${fourthPost.category_id}/${fourthPost.subcategory_id}`}
+                  href={`/${fourthPost.cat_slug}/${fourthPost.sub_slug}`}
                   className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
                 >
                   {fourthPost.sub_category_name || "Subcategory"}
@@ -370,7 +370,7 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
               </div>
               <div className="overflow-hidden">
                 <Link
-                  href={`/${fourthPost.category_id}/${fourthPost.subcategory_id}/${fourthPost.id}`}
+                  href={`/${fourthPost.cat_slug}/${fourthPost.sub_slug}/${fourthPost.slug}`}
                 >
                   <Image
                     src={getImageUrl(fourthPost.image2?.[0] || "")}
@@ -385,7 +385,7 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
 
               <div className="p-4">
                 <Link
-                  href={`/${fourthPost.category_id}/${fourthPost.subcategory_id}/${fourthPost.id}`}
+                  href={`/${fourthPost.cat_slug}/${fourthPost.sub_slug}/${fourthPost.slug}`}
                 >
                   <motion.p
                     dangerouslySetInnerHTML={{ __html: fourthPost.heading }}
@@ -413,7 +413,7 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Link
-                      href={`/${fourthPost.category_id}/${fourthPost.subcategory_id}/${fourthPost.id}#comment`}
+                      href={`/${fourthPost.cat_slug}/${fourthPost.sub_slug}/${fourthPost.slug}#comment`}
                     >
                       <button className="cursor-pointer">
                         <FaRegCommentDots className="w-6 h-6 cursor-pointer mt-1" />
@@ -424,9 +424,9 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
                     </p>
                   </div>
                   <SocialShareContent
-                    postId={fourthPost.id}
-                    categoryId={fourthPost.category_id}
-                    subcategoryId={fourthPost.subcategory_id}
+                    postId={fourthPost.slug}
+                    categoryId={fourthPost.cat_slug}
+                    subcategoryId={fourthPost.sub_slug}
                     heading={fourthPost.heading}
                     subHeading={fourthPost.sub_heading}
                     initialSharesCount={fourthPost.shares_count || 0}
@@ -448,13 +448,13 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
             <div className="max-h-[600px] relative">
               <div className="flex items-center gap-2 mb-2">
                 <Link
-                  href={`/blogs/${fifthPost.category_name}`}
+                  href={`/blogs/${fifthPost.cat_slug}`}
                   className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
                 >
                   {fifthPost.category_name || "Category"}
                 </Link>
                 <Link
-                  href={`/${fifthPost.category_id}/${fifthPost.subcategory_id}`}
+                  href={`/${fifthPost.cat_slug}/${fifthPost.sub_slug}`}
                   className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
                 >
                   {fifthPost.sub_category_name || "Subcategory"}
@@ -463,7 +463,7 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
               <div className="relative">
                 <div className="overflow-hidden">
                   <Link
-                    href={`/${fifthPost.category_id}/${fifthPost.subcategory_id}/${fifthPost.id}`}
+                    href={`/${fifthPost.cat_slug}/${fifthPost.sub_slug}/${fifthPost.slug}`}
                   >
                     <Image
                       src={getImageUrl(fifthPost.image2?.[0] || "")}
@@ -479,7 +479,7 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
 
                 <div className="p-4">
                   <Link
-                    href={`/${fifthPost.category_id}/${fifthPost.subcategory_id}/${fifthPost.id}`}
+                    href={`/${fifthPost.cat_slug}/${fifthPost.sub_slug}/${fifthPost.slug}`}
                   >
                     <motion.p
                       dangerouslySetInnerHTML={{ __html: fifthPost.heading }}
@@ -507,7 +507,7 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
                     </div>
                     <div className="flex items-center gap-2">
                       <Link
-                        href={`/${fifthPost.category_id}/${fifthPost.subcategory_id}/${fifthPost.id}#comment`}
+                        href={`/${fifthPost.cat_slug}/${fifthPost.sub_slug}/${fifthPost.slug}#comment`}
                       >
                         <button className="cursor-pointer">
                           <FaRegCommentDots className="w-6 h-6 cursor-pointer mt-1" />
@@ -518,9 +518,9 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
                       </p>
                     </div>
                     <SocialShareContent
-                      postId={fifthPost.id}
-                      categoryId={fifthPost.category_id}
-                      subcategoryId={fifthPost.subcategory_id}
+                      postId={fifthPost.slug}
+                      categoryId={fifthPost.cat_slug}
+                      subcategoryId={fifthPost.sub_slug}
                       heading={fifthPost.heading}
                       subHeading={fifthPost.sub_heading}
                       initialSharesCount={fifthPost.shares_count || 0}
