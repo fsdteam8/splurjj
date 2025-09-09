@@ -41,7 +41,7 @@ function MainHome() {
   // console.log(categories[0]?.category_name);
     const categories = categoriesData && categoriesData?.data || [];
 
-    console.log(categories , "categories");
+    // console.log(categories , "categories");
 
   const firstCategory = categories[0]?.cat_slug;
   const secoundCategory = categories[1]?.cat_slug;
