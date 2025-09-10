@@ -82,7 +82,7 @@ function CategoryContainer({ categoryName }: CategoryContainerProps) {
       .replace(/\b\w/g, (char) => char.toUpperCase());
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-1 md:px-4">
       <div className="text-center pt-16">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">
           {capitalize(categoryName)} Content

@@ -336,7 +336,7 @@ function Contents({ initialSearchQuery }: ContentsProps) {
                 {post.author} - {post.date}
               </p>
               {/* social icon start */}
-              <div className="flex items-center gap-3 mt-2 relative">
+              <div className="flex items-center gap-3 mt-4 md:mt-2 relative">
                  <PostLikeStatus postId={post.id} />
                 <div className="flex items-center gap-2">
                   <Link
