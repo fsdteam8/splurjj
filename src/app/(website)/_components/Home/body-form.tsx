@@ -239,7 +239,7 @@ const BodyForm: React.FC<ArtCultureProps> = ({ categoryName }) => {
             </div>
           </div>
           <div className="pt-4">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
               <div className="flex items-center gap-2">
                 <Link
                   href={`/blogs/${firstPost.cat_slug}`}
@@ -255,7 +255,7 @@ const BodyForm: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 </Link>
               </div>
               {/* social icon start */}
-              <div className="flex items-center gap-5 relative">
+              <div className="flex items-center gap-5 relative mt-4 md:mt-0">
                 <PostLikeStatus postId={firstPost.id} />
                 <div className="flex items-center gap-2">
                   <Link

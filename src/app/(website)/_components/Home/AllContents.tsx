@@ -22,7 +22,7 @@ const AllContents: React.FC = () => {
   const token = (session?.data?.user as { token: string })?.token;
   const queryClient = useQueryClient();
 
-  console.log("token", token);
+  // console.log("token", token);
 
   function convertToCDNUrl(image2?: string): string {
     const image2BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
@@ -61,7 +61,7 @@ const AllContents: React.FC = () => {
 
   const contents = data?.data || [];
 
-  // Function to fetch like status for a specific post
+  // Function to fetch like status for a specific get
   const fetchLikeStatus = async (postId: number): Promise<LikeApiResponse> => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/content/${postId}/like-status`,
@@ -229,7 +229,7 @@ const AllContents: React.FC = () => {
               </div>
 
               {/* social icon start */}
-              <div className="flex items-center gap-5 relative">
+              <div className="flex items-center gap-5 relative mt-4 md:mt-0">
                 {/* <div className="flex items-center gap-2">
                   <button onClick={() => handleLike(firstPost?.id)}>
                     <SlLike className="w-6 h-6 cursor-pointer" />
@@ -240,7 +240,7 @@ const AllContents: React.FC = () => {
                   </p>
                 </div> */}
                 <PostLikeStatus postId={firstPost.id} />
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 ">
                   <Link
                     href={`/${firstPost?.cat_slug}/${firstPost?.sub_slug}/${firstPost?.slug}#comment`}
                   >

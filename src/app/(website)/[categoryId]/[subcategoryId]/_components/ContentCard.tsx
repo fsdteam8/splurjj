@@ -8,9 +8,11 @@ import SkeletonLoader from "./SkeletonLoader";
 import { motion } from "framer-motion";
 import { SlLike } from "react-icons/sl";
 import { useSession } from "next-auth/react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import SocialShareContent from "@/components/ui/SocialShareContent";
+import { AiFillLike } from "react-icons/ai";
+import { LikeApiResponse } from "@/components/types/like-get-data-type";
 
 interface Post {
   id: number;
@@ -65,7 +67,49 @@ const SecondContents = ({
   const observerRef = useRef<HTMLDivElement>(null);
   const session = useSession();
   const token = (session?.data?.user as { token: string })?.token;
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
+
+// Function to fetch like status for a specific get
+  const fetchLikeStatus = async (postId: number): Promise<LikeApiResponse> => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/content/${postId}/like-status`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch like status for post ${postId}`);
+    }
+    return response.json();
+  };
+
+  // Component to render like status for a post
+  const PostLikeStatus: React.FC<{ postId: number }> = ({ postId }) => {
+    const { data: likeData, isLoading: isLikeLoading } =
+      useQuery<LikeApiResponse>({
+        queryKey: ["like", postId],
+        queryFn: () => fetchLikeStatus(postId),
+        enabled: !!postId,
+      });
+
+    return (
+      <div className="flex items-center gap-2">
+        <button onClick={() => handleLike(postId)}>
+          {likeData?.data?.liked ? (
+            <AiFillLike className="w-6 h-6 cursor-pointer text-primary" />
+          ) : (
+            <SlLike className="w-6 h-6 cursor-pointer" />
+          )}
+        </button>
+        <p className="text-lg font-medium text-black dark:text-white leading-normal">
+          {isLikeLoading ? "..." : likeData?.data?.likes_count || 0}
+        </p>
+      </div>
+    );
+  };
 
   // Like post API logic
   const { mutate: handleLike } = useMutation({
@@ -78,12 +122,19 @@ const SecondContents = ({
           headers: { Authorization: `Bearer ${token}` },
         }
       ).then((res) => res.json()),
-    onSuccess: (data) => {
-      if (!data?.success) {
-        toast.error(data?.message || "Something went wrong");
-        return;
+    onSuccess: (postId) => {
+      // toast.success(data?.message || "Liked successfully");
+
+      // Invalidate the post query so the like count updates
+      queryClient.invalidateQueries({ queryKey: ["like", postId] });
+    },
+
+    onError: (error: Error) => {
+      if (!token) {
+        toast.error("You need to login first");
+      } else {
+        toast.error(error.message || "Something went wrong");
       }
-      // queryClient.invalidateQueries({ queryKey: ["home-hero-section"] });
     },
   });
 
@@ -248,14 +299,7 @@ const SecondContents = ({
 
                       {/* social icon start */}
                       <div className="flex items-center gap-5 relative">
-                        <div className="flex items-center gap-2">
-                          <button onClick={() => handleLike(post?.id)}>
-                            <SlLike className="w-6 h-6 cursor-pointer" />
-                          </button>
-                          <p className="text-lg font-medium text-black dark:text-white leading-normal">
-                            {post?.likes_count || 0}
-                          </p>
-                        </div>
+                        <PostLikeStatus postId={post.id} />
                         <div className="flex items-center gap-2">
                           <Link
                             href={`/${post?.cat_slug}/${post?.sub_slug}/${post?.slug}#comment`}
@@ -349,14 +393,7 @@ const SecondContents = ({
                       </div>
                       {/* social icon start */}
                       <div className="flex items-center gap-5 relative">
-                        <div className="flex items-center gap-2">
-                          <button onClick={() => handleLike(post?.id)}>
-                            <SlLike className="w-6 h-6 cursor-pointer" />
-                          </button>
-                          <p className="text-lg font-medium text-black dark:text-white leading-normal">
-                            {post?.likes_count || 0}
-                          </p>
-                        </div>
+                        <PostLikeStatus postId={post.id} />
                         <div className="flex items-center gap-2">
                           <Link
                             href={`/${post?.cat_slug}/${post?.sub_slug}/${post?.slug}#comment`}

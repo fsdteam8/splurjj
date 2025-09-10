@@ -9,10 +9,17 @@ import Link from "next/link";
 import TableSkeletonWrapper from "@/components/shared/TableSkeletonWrapper/TableSkeletonWrapper";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
-import { useMutation, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useInfiniteQuery,
+  useQueryClient,
+  useQuery,
+} from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import SocialShareContent from "@/components/ui/SocialShareContent";
 import { SlLike } from "react-icons/sl";
+import { AiFillLike } from "react-icons/ai";
+import { LikeApiResponse } from "@/components/types/like-get-data-type";
 
 // Define the expected shape of a blog post from the API
 interface BlogPost {
@@ -82,6 +89,48 @@ const TagContainer: React.FC<TagContainerProps> = ({
   const token = (session?.data?.user as { token: string })?.token;
   const queryClient = useQueryClient();
 
+  // Function to fetch like status for a specific get
+  const fetchLikeStatus = async (postId: number): Promise<LikeApiResponse> => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/content/${postId}/like-status`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch like status for post ${postId}`);
+    }
+    return response.json();
+  };
+
+  // Component to render like status for a post
+  const PostLikeStatus: React.FC<{ postId: number }> = ({ postId }) => {
+    const { data: likeData, isLoading: isLikeLoading } =
+      useQuery<LikeApiResponse>({
+        queryKey: ["like", postId],
+        queryFn: () => fetchLikeStatus(postId),
+        enabled: !!postId,
+      });
+
+    return (
+      <div className="flex items-center gap-2">
+        <button onClick={() => handleLike(postId)}>
+          {likeData?.data?.liked ? (
+            <AiFillLike className="w-6 h-6 cursor-pointer text-primary" />
+          ) : (
+            <SlLike className="w-6 h-6 cursor-pointer" />
+          )}
+        </button>
+        <p className="text-lg font-medium text-black dark:text-white leading-normal">
+          {isLikeLoading ? "..." : likeData?.data?.likes_count || 0}
+        </p>
+      </div>
+    );
+  };
+
   // Like post API logic
   const { mutate: handleLike } = useMutation({
     mutationKey: ["like-post"],
@@ -93,12 +142,19 @@ const TagContainer: React.FC<TagContainerProps> = ({
           headers: { Authorization: `Bearer ${token}` },
         }
       ).then((res) => res.json()),
-    onSuccess: (data) => {
-      if (!data?.success) {
-        toast.error(data?.message || "Something went wrong");
-        return;
+    onSuccess: (postId) => {
+      // toast.success(data?.message || "Liked successfully");
+
+      // Invalidate the post query so the like count updates
+      queryClient.invalidateQueries({ queryKey: ["like", postId] });
+    },
+
+    onError: (error: Error) => {
+      if (!token) {
+        toast.error("You need to login first");
+      } else {
+        toast.error(error.message || "Something went wrong");
       }
-      queryClient.invalidateQueries({ queryKey: ["tag-posts"] });
     },
   });
 
@@ -203,7 +259,8 @@ const TagContainer: React.FC<TagContainerProps> = ({
     return (
       <div className="container py-10">
         <div className="text-center" role="alert" aria-live="polite">
-          Error: {error instanceof Error ? error.message : "Failed to load posts"}
+          Error:{" "}
+          {error instanceof Error ? error.message : "Failed to load posts"}
           <button
             onClick={() => fetchNextPage()}
             className="ml-4 py-2 px-4 bg-primary text-white rounded-[4px]"
@@ -237,9 +294,7 @@ const TagContainer: React.FC<TagContainerProps> = ({
           >
             <div className="space-y-2">
               <div className="overflow-hidden mb-4">
-                <Link
-                  href={`/${post.cat_slug}/${post.sub_slug}/${post.slug}`}
-                >
+                <Link href={`/${post.cat_slug}/${post.sub_slug}/${post.slug}`}>
                   <Image
                     src={getImageUrl(post.image2?.[0] || "")}
                     alt={post.heading.replace(/<[^>]+>/g, "")}
@@ -267,9 +322,7 @@ const TagContainer: React.FC<TagContainerProps> = ({
                   {post.sub_category_name || "Subcategory"}
                 </Link>
               </div>
-              <Link
-                href={`/${post.cat_slug}/${post.sub_slug}/${post.slug}`}
-              >
+              <Link href={`/${post.cat_slug}/${post.sub_slug}/${post.slug}`}>
                 <motion.p
                   dangerouslySetInnerHTML={{ __html: post.heading }}
                   className="text-2xl font-medium line-clamp-2 mt-2"
@@ -286,14 +339,7 @@ const TagContainer: React.FC<TagContainerProps> = ({
 
               {/* social icon start */}
               <div className="flex items-center gap-5 relative mt-4">
-                <div className="flex items-center gap-2">
-                  <button onClick={() => handleLike(post?.id)}>
-                    <SlLike className="w-6 h-6 cursor-pointer" />
-                  </button>
-                  <p className="text-lg font-medium text-black dark:text-white leading-normal">
-                    {post?.likes_count || 0}
-                  </p>
-                </div>
+                <PostLikeStatus postId={post.id} />
                 <div className="flex items-center gap-2 mt-1">
                   <Link
                     href={`/${post.cat_slug}/${post.sub_slug}/${post.slug}#comment`}
@@ -352,26 +398,6 @@ const TagContainer: React.FC<TagContainerProps> = ({
 };
 
 export default TagContainer;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // /* eslint-disable react-hooks/exhaustive-deps */
 // "use client";

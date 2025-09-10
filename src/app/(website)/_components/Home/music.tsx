@@ -221,7 +221,7 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
             </div>
 
             {/* social icon start */}
-            <div className="flex items-center gap-5 relative">
+            <div className="flex items-center gap-5 relative mt-4 md:mt-0">
               <PostLikeStatus postId={firstPost.id} />
               <div className="flex items-center gap-2">
                 <Link
