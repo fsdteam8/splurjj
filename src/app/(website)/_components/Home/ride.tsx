@@ -228,7 +228,7 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   }}
                 />
               </Link>
-              <div className="flex items-center justify-end gap-2">
+              <div className="flex flex-col md:flex-row items-end md:items-center justify-end gap-2">
                 <div className="flex items-center gap-2">
                   <Link
                     href={`/blogs/${firstPost.cat_slug}`}
@@ -245,7 +245,7 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 </div>
 
                 {/* social icon start */}
-                <div className="flex items-center gap-5 relative">
+                <div className="flex items-center gap-5 relative mt-4 md:mt-0">
                   <PostLikeStatus postId={firstPost.id} />
                   <div className="flex items-center gap-2">
                     <Link
@@ -339,7 +339,7 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   }}
                 />
               </Link>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
                 <div className="flex items-center gap-2">
                   <Link
                     href={`/blogs/${secondPost.cat_slug}`}
@@ -355,7 +355,7 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   </Link>
                 </div>
                 {/* social icon start */}
-                <div className="flex items-center gap-5 relative">
+                <div className="flex items-center gap-5 relative mt-4 md:mt-0">
                   <PostLikeStatus postId={secondPost.id} />
                   <div className="flex items-center gap-2">
                     <Link

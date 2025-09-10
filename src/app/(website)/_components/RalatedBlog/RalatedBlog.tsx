@@ -2,13 +2,17 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaRegCommentDots } from "react-icons/fa6";
-import { RiShareForwardLine } from "react-icons/ri";
 import { TbTargetArrow } from "react-icons/tb";
 import SplurjjPagination from "@/components/ui/SplurjjPagination";
 import Vertical from "@/components/adds/vertical";
 import { motion } from "framer-motion";
-import SocialShare from "@/components/ui/SocialShare";
 import { SlLike } from "react-icons/sl";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { LikeApiResponse } from "@/components/types/like-get-data-type";
+import { AiFillLike } from "react-icons/ai";
+import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
+import SocialShareContent from "@/components/ui/SocialShareContent";
 
 // Define the BlogPost type
 interface BlogPost {
@@ -24,6 +28,12 @@ interface BlogPost {
   imageLink?: string | null;
   date?: string;
   author?: string;
+  likes_count: number;
+  shares_count: number;
+  comment_count: number;
+  cat_slug: string;
+  sub_slug: string;
+  slug: string;
 }
 
 type RelatedBlogsDataTypeProps = {
@@ -41,47 +51,80 @@ const RelatedContent = ({
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [totalPosts, setTotalPosts] = useState<number>(0);
+  const session = useSession();
+  const token = (session?.data?.user as { token: string })?.token;
+  const queryClient = useQueryClient();
 
   const postsPerPage = 8;
 
-  // share start
-  const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
-    null
-  );
-
-  // Toggle share modal
-  const toggleShare = (postId: number) => {
-    setActiveSharePostId(activeSharePostId === postId ? null : postId);
-  };
-
-  // Close on outside click
-useEffect(() => {
-  function handleClickOutside(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-
-    // Only close if the click is NOT inside a share modal or share button
-    if (!target.closest(".share-container")) {
-      setActiveSharePostId(null);
+  // Function to fetch like status for a specific get
+  const fetchLikeStatus = async (postId: number): Promise<LikeApiResponse> => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/content/${postId}/like-status`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch like status for post ${postId}`);
     }
-  }
-
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, []);
-
-
-  const getShareUrl = (
-    categoryId: number,
-    subcategoryId: number,
-    id: number
-  ): string => {
-    if (typeof window === "undefined") return ""; // avoid SSR crash
-    return `${window.location.origin}/${categoryId}/${subcategoryId}/${id}`;
+    return response.json();
   };
 
-  // share close
+  // Component to render like status for a post
+  const PostLikeStatus: React.FC<{ postId: number }> = ({ postId }) => {
+    const { data: likeData, isLoading: isLikeLoading } =
+      useQuery<LikeApiResponse>({
+        queryKey: ["like", postId],
+        queryFn: () => fetchLikeStatus(postId),
+        enabled: !!postId,
+      });
+
+    return (
+      <div className="flex items-center gap-2">
+        <button onClick={() => handleLike(postId)}>
+          {likeData?.data?.liked ? (
+            <AiFillLike className="w-6 h-6 cursor-pointer text-primary" />
+          ) : (
+            <SlLike className="w-6 h-6 cursor-pointer" />
+          )}
+        </button>
+        <p className="text-lg font-medium text-black dark:text-white leading-normal">
+          {isLikeLoading ? "..." : likeData?.data?.likes_count || 0}
+        </p>
+      </div>
+    );
+  };
+
+  // Like post API logic
+  const { mutate: handleLike } = useMutation({
+    mutationKey: ["like-post"],
+    mutationFn: async (postId: number) =>
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${postId}/like`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      ).then((res) => res.json()),
+    onSuccess: (postId) => {
+      // toast.success(data?.message || "Liked successfully");
+
+      // Invalidate the post query so the like count updates
+      queryClient.invalidateQueries({ queryKey: ["like", postId] });
+    },
+
+    onError: (error: Error) => {
+      if (!token) {
+        toast.error("You need to login first");
+      } else {
+        toast.error(error.message || "Something went wrong");
+      }
+    },
+  });
 
   // Fetch related blog posts
   useEffect(() => {
@@ -164,10 +207,9 @@ useEffect(() => {
         <div className="col-span-8 md:col-span-5 lg:col-span-6 pb-16">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-[24px] md:gap-[30px] lg:gap-[36px] capitalize">
             {posts.map((post) => {
-              const isActive = activeSharePostId === post.id;
               return (
                 <div key={post.id}>
-                  <div className="flex items-center gap-2 mb-4">
+                  {/* <div className="flex flex-col items-start gap-2 mb-4">
                     <div className="flex items-center gap-2">
                       <Link
                         href={`/blogs/${post.category_name}`}
@@ -182,45 +224,36 @@ useEffect(() => {
                         {post.sub_category_name || "Subcategory"}
                       </Link>
                     </div>
-                    {/* start */}
-                    <div className="flex items-center gap-3 relative share-container">
-                      <SlLike className="w-6 h-6 cursor-pointer" />
-                       <Link
-                        href={`/${post.category_id}/${post.subcategory_id}/${post.id}#comment`}
-                        className="cursor-pointer"
-                      >
-                        <FaRegCommentDots className="w-6 h-6" />
-                      </Link>
-                      <RiShareForwardLine
-                        className="w-6 h-6 cursor-pointer"
-                        onClick={() => toggleShare(post.id)}
-                      />
-
-                      {isActive && (
-                        <div
-                          className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-4 
-                        flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+                    <div className="flex items-center gap-5 relative mt-1">
+                      <PostLikeStatus postId={post.id} />
+                      <div className="flex items-center gap-2 mt-1">
+                        <Link
+                          href={`/${post.cat_slug}/${post.sub_slug}/${post.slug}#comment`}
                         >
-                          <SocialShare
-                            url={getShareUrl(
-                              post.category_id,
-                              post.subcategory_id,
-                              post.id
-                            )}
-                            title={post.heading}
-                            summary={post.sub_heading || "Check out this post!"}
-                          />
-                        </div>
-                      )}
-
+                          <button className="cursor-pointer">
+                            <FaRegCommentDots className="w-6 h-6 cursor-pointer mt-1" />
+                          </button>
+                        </Link>
+                        <p className="text-lg font-medium text-black dark:text-white leading-normal">
+                          {post?.comment_count || 0}
+                        </p>
+                      </div>
+                      <SocialShareContent
+                        postId={post.slug}
+                        categoryId={post.cat_slug}
+                        subcategoryId={post.sub_slug}
+                        heading={post.heading}
+                        subHeading={post.sub_heading}
+                        initialSharesCount={post.shares_count || 0}
+                        token={token} // Pass token to SocialShareContent
+                      />
                       <TbTargetArrow className="w-6 h-6 cursor-pointer" />
-                     
                     </div>
-                    {/* end */}
-                  </div>
+
+                  </div> */}
                   <div className="overflow-hidden mb-2">
                     <Link
-                      href={`/${post.category_id}/${post.subcategory_id}/${post.id}`}
+                      href={`/${post.cat_slug}/${post.sub_slug}/${post.slug}`}
                     >
                       <Image
                         src={getImageUrl(post.image2?.[0] || "")}
@@ -232,8 +265,24 @@ useEffect(() => {
                       />
                     </Link>
                   </div>
+
+                  <div className="flex items-center gap-2 py-2">
+                    <Link
+                      href={`/blogs/${post.cat_slug}`}
+                      className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-sm font-extrabold uppercase text-white"
+                    >
+                      {post.category_name || "Category"}
+                    </Link>
+                    <Link
+                      href={`/${post.cat_slug}/${post.sub_slug}`}
+                      className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-sm font-extrabold uppercase text-white"
+                    >
+                      {post.sub_category_name || "Subcategory"}
+                    </Link>
+                  </div>
+
                   <Link
-                    href={`/${post.category_id}/${post.subcategory_id}/${post.id}`}
+                    href={`/${post.cat_slug}/${post.sub_slug}/${post.slug}`}
                   >
                     <motion.p
                       dangerouslySetInnerHTML={{ __html: post.heading }}
@@ -246,9 +295,37 @@ useEffect(() => {
                       }}
                     />
                   </Link>
-                  <p className="text-base font-semibold leading-[120%] tracking-[0%] uppercase text-[#424242] mt-4 md:mt-5 lg:mt-6">
+                  <p className="text-base font-semibold leading-[120%] tracking-[0%] uppercase text-[#424242] mt-2 lg:mt-3">
                     {post.author} - {post.date}
                   </p>
+                  {/* social icon start */}
+                  <div className="flex items-center gap-5 relative mt-1">
+                    <PostLikeStatus postId={post.id} />
+                    <div className="flex items-center gap-2 mt-1">
+                      <Link
+                        href={`/${post.cat_slug}/${post.sub_slug}/${post.slug}#comment`}
+                      >
+                        <button className="cursor-pointer">
+                          <FaRegCommentDots className="w-6 h-6 cursor-pointer mt-1" />
+                        </button>
+                      </Link>
+                      <p className="text-lg font-medium text-black dark:text-white leading-normal">
+                        {post?.comment_count || 0}
+                      </p>
+                    </div>
+                    <SocialShareContent
+                      postId={post.slug}
+                      categoryId={post.cat_slug}
+                      subcategoryId={post.sub_slug}
+                      heading={post.heading}
+                      subHeading={post.sub_heading}
+                      initialSharesCount={post.shares_count || 0}
+                      token={token} // Pass token to SocialShareContent
+                    />
+                    <TbTargetArrow className="w-6 h-6 cursor-pointer" />
+                  </div>
+
+                  {/* social icon end  */}
                   <p
                     dangerouslySetInnerHTML={{ __html: post.sub_heading ?? "" }}
                     className="text-sm font-normal text-[#424242] line-clamp-3 mt-2"

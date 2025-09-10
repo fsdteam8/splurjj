@@ -17,6 +17,8 @@ import ContentsDetailsCarousel from "./contentsDetailsCarousel";
 import { SlLike } from "react-icons/sl";
 import { toast } from "react-toastify";
 import SocialShareContent from "@/components/ui/SocialShareContent";
+import { AiFillLike } from "react-icons/ai";
+import { LikeApiResponse } from "@/components/types/like-get-data-type";
 
 interface BlogData {
   status: boolean;
@@ -139,7 +141,49 @@ const ContentBlogDetails = ({
 
   const blogData = data?.data || null;
 
-    // Like post API logic
+// Function to fetch like status for a specific get
+  const fetchLikeStatus = async (postId: number): Promise<LikeApiResponse> => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/content/${postId}/like-status`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch like status for post ${postId}`);
+    }
+    return response.json();
+  };
+
+  // Component to render like status for a post
+  const PostLikeStatus: React.FC<{ postId: number }> = ({ postId }) => {
+    const { data: likeData, isLoading: isLikeLoading } =
+      useQuery<LikeApiResponse>({
+        queryKey: ["like", postId],
+        queryFn: () => fetchLikeStatus(postId),
+        enabled: !!postId,
+      });
+
+    return (
+      <div className="flex items-center gap-2">
+        <button onClick={() => handleLike(postId)}>
+          {likeData?.data?.liked ? (
+            <AiFillLike className="w-6 h-6 cursor-pointer text-primary" />
+          ) : (
+            <SlLike className="w-6 h-6 cursor-pointer" />
+          )}
+        </button>
+        <p className="text-lg font-medium text-black dark:text-white leading-normal">
+          {isLikeLoading ? "..." : likeData?.data?.likes_count || 0}
+        </p>
+      </div>
+    );
+  };
+
+  // Like post API logic
   const { mutate: handleLike } = useMutation({
     mutationKey: ["like-post"],
     mutationFn: async (postId: number) =>
@@ -150,13 +194,19 @@ const ContentBlogDetails = ({
           headers: { Authorization: `Bearer ${token}` },
         }
       ).then((res) => res.json()),
-    onSuccess: (data) => {
-      if (!data?.success) {
-        toast.error(data?.message || "Something went wrong");
-        return;
+    onSuccess: (postId) => {
+      // toast.success(data?.message || "Liked successfully");
+
+      // Invalidate the post query so the like count updates
+      queryClient.invalidateQueries({ queryKey: ["like", postId] });
+    },
+
+    onError: (error: Error) => {
+      if (!token) {
+        toast.error("You need to login first");
+      } else {
+        toast.error(error.message || "Something went wrong");
       }
-      queryClient.invalidateQueries({ queryKey: ["single-blog"] });
-      queryClient.invalidateQueries({ queryKey: ["home-hero-section"] });
     },
   });
 
@@ -396,14 +446,7 @@ const ContentBlogDetails = ({
 
             {/* social icon start */}
               <div className="flex items-center gap-5 relative mt-4">
-                <div className="flex items-center gap-2">
-                  <button onClick={() => handleLike(blogData?.id)}>
-                    <SlLike className="w-6 h-6 cursor-pointer" />
-                  </button>
-                  <p className="text-lg font-medium text-black dark:text-white leading-normal">
-                    {blogData?.likes_count || 0}
-                  </p>
-                </div>
+               <PostLikeStatus postId={blogData.id} />
                 <div className="flex items-center gap-2 mt-1">
                   <Link
                     href={`/${blogData.cat_slug}/${blogData.sub_slug}/${blogData.slug}#comment`}
@@ -545,7 +588,7 @@ const ContentBlogDetails = ({
                     <div>
                       <Link
                         href={`/viewpost/${blogData.user?.id}`}
-                        className="text-lg font-extrabold leading-[120%] tracking-[0%] text-secondary dark:text-white"
+                        className="text-lg font-semibold hover:font-extrabold leading-[120%] tracking-[0%] text-secondary dark:text-white hover:underline"
                       >
                         View posts
                       </Link>
