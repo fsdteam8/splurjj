@@ -441,7 +441,7 @@ const FirstContents: React.FC<FirstContentsProps> = ({
                 </Link>
               </div>
              {/* social icon start */}
-              <div className="flex items-center gap-5 relative">
+              <div className="flex items-center gap-5 relative mt-4 md:mt-0">
                 <PostLikeStatus postId={fourthPost.id} />
                 <div className="flex items-center gap-2">
                   <Link
@@ -521,7 +521,7 @@ const FirstContents: React.FC<FirstContentsProps> = ({
                 </Link>
               </div>
              {/* social icon start */}
-              <div className="flex items-center gap-5 relative">
+              <div className="flex items-center gap-5 relative mt-4 md:mt-0">
                <PostLikeStatus postId={fifthPost.id} />
                 <div className="flex items-center gap-2">
                   <Link

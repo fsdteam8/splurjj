@@ -298,7 +298,7 @@ const SecondContents = ({
                       </div>
 
                       {/* social icon start */}
-                      <div className="flex items-center gap-5 relative">
+                      <div className="flex items-center gap-5 relative mt-4 md:mt-0">
                         <PostLikeStatus postId={post.id} />
                         <div className="flex items-center gap-2">
                           <Link
@@ -392,7 +392,7 @@ const SecondContents = ({
                         </Link>
                       </div>
                       {/* social icon start */}
-                      <div className="flex items-center gap-5 relative">
+                      <div className="flex items-center gap-5 relative mt-4 md:mt-0">
                         <PostLikeStatus postId={post.id} />
                         <div className="flex items-center gap-2">
                           <Link
