@@ -4,7 +4,6 @@ import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { toast } from "sonner"
 import { z } from "zod"
 import axios from "axios"
 import { MoveLeft, MoveRight } from "lucide-react"
@@ -13,6 +12,7 @@ import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
+import { toast } from "react-toastify"
 
 interface Comment {
   id: number

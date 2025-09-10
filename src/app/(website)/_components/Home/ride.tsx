@@ -12,6 +12,8 @@ import { HomeContentApiResponse } from "@/components/types/home-page-data-type";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import SocialShareContent from "@/components/ui/SocialShareContent";
+import { AiFillLike } from "react-icons/ai";
+import { LikeApiResponse } from "@/components/types/like-get-data-type";
 
 interface ArtCultureProps {
   categoryName: { categoryName: string };
@@ -33,6 +35,48 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
 
   const posts = data?.data || [];
 
+   // Function to fetch like status for a specific post
+  const fetchLikeStatus = async (postId: number): Promise<LikeApiResponse> => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/content/${postId}/like-status`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch like status for post ${postId}`);
+    }
+    return response.json();
+  };
+
+  // Component to render like status for a post
+  const PostLikeStatus: React.FC<{ postId: number }> = ({ postId }) => {
+    const { data: likeData, isLoading: isLikeLoading } =
+      useQuery<LikeApiResponse>({
+        queryKey: ["like", postId],
+        queryFn: () => fetchLikeStatus(postId),
+        enabled: !!postId,
+      });
+
+    return (
+      <div className="flex items-center gap-2">
+        <button onClick={() => handleLike(postId)}>
+          {likeData?.data?.liked ? (
+            <AiFillLike className="w-6 h-6 cursor-pointer text-primary" />
+          ) : (
+            <SlLike className="w-6 h-6 cursor-pointer" />
+          )}
+        </button>
+        <p className="text-lg font-medium text-black dark:text-white leading-normal">
+          {isLikeLoading ? "..." : likeData?.data?.likes_count || 0}
+        </p>
+      </div>
+    );
+  };
+
   // Like post API logic
   const { mutate: handleLike } = useMutation({
     mutationKey: ["like-post"],
@@ -44,12 +88,19 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
           headers: { Authorization: `Bearer ${token}` },
         }
       ).then((res) => res.json()),
-    onSuccess: (data) => {
-      if (!data?.success) {
-        toast.error(data?.message || "Something went wrong");
-        return;
+    onSuccess: (postId) => {
+      // toast.success(data?.message || "Liked successfully");
+
+      // Invalidate the post query so the like count updates
+      queryClient.invalidateQueries({ queryKey: ["like", postId] });
+    },
+
+    onError: (error: Error) => {
+      if (!token) {
+        toast.error("You need to login first");
+      } else {
+        toast.error(error.message || "Something went wrong");
       }
-      queryClient.invalidateQueries({ queryKey: ["ride"] });
     },
   });
 
@@ -177,7 +228,7 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   }}
                 />
               </Link>
-              <div className="flex items-center justify-end gap-2">
+              <div className="flex flex-col md:flex-row items-end md:items-center justify-end gap-2">
                 <div className="flex items-center gap-2">
                   <Link
                     href={`/blogs/${firstPost.cat_slug}`}
@@ -194,15 +245,8 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 </div>
 
                 {/* social icon start */}
-                <div className="flex items-center gap-3 relative">
-                  <div className="flex items-center gap-2">
-                    <button onClick={() => handleLike(firstPost?.id)}>
-                      <SlLike className="w-6 h-6 cursor-pointer" />
-                    </button>
-                    <p className="text-lg font-medium text-black dark:text-white leading-normal">
-                      {firstPost?.likes_count || 0}
-                    </p>
-                  </div>
+                <div className="flex items-center gap-5 relative mt-4 md:mt-0">
+                  <PostLikeStatus postId={firstPost.id} />
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/${firstPost.cat_slug}/${firstPost.sub_slug}/${firstPost.slug}#comment`}
@@ -295,7 +339,7 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   }}
                 />
               </Link>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
                 <div className="flex items-center gap-2">
                   <Link
                     href={`/blogs/${secondPost.cat_slug}`}
@@ -311,34 +355,27 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   </Link>
                 </div>
                 {/* social icon start */}
-                <div className="flex items-center gap-3 relative">
-                  <div className="flex items-center gap-2">
-                    <button onClick={() => handleLike(firstPost?.id)}>
-                      <SlLike className="w-6 h-6 cursor-pointer" />
-                    </button>
-                    <p className="text-lg font-medium text-black dark:text-white leading-normal">
-                      {firstPost?.likes_count || 0}
-                    </p>
-                  </div>
+                <div className="flex items-center gap-5 relative mt-4 md:mt-0">
+                  <PostLikeStatus postId={secondPost.id} />
                   <div className="flex items-center gap-2">
                     <Link
-                      href={`/${firstPost.cat_slug}/${firstPost.sub_slug}/${firstPost.slug}#comment`}
+                      href={`/${secondPost.cat_slug}/${secondPost.sub_slug}/${secondPost.slug}#comment`}
                     >
                       <button className="cursor-pointer">
                         <FaRegCommentDots className="w-6 h-6 mt-1 cursor-pointer" />
                       </button>
                     </Link>
                     <p className="text-lg font-medium text-black dark:text-white leading-normal">
-                      {firstPost?.comment_count || 0}
+                      {secondPost?.comment_count || 0}
                     </p>
                   </div>
                   <SocialShareContent
-                    postId={firstPost.slug}
-                    categoryId={firstPost.cat_slug}
-                    subcategoryId={firstPost.sub_slug}
-                    heading={firstPost.heading}
-                    subHeading={firstPost.sub_heading}
-                    initialSharesCount={firstPost.shares_count || 0}
+                    postId={secondPost.slug}
+                    categoryId={secondPost.cat_slug}
+                    subcategoryId={secondPost.sub_slug}
+                    heading={secondPost.heading}
+                    subHeading={secondPost.sub_heading}
+                    initialSharesCount={secondPost.shares_count || 0}
                     token={token}
                   />
                   <TbTargetArrow className="w-6 h-6 cursor-pointer" />
