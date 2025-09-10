@@ -29,6 +29,8 @@ function Page({ params }: PageParams) {
     return <div>Error: Missing required parameters</div>;
   }
 
+  console.log(params, "params");
+
   const capitalize = (str: string) =>
     str
       .replace(/-/g, " ")

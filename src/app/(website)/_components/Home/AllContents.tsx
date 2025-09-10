@@ -14,31 +14,14 @@ import { HomeContentApiResponse } from "@/components/types/home-page-data-type";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import SocialShareContent from "@/components/ui/SocialShareContent";
+import { LikeApiResponse } from "@/components/types/like-get-data-type";
 
 const AllContents: React.FC = () => {
   const session = useSession();
   const token = (session?.data?.user as { token: string })?.token;
   const queryClient = useQueryClient();
 
-  // Like post API logic
-  const { mutate: handleLike } = useMutation({
-    mutationKey: ["like-post"],
-    mutationFn: async (postId: number) =>
-      await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${postId}/like`,
-        {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      ).then((res) => res.json()),
-    onSuccess: (data) => {
-      if (!data?.success) {
-        toast.error(data?.message || "Something went wrong");
-        return;
-      }
-      queryClient.invalidateQueries({ queryKey: ["home-hero-section"] });
-    },
-  });
+  console.log("token", token);
 
   function convertToCDNUrl(image2?: string): string {
     const image2BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
@@ -76,6 +59,96 @@ const AllContents: React.FC = () => {
   });
 
   const contents = data?.data || [];
+
+  // like get api logic
+
+  // const { data: likeData } = useQuery<LikeApiResponse>({
+  //   queryKey: ["like"],
+  //   queryFn: (id: number) => fetch(
+  //       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/content/${id}/like-status`
+  //     ).then((res) => res.json()),
+  // });
+
+  // console.log("like data", likeData);
+  // Function to fetch like status for a specific post
+
+  // Function to fetch like status for a specific post
+  const fetchLikeStatus = async (postId: number): Promise<LikeApiResponse> => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/content/${postId}/like-status`
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch like status for post ${postId}`);
+    }
+    return response.json();
+  };
+
+  // Component to render like status for a post
+  const PostLikeStatus: React.FC<{ postId: number }> = ({ postId }) => {
+    const { data: likeData, isLoading: isLikeLoading } =
+      useQuery<LikeApiResponse>({
+        queryKey: ["like", postId],
+        queryFn: () => fetchLikeStatus(postId),
+        enabled: !!postId,
+      });
+    console.log("like data", likeData);
+    console.log("like data", likeData?.data?.liked);
+
+    return (
+      <div className="flex items-center gap-2">
+        <button onClick={() => handleLike(postId)}>
+          {likeData?.data?.liked ? (
+            <FaRegCommentDots className="w-6 h-6 cursor-pointer text-red-500" />
+          ) : (
+            <SlLike className="w-6 h-6 cursor-pointer text-primary" />
+          )}
+        </button>
+        <p className="text-lg font-medium text-black dark:text-white leading-normal">
+          {isLikeLoading ? "..." : likeData?.data?.likes_count || 0}
+        </p>
+      </div>
+    );
+  };
+
+  // Like post API logic
+  const { mutate: handleLike } = useMutation({
+    mutationKey: ["like-post"],
+    mutationFn: async (postId: number) =>
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${postId}/like`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      ).then((res) => res.json()),
+    onSuccess: (postId) => {
+      // toast.success(data?.message || "Liked successfully");
+
+      // Invalidate the post query so the like count updates
+      queryClient.invalidateQueries({ queryKey: ["post", postId] });
+    },
+
+    onError: (error: Error) => {
+      if (!token) {
+        toast.error("You need to login first");
+      } else {
+        toast.error(error.message || "Something went wrong");
+      }
+    },
+    // onSuccess: (data) => {
+    //   if (token) {
+    //     toast.success(data?.message || "Liked successfully");
+    //   } else {
+    //     toast.error(data?.message || "You need to login first");
+    //   }
+    //   if (!data?.success) {
+    //     toast.error(data?.message || "Something went wrong");
+    //     return;
+    //   }
+
+    //   queryClient.invalidateQueries({ queryKey: ["like"] });
+    // },
+  });
 
   // Skeleton Loading Component
   const SkeletonLoader = () => (
@@ -177,14 +250,16 @@ const AllContents: React.FC = () => {
 
               {/* social icon start */}
               <div className="flex items-center gap-3 relative">
-                <div className="flex items-center gap-2">
+                {/* <div className="flex items-center gap-2">
                   <button onClick={() => handleLike(firstPost?.id)}>
                     <SlLike className="w-6 h-6 cursor-pointer" />
+                    
                   </button>
                   <p className="text-lg font-medium text-black dark:text-white leading-normal">
                     {firstPost?.likes_count || 0}
                   </p>
-                </div>
+                </div> */}
+                <PostLikeStatus postId={firstPost.id} />
                 <div className="flex items-center gap-2">
                   <Link
                     href={`/${firstPost?.cat_slug}/${firstPost?.sub_slug}/${firstPost?.slug}#comment`}
@@ -285,14 +360,15 @@ const AllContents: React.FC = () => {
                 {secondPost.author} - {secondPost.date}
               </p>
               <div className="flex items-center gap-3 mt-2 relative">
-                <div className="flex items-center gap-2">
+                {/* <div className="flex items-center gap-2">
                   <button onClick={() => handleLike(secondPost?.id)}>
                     <SlLike className="w-6 h-6 cursor-pointer" />
                   </button>
                   <p className="text-lg font-medium text-black dark:text-white leading-normal">
                     {secondPost?.likes_count || 0}
                   </p>
-                </div>
+                </div> */}
+                <PostLikeStatus postId={secondPost.id} />
                 <div className="flex items-center gap-2">
                   <Link
                     href={`/${secondPost.cat_slug}/${secondPost.sub_slug}/${secondPost.slug}#comment`}
@@ -370,14 +446,15 @@ const AllContents: React.FC = () => {
                 {thirdPost.author} - {thirdPost.date}
               </p>
               <div className="flex items-center gap-3 mt-2 relative">
-                <div className="flex items-center gap-2">
+                {/* <div className="flex items-center gap-2">
                   <button onClick={() => handleLike(thirdPost.id)}>
                     <SlLike className="w-6 h-6 cursor-pointer" />
                   </button>
                   <p className="text-lg font-medium text-black dark:text-white leading-normal">
                     {thirdPost?.likes_count || 0}
                   </p>
-                </div>
+                </div> */}
+                <PostLikeStatus postId={thirdPost.id} />
 
                 <div className="flex items-center gap-2">
                   <Link
@@ -457,14 +534,15 @@ const AllContents: React.FC = () => {
                 {fourthPost.author} - {fourthPost.date}
               </p>
               <div className="flex items-center gap-3 mt-2 relative">
-                <div className="flex items-center gap-2">
+                {/* <div className="flex items-center gap-2">
                   <button onClick={() => handleLike(fourthPost.id)}>
                     <SlLike className="w-6 h-6 cursor-pointer" />
                   </button>
                   <p className="text-lg font-medium text-black dark:text-white leading-normal">
                     {fourthPost?.likes_count || 0}
                   </p>
-                </div>
+                </div> */}
+                <PostLikeStatus postId={fourthPost.id} />
                 <div className="flex items-center gap-2">
                   <Link
                     href={`/${fourthPost.cat_slug}/${fourthPost.sub_slug}/${fourthPost.slug}#comment`}

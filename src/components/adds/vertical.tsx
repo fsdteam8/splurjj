@@ -1,43 +1,35 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-// import Link from "next/link";
-// import Image from 'next/image';
-import React, { useEffect, useState } from "react";
 
-type AdData = {
-  code?: string;
-  image?: string;
-  link?: string;
+type AdvertisingSettingResponse = {
+  success: boolean;
+  message: string;
+  data: {
+    id: number;
+    slug: string;
+    link: string | null;
+    code: string | null;
+    image: string | null;
+    image_url: string | null;
+    image_path: string | null;
+    created_at: string; // ISO datetime string
+    updated_at: string; // ISO datetime string
+  };
 };
 
 function Vertical() {
-  const [adData, setAdData] = useState<AdData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchAdData = async () => {
-      try {
-        const response = await fetch(
+  const { data, isError, isLoading, error } =
+    useQuery<AdvertisingSettingResponse>({
+      queryKey: ["vertical-ads"],
+      queryFn: () =>
+        fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/advertising/vertical`
-        );
-        const result = await response.json();
-        if (result.success) {
-          setAdData(result.data);
-        } else {
-          setError("Failed to fetch advertising data");
-        }
-      } catch (error) {
-        // toast.error(error instanceof Error ? error.message : 'Error fetching data');
-        console.log("Error fetching ad data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAdData();
-  }, []);
+        ).then((res) => res.json()),
+    });
+  const adData = data?.data;
+  // console.log("ads data", data?.data)
 
   // Skeleton Loading Component
   const SkeletonLoader = () => (
@@ -46,29 +38,18 @@ function Vertical() {
     </div>
   );
 
-  if (loading) return <SkeletonLoader />;
-  if (error) return <div>{error}</div>;
+  if (isLoading) return <SkeletonLoader />;
+  if (isError) {
+    return (
+      <div className="text-black text-lg font-medium">
+        Error: {error?.message}
+      </div>
+    );
+  }
 
-  console.log("ads console", adData?.code);
+  // console.log("ads console", adData?.code);
 
   return (
-    // <div className="border-2 border-red-500">
-    //   {adData?.code ? (
-    //     <div dangerouslySetInnerHTML={{ __html: adData.code }} className="vertical-adds w-[200px] md:w-[160px] lg:w-[300px] h-[200px] md:h-[600px] lg:h-[600px] " />
-    //   ) : adData?.image && adData?.link ? (
-    //     <Link href={adData.link} target="_blank" rel="noopener noreferrer" className='w-[200px] md:w-[160px] lg:w-[300px] h-[200px] md:h-[600px] lg:h-[600px] '>
-    //       <Image
-    //         src={adData.image}
-    //         alt="Advertisement"
-    //         width={2600}
-    //         height={600}
-    //         style={{ maxWidth: '100%' }}
-    //         className="w-[200px] md:w-[160px] lg:w-[300px] h-[200px] md:h-[600px] lg:h-[600px] " />
-    //     </Link>
-    //   ) : (
-    //     <div>No advertisement available</div>
-    //   )}
-    // </div>
     <div className="">
       {adData?.code ? (
         <div
