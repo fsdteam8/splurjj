@@ -2,14 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { FaRegCommentDots } from "react-icons/fa";
-import { RiShareForwardLine } from "react-icons/ri";
 import { TbTargetArrow } from "react-icons/tb";
 import { motion } from "framer-motion";
-import { BlogPost } from "./blog-post-types"; // Import from blog-post-types.ts
-import SocialShare from "@/components/ui/SocialShare";
+import { BlogPost } from "./blog-post-types";
 import { SlLike } from "react-icons/sl";
+import { useSession } from "next-auth/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import SocialShareContent from "@/components/ui/SocialShareContent";
 
 interface CategoryContentsProps {
   posts: BlogPost[];
@@ -18,43 +19,29 @@ interface CategoryContentsProps {
 }
 
 function CategoryContents({ posts, loading, error }: CategoryContentsProps) {
-  // share start
-  const [activeSharePostId, setActiveSharePostId] = useState<number | null>(
-    null
-  );
+    const session = useSession();
+  const token = (session?.data?.user as { token: string })?.token;
+  const queryClient = useQueryClient();
 
-  // Toggle share modal
-  const toggleShare = (postId: number) => {
-    setActiveSharePostId(activeSharePostId === postId ? null : postId);
-  };
-
-  // Close on outside click
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      const target = event.target as HTMLElement;
-
-      // Close only if click is outside all share containers
-      if (!target.closest(".share-container")) {
-        setActiveSharePostId(null);
+  // Like post API logic
+  const { mutate: handleLike } = useMutation({
+    mutationKey: ["like-post"],
+    mutationFn: async (postId: number) =>
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${postId}/like`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      ).then((res) => res.json()),
+    onSuccess: (data) => {
+      if (!data?.success) {
+        toast.error(data?.message || "Something went wrong");
+        return;
       }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const getShareUrl = (
-    categoryId: number,
-    subcategoryId: number,
-    id: number
-  ): string => {
-    if (typeof window === "undefined") return ""; // avoid SSR crash
-    return `${window.location.origin}/${categoryId}/${subcategoryId}/${id}`;
-  };
-
-  // share close
+      queryClient.invalidateQueries({ queryKey: ["category-all-blogs"] });
+    },
+  });
 
   function convertToCDNUrl(image2?: string): string {
     const image2BaseUrl = "https://s3.amazonaws.com/splurjjimages/images";
@@ -127,7 +114,7 @@ function CategoryContents({ posts, loading, error }: CategoryContentsProps) {
           <div key={post.id} className="relative">
             <div className="overflow-hidden">
               <Link
-                href={`/${post.category_id}/${post.subcategory_id}/${post.id}#comment`}
+                href={`/${post.cat_slug}/${post.sub_slug}/${post.slug}#comment`}
               >
                 <Image
                   src={getImageUrl(post.image2)}
@@ -143,20 +130,20 @@ function CategoryContents({ posts, loading, error }: CategoryContentsProps) {
             <div className="p-4">
               <div className="flex items-center gap-2">
                 <Link
-                  href={`/blogs/${post.category_name}`}
+                  href={`/blogs/${post.cat_slug}`}
                   className="bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
                 >
                   {post.category_name || "Category"}
                 </Link>
                 <Link
-                  href={`/${post.category_id}/${post.subcategory_id}`}
+                  href={`/${post.cat_slug}/${post.sub_slug}`}
                   className="bg-primary dark:bg-black hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-base font-extrabold uppercase text-white"
                 >
                   {post.sub_category_name || "Subcategory"}
                 </Link>
               </div>
               <Link
-                href={`/${post.category_id}/${post.subcategory_id}/${post.id}`}
+                href={`/${post.cat_slug}/${post.sub_slug}/${post.slug}`}
               >
                 <motion.p
                   dangerouslySetInnerHTML={{ __html: post.heading ?? "" }}
@@ -173,39 +160,41 @@ function CategoryContents({ posts, loading, error }: CategoryContentsProps) {
                 {post.author} - {post.date}
               </p>
 
-              {/* start  */}
-              <div className="flex items-center gap-3 relative mt-2 share-container">
-                <SlLike className="w-6 h-6 cursor-pointer" />
-                <Link
-                  href={`/${post.category_id}/${post.subcategory_id}/${post.id}#comment`}
-                  className="cursor-pointer"
-                >
-                  <FaRegCommentDots className="w-6 h-6" />
-                </Link>
-                <RiShareForwardLine
-                  className="w-6 h-6 cursor-pointer"
-                  onClick={() => toggleShare(post.id)}
-                />
-                {activeSharePostId === post.id && (
-                  <div
-                    className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
-                    flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+               {/* social icon start */}
+              <div className="flex items-center gap-5 relative mt-2">
+                <div className="flex items-center gap-2">
+                  <button onClick={() => handleLike(post?.id)}>
+                    <SlLike className="w-6 h-6 cursor-pointer" />
+                  </button>
+                  <p className="text-lg font-medium text-black dark:text-white leading-normal">
+                    {post?.likes_count || 0}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/${post?.cat_slug}/${post?.sub_slug}/${post?.slug}#comment`}
                   >
-                    <SocialShare
-                      url={getShareUrl(
-                        post.category_id,
-                        post.subcategory_id,
-                        post.id
-                      )}
-                      title={post.heading}
-                      summary={post.sub_heading || "Check out this post!"}
-                    />
-                  </div>
-                )}
+                    <button className="cursor-pointer">
+                      <FaRegCommentDots className="w-6 h-6 cursor-pointer mt-1" />
+                    </button>
+                  </Link>
+                  <p className="text-lg font-medium text-black dark:text-white leading-normal">
+                    {post?.comment_count || 0}
+                  </p>
+                </div>
+                <SocialShareContent
+                  postId={post.slug}
+                  categoryId={post.cat_slug}
+                  subcategoryId={post.sub_slug}
+                  heading={post.heading}
+                  subHeading={post.sub_heading}
+                  initialSharesCount={post.shares_count || 0}
+                  token={token}
+                />
                 <TbTargetArrow className="w-6 h-6 cursor-pointer" />
               </div>
 
-              {/* end  */}
+              {/* social icon end  */}
               <p
                 dangerouslySetInnerHTML={{ __html: post.sub_heading }}
                 className="text-sm font-normal text-[#424242] line-clamp-3 mt-2"

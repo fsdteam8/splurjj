@@ -326,7 +326,7 @@ const ContentBlogDetails = ({
 
   const cleanedTags = cleanTags(blogData.tags || []);
 
-  console.log("comments", blogData)
+  // console.log("comments", blogData)
 
   return (
     <div>
@@ -395,7 +395,7 @@ const ContentBlogDetails = ({
             
 
             {/* social icon start */}
-              <div className="flex items-center gap-3 relative mt-4">
+              <div className="flex items-center gap-5 relative mt-4">
                 <div className="flex items-center gap-2">
                   <button onClick={() => handleLike(blogData?.id)}>
                     <SlLike className="w-6 h-6 cursor-pointer" />
@@ -409,7 +409,7 @@ const ContentBlogDetails = ({
                     href={`/${blogData.cat_slug}/${blogData.sub_slug}/${blogData.slug}#comment`}
                   >
                     <button className="cursor-pointer">
-                      <FaRegCommentDots className="w-6 h-6 cursor-pointer" />
+                      <FaRegCommentDots className="w-6 h-6 cursor-pointer mt-1" />
                     </button>
                   </Link>
                   <p className="text-lg font-medium text-black dark:text-white leading-normal">

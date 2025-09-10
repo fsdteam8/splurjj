@@ -20,6 +20,12 @@ export interface BlogPost {
   advertisingLink: string;
   user_id: number;
   status: string;
+  cat_slug: string;
+  sub_slug: string;
+  slug: string;
+  likes_count: number;
+  shares_count: number;
+  comment_count: number;
 }
 
 export interface ApiResponse {

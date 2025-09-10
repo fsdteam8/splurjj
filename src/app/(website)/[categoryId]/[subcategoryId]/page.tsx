@@ -23,7 +23,7 @@ export async function generateMetadata({
 
   // Adjust depending on API shape
   const metaTitle = data?.data[0]?.sub_category_name || decodeURIComponent(params.subcategoryId);
-  console.log(metaTitle , "metaTitle");
+  // console.log(metaTitle , "metaTitle");
   const metaDescription = data?.data[0]?.meta_description || metaTitle;
 
   return {
