@@ -22,6 +22,12 @@ interface Post {
   tags: string[];
   category_id: number;
   subcategory_id: number;
+  cat_slug: string;
+  sub_slug: string;
+  slug: string;
+  likes_count: number;
+  shares_count: number;
+  comment_count: number;
 }
 
 interface ContentAllDataTypeResponse {
@@ -48,6 +54,8 @@ const AllContentContainer = ({
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const observerRef = useRef<HTMLDivElement>(null);
+
+  // console.log(categoryId, subcategoryId, "categoryId");
 
   console.log(error);
 
