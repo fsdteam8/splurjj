@@ -40,7 +40,7 @@ function Page({ params }: PageParams) {
     <div className="container mx-auto px-4">
       <div className="text-center pt-16">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">
-          {capitalize(params.tag)}
+          {decodeURIComponent(capitalize(params.tag))}
         </h1>
       </div>
       <div className="grid grid-cols-8 gap-4 pt-16">

@@ -14,7 +14,8 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         </Suspense> */}
         <NavbarPage />
         {/* Main content area */}
-        {children}
+        <div className="min-h-screen">{children}</div>
+
         <Footer />
       </AppProvider>
     </div>
