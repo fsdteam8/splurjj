@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaRegCommentDots } from "react-icons/fa";
 import { SlLike } from "react-icons/sl";
+import { AiFillLike } from "react-icons/ai";
 import { TbTargetArrow } from "react-icons/tb";
 import ImageCarousel from "./ImageCarousel";
 import { motion } from "framer-motion";
@@ -60,22 +61,16 @@ const AllContents: React.FC = () => {
 
   const contents = data?.data || [];
 
-  // like get api logic
-
-  // const { data: likeData } = useQuery<LikeApiResponse>({
-  //   queryKey: ["like"],
-  //   queryFn: (id: number) => fetch(
-  //       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/content/${id}/like-status`
-  //     ).then((res) => res.json()),
-  // });
-
-  // console.log("like data", likeData);
-  // Function to fetch like status for a specific post
-
   // Function to fetch like status for a specific post
   const fetchLikeStatus = async (postId: number): Promise<LikeApiResponse> => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/content/${postId}/like-status`
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/content/${postId}/like-status`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     if (!response.ok) {
       throw new Error(`Failed to fetch like status for post ${postId}`);
@@ -91,16 +86,14 @@ const AllContents: React.FC = () => {
         queryFn: () => fetchLikeStatus(postId),
         enabled: !!postId,
       });
-    console.log("like data", likeData);
-    console.log("like data", likeData?.data?.liked);
 
     return (
       <div className="flex items-center gap-2">
         <button onClick={() => handleLike(postId)}>
           {likeData?.data?.liked ? (
-            <FaRegCommentDots className="w-6 h-6 cursor-pointer text-red-500" />
+            <AiFillLike className="w-6 h-6 cursor-pointer text-primary" />
           ) : (
-            <SlLike className="w-6 h-6 cursor-pointer text-primary" />
+            <SlLike className="w-6 h-6 cursor-pointer" />
           )}
         </button>
         <p className="text-lg font-medium text-black dark:text-white leading-normal">
@@ -125,7 +118,7 @@ const AllContents: React.FC = () => {
       // toast.success(data?.message || "Liked successfully");
 
       // Invalidate the post query so the like count updates
-      queryClient.invalidateQueries({ queryKey: ["post", postId] });
+      queryClient.invalidateQueries({ queryKey: ["like", postId] });
     },
 
     onError: (error: Error) => {
@@ -135,19 +128,6 @@ const AllContents: React.FC = () => {
         toast.error(error.message || "Something went wrong");
       }
     },
-    // onSuccess: (data) => {
-    //   if (token) {
-    //     toast.success(data?.message || "Liked successfully");
-    //   } else {
-    //     toast.error(data?.message || "You need to login first");
-    //   }
-    //   if (!data?.success) {
-    //     toast.error(data?.message || "Something went wrong");
-    //     return;
-    //   }
-
-    //   queryClient.invalidateQueries({ queryKey: ["like"] });
-    // },
   });
 
   // Skeleton Loading Component
@@ -249,7 +229,7 @@ const AllContents: React.FC = () => {
               </div>
 
               {/* social icon start */}
-              <div className="flex items-center gap-3 relative">
+              <div className="flex items-center gap-5 relative">
                 {/* <div className="flex items-center gap-2">
                   <button onClick={() => handleLike(firstPost?.id)}>
                     <SlLike className="w-6 h-6 cursor-pointer" />
@@ -359,7 +339,7 @@ const AllContents: React.FC = () => {
               <p className="text-sm font-semibold uppercase text-[#424242] mt-2">
                 {secondPost.author} - {secondPost.date}
               </p>
-              <div className="flex items-center gap-3 mt-2 relative">
+              <div className="flex items-center gap-5 mt-2 relative">
                 {/* <div className="flex items-center gap-2">
                   <button onClick={() => handleLike(secondPost?.id)}>
                     <SlLike className="w-6 h-6 cursor-pointer" />
@@ -445,7 +425,7 @@ const AllContents: React.FC = () => {
               <p className="text-sm font-semibold uppercase text-[#424242] mt-2">
                 {thirdPost.author} - {thirdPost.date}
               </p>
-              <div className="flex items-center gap-3 mt-2 relative">
+              <div className="flex items-center gap-5 mt-2 relative">
                 {/* <div className="flex items-center gap-2">
                   <button onClick={() => handleLike(thirdPost.id)}>
                     <SlLike className="w-6 h-6 cursor-pointer" />
@@ -533,7 +513,7 @@ const AllContents: React.FC = () => {
               <p className="text-sm font-semibold uppercase text-[#424242] mt-2">
                 {fourthPost.author} - {fourthPost.date}
               </p>
-              <div className="flex items-center gap-3 mt-2 relative">
+              <div className="flex items-center gap-5 mt-2 relative">
                 {/* <div className="flex items-center gap-2">
                   <button onClick={() => handleLike(fourthPost.id)}>
                     <SlLike className="w-6 h-6 cursor-pointer" />
