@@ -56,35 +56,26 @@ const FirstContents: React.FC<FirstContentsProps> = ({
   const token = (session?.data?.user as { token: string })?.token;
   const queryClient = useQueryClient();
 
-// Function to fetch like status for a specific get
-  const fetchLikeStatus = async (postId: number): Promise<LikeApiResponse> => {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/content/${postId}/like-status`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    if (!response.ok) {
-      throw new Error(`Failed to fetch like status for post ${postId}`);
-    }
-    return response.json();
-  };
-
-  // Component to render like status for a post
+  // like get api logic
   const PostLikeStatus: React.FC<{ postId: number }> = ({ postId }) => {
     const { data: likeData, isLoading: isLikeLoading } =
       useQuery<LikeApiResponse>({
         queryKey: ["like", postId],
-        queryFn: () => fetchLikeStatus(postId),
-        enabled: !!postId,
+        queryFn: () =>
+          fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/content/${postId}/like-status`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          ).then((res) => res.json()),
       });
 
     return (
       <div className="flex items-center gap-2">
-        <button onClick={() => handleLike(postId)}>
+        <button type="button" onClick={() => handleLike(postId)}>
           {likeData?.data?.liked ? (
             <AiFillLike className="w-6 h-6 cursor-pointer text-primary" />
           ) : (
