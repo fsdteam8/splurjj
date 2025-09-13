@@ -38,6 +38,9 @@ export default function RootLayout({
       className={`${roboto.variable} antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      </head>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
