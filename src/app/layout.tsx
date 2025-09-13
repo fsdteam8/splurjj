@@ -44,6 +44,7 @@ export default function RootLayout({
         <meta charSet="UTF-8" />
         {/* ✅ Viewport for responsive layout */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
       </head>
       <body>
         {/* ✅ Theme Provider for dark/light system support */}
