@@ -61,7 +61,7 @@ function AboutUSPages() {
   // Find the "About us" section
   const aboutUsSection = footerData?.find((section: FooterSection) => section.title === "About us")
 
-  console.log(aboutUsSection)
+  // console.log(aboutUsSection)
 
   // State for controlled checkboxes
   const [checkedPages, setCheckedPages] = useState<string[]>([])

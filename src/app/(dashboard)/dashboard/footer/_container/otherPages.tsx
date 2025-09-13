@@ -58,7 +58,7 @@ function OtherPages() {
     enabled: !!token,
   })
 
-  console.log("footerData", footerData)
+  // console.log("footerData", footerData)
 
   // Find the "Other" section (adjust the title as needed)
   const otherSection = footerData?.find(
