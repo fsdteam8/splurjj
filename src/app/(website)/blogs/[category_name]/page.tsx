@@ -16,8 +16,7 @@ export async function generateMetadata({params}: {params: {category_name: string
 
 
 const Page = ({params}: {params: {category_name: string}}) => {
-  // const slug = decodeURIComponent(params?.category_name);
-  const slug = params?.category_name;
+  const slug = decodeURIComponent(params?.category_name);
   // console.log(slug, "slug");
   return (
     <div>
