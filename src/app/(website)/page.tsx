@@ -1,4 +1,3 @@
-
 import React, { Suspense } from "react";
 import MainHome from "./_components/Home/mainHome";
 
