@@ -62,13 +62,13 @@ export function RevenueReport() {
   };
 
   return (
-    <Card className="w-full bg-white dark:bg-[#1C1C1C] shadow-sm">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-8">
+    <Card className="w-full bg-white dark:bg-[#1C1C1C] shadow-lg">
+      <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between space-y-0 pb-6">
         <div className="flex items-center space-x-4">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
             Revenue report
           </h2>
-          <div className="flex items-center space-x-6">
+          {/* <div className="flex items-center space-x-6">
             <div className="flex items-center space-x-2">
               <div className="w-3 h-3 rounded-full bg-violet-500"></div>
               <span className="text-sm text-gray-600 dark:text-white">This Year</span>
@@ -77,9 +77,24 @@ export function RevenueReport() {
               <div className="w-3 h-3 rounded-full bg-pink-500"></div>
               <span className="text-sm text-gray-600 dark:text-white">Last Year</span>
             </div>
-          </div>
+          </div> */}
         </div>
-        <div className="flex space-x-2">
+
+        <div className="flex items-center justify-between gap-4 pt-2 md:pt-0">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 rounded-full bg-violet-500"></div>
+              <span className="text-sm text-gray-600 dark:text-white">
+                This Year
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 rounded-full bg-pink-500"></div>
+              <span className="text-sm text-gray-600 dark:text-white">
+                Last Year
+              </span>
+            </div>
+          </div>
           <Button
             variant={selectedPeriod === "Month" ? "default" : "outline"}
             size="sm"
@@ -107,7 +122,10 @@ export function RevenueReport() {
         </div>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[400px] w-full">
+        <ChartContainer
+          config={chartConfig}
+          className="h-[250px] md:h-[400px] w-full"
+        >
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={monthlyData}

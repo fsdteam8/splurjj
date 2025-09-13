@@ -51,16 +51,16 @@ const DashboardOverviewContainer = () => {
     <div>
       <div className="w-full flex items-center justify-between">
         <div>
-          <p className="text-2xl font-bold text-[#131313] dark:white-text leading-[120%] tracking-[0%] ">
+          <p className="text-xl md:text-2xl font-bold text-[#131313] dark:white-text leading-[120%] tracking-[0%] ">
             Dashboard Overview
           </p>
-          <p className="text-base font-medium text-[#929292] leading-[120%] tracking-[0%]  pt-[14px]">
+          <p className="text-base font-medium text-[#929292] leading-[120%] tracking-[0%]  pt-2 md:pt-3 lg:pt-[14px]">
             Dashboard
           </p>
         </div>
         <div>
           <Link href="/dashboard/add-new-post">
-            <button className="text-white bg-[#0253F7] py-1 px-4 rounded-lg text-lg font-medium leading-normal ">
+            <button className="text-white bg-[#0253F7] py-1 px-4 rounded-lg text-base md:text-lg font-medium leading-normal ">
               Add New Post
             </button>
           </Link>
@@ -89,6 +89,7 @@ const DashboardOverviewContainer = () => {
                 alt="revenue icon"
                 width={48}
                 height={48}
+                className="w-10 md:w-11 lg:w-12 h-10 md:h-11 lg:h-12"
               />
             </div>
           </div>
@@ -115,6 +116,7 @@ const DashboardOverviewContainer = () => {
               alt="article icon"
               width={48}
               height={48}
+              className="w-10 md:w-11 lg:w-12 h-10 md:h-11 lg:h-12"
             />
           </div>
         </div>
@@ -139,6 +141,7 @@ const DashboardOverviewContainer = () => {
               alt="pending icon"
               width={48}
               height={48}
+              className="w-10 md:w-11 lg:w-12 h-10 md:h-11 lg:h-12"
             />
           </div>
         </div>
@@ -165,6 +168,7 @@ const DashboardOverviewContainer = () => {
                 alt="total author icon"
                 width={48}
                 height={48}
+                className="w-10 md:w-11 lg:w-12 h-10 md:h-11 lg:h-12"
               />
             </div>
           </div>
@@ -190,6 +194,7 @@ const DashboardOverviewContainer = () => {
                 alt="total user icon"
                 width={48}
                 height={48}
+                className="w-10 md:w-11 lg:w-12 h-10 md:h-11 lg:h-12"
               />
             </div>
           </div>
@@ -215,6 +220,7 @@ const DashboardOverviewContainer = () => {
                 alt="subscriber icon"
                 width={48}
                 height={48}
+                className="w-10 md:w-11 lg:w-12 h-10 md:h-11 lg:h-12"
               />
             </div>
           </div>
