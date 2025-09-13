@@ -24,7 +24,7 @@ function MainHome() {
     isError,
     error,
   } = useQuery<CategoryApiResponse>({
-    queryKey: ["categories"],
+    queryKey: ["all-categories"],
     queryFn: () =>
       fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories`).then(
         (res) => res.json()

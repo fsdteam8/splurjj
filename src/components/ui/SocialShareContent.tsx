@@ -170,7 +170,7 @@ const SocialShareContent: React.FC<ShareComponentProps> = ({
 
   return (
     <div className="flex items-center gap-2 relative share-container ">
-      <button onClick={toggleShare}>
+      <button type="button" onClick={toggleShare}>
         <RiShareForwardLine className="w-6 h-6 cursor-pointer" />
       </button>
       <p className="text-lg font-medium text-black dark:text-white leading-normal">

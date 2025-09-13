@@ -97,7 +97,7 @@ const Footer = () => {
     isError: categoriesIsError,
     error: categoriesError,
   } = useQuery<CategoryApiResponse>({
-    queryKey: ["categories"],
+    queryKey: ["footer-all-categories"],
     queryFn: () =>
       fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories`).then(
         (res) => res.json()
