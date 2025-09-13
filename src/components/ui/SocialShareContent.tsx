@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -41,21 +40,43 @@ const SocialShare = ({
   onShare: (postId: string) => void;
 }) => {
   return (
-    <div className="flex gap-3 mt-4">
-      <FacebookShareButton url={url} quote={title} onClick={() => onShare(postId)}>
-        <FacebookIcon size={40} round />
+    <div className="flex gap-3">
+      <FacebookShareButton
+        url={url}
+        quote={title}
+        onClick={() => onShare(postId)}
+      >
+        <FacebookIcon className="w-8 md:w-9 lg:w-10 h-8 md:h-9 lg:h-10" round />
       </FacebookShareButton>
-      <TwitterShareButton url={url} title={title} onClick={() => onShare(postId)}>
-        <TwitterIcon size={40} round />
+      <TwitterShareButton
+        url={url}
+        title={title}
+        onClick={() => onShare(postId)}
+      >
+        <TwitterIcon className="w-8 md:w-9 lg:w-10 h-8 md:h-9 lg:h-10" round />
       </TwitterShareButton>
-      <WhatsappShareButton url={url} title={title} separator=":: " onClick={() => onShare(postId)}>
-        <WhatsappIcon size={40} round />
+      <WhatsappShareButton
+        url={url}
+        title={title}
+        separator=":: "
+        onClick={() => onShare(postId)}
+      >
+        <WhatsappIcon className="w-8 md:w-9 lg:w-10 h-8 md:h-9 lg:h-10" round />
       </WhatsappShareButton>
-      <LinkedinShareButton url={url} title={title} summary={summary} onClick={() => onShare(postId)}>
-        <LinkedinIcon size={40} round />
+      <LinkedinShareButton
+        url={url}
+        title={title}
+        summary={summary}
+        onClick={() => onShare(postId)}
+      >
+        <LinkedinIcon className="w-8 md:w-9 lg:w-10 h-8 md:h-9 lg:h-10" round />
       </LinkedinShareButton>
-      <TelegramShareButton url={url} title={title} onClick={() => onShare(postId)}>
-        <TelegramIcon size={40} round />
+      <TelegramShareButton
+        url={url}
+        title={title}
+        onClick={() => onShare(postId)}
+      >
+        <TelegramIcon className="w-8 md:w-9 lg:w-10 h-8 md:h-9 lg:h-10" round />
       </TelegramShareButton>
     </div>
   );
@@ -114,7 +135,9 @@ const SocialShareContent: React.FC<ShareComponentProps> = ({
   initialSharesCount = 0,
   token,
 }) => {
-  const [activeSharePostId, setActiveSharePostId] = useState<string | null>(null);
+  const [activeSharePostId, setActiveSharePostId] = useState<string | null>(
+    null
+  );
   const { mutate: sharePost } = useSharePost(postId, token);
   const { data: shareCountData } = useShareCount(postId, token);
 
@@ -146,7 +169,7 @@ const SocialShareContent: React.FC<ShareComponentProps> = ({
   }, []);
 
   return (
-    <div className="flex items-center gap-2 relative share-container">
+    <div className="flex items-center gap-2 relative share-container ">
       <button onClick={toggleShare}>
         <RiShareForwardLine className="w-6 h-6 cursor-pointer" />
       </button>
@@ -156,11 +179,11 @@ const SocialShareContent: React.FC<ShareComponentProps> = ({
       {activeSharePostId === postId && (
         <div
           className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
-          flex flex-wrap gap-3 w-[220px] sm:w-auto max-w-[90vw]"
+          flex flex-wrap gap-3 w-[234px] sm:w-auto max-w-[90vw]"
         >
           <SocialShare
             url={getShareUrl()}
-            title={heading}
+            title={heading ? "" : ""}
             summary={subHeading || "Check out this post!"}
             postId={postId}
             onShare={handleShare}
