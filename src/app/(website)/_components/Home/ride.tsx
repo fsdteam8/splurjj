@@ -205,13 +205,13 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
       {firstPost && (
         <div className="mb-8">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 ">
-            <div className="col-span-2 space-y-4 ">
+            <div className="col-span-2 space-y-4 border-2 border-red-500">
               <Link
                 href={`/${firstPost.cat_slug}/${firstPost.sub_slug}/${firstPost.slug}`}
               >
                 <motion.p
                   dangerouslySetInnerHTML={{ __html: firstPost.heading }}
-                  className="text-lg font-medium text-[#131313]  text-end"
+                  className="text-lg font-medium text-[#131313]  text-start"
                   whileHover={{
                     scaleX: 1.02,
                     transformOrigin: "left", // Ensures scaling happens from the left side
@@ -220,8 +220,8 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   }}
                 />
               </Link>
-              <div className="flex flex-col md:flex-row items-end md:items-center justify-end gap-2">
-                <div className="flex items-center gap-2">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-start gap-2">
+                <div className="flex items-start md:items-center gap-2">
                   <Link
                     href={`/blogs/${firstPost.cat_slug}`}
                     className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-1 px-3 rounded text-sm font-extrabold uppercase text-white"
@@ -237,7 +237,7 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 </div>
 
                 {/* social icon start */}
-                <div className="flex items-center gap-5 relative mt-4 md:mt-0">
+                <div className="flex items-start md:items-center gap-5 relative mt-4 md:mt-0 ">
                   <PostLikeStatus postId={firstPost.id} />
                   <div className="flex items-center gap-2">
                     <Link
@@ -267,7 +267,7 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
               </div>
               <motion.p
                 dangerouslySetInnerHTML={{ __html: firstPost.sub_heading }}
-                className="text-sm font-normal text-[#424242] line-clamp-3 text-end"
+                className="text-sm font-normal text-[#424242] line-clamp-3 text-start"
                 whileHover={{
                   scale: 1.05,
                   fontWeight: 900,
@@ -275,7 +275,7 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 }}
               />
 
-              <p className="text-sm font-semibold uppercase text-[#424242] text-end">
+              <p className="text-sm font-semibold uppercase text-[#424242] text-start">
                 {firstPost.author} - {firstPost.date}
               </p>
               <p
