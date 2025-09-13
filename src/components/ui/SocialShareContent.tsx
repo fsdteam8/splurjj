@@ -169,7 +169,7 @@ const SocialShareContent: React.FC<ShareComponentProps> = ({
   }, []);
 
   return (
-    <div className="flex items-center gap-2 relative share-container ">
+    <div className="flex items-center gap-2 relative share-container">
       <button type="button" onClick={toggleShare}>
         <RiShareForwardLine className="w-6 h-6 cursor-pointer" />
       </button>
@@ -178,7 +178,7 @@ const SocialShareContent: React.FC<ShareComponentProps> = ({
       </p>
       {activeSharePostId === postId && (
         <div
-          className="absolute top-10 left-0 z-20 bg-white shadow-lg rounded-xl p-3 
+          className="absolute top-10 left-1/2 -translate-x-1/2 z-20 bg-white shadow-lg rounded-xl p-3 
           flex flex-wrap gap-3 w-[234px] sm:w-auto max-w-[90vw]"
         >
           <SocialShare
