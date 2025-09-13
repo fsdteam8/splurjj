@@ -26,6 +26,12 @@ interface ContentItem {
   sub_category_name?: string;
   sub_heading?: string;
   tags?: string[];
+  cat_slug: string;
+  sub_slug: string;
+  slug: string;
+  likes_count: number;
+  shares_count: number;
+  comment_count: number;
 }
 
 interface ImageCarouselProps {
@@ -88,7 +94,7 @@ export default function CategorySubCategoryCarousel({ posts, getImageUrl }: Imag
           {imageUrls.map((imageUrl, index) => (
             <CarouselItem key={`carousel-image-${index}`}>
               {posts ? (
-                <Link href={`/${posts.category_id}/${posts.subcategory_id}/${posts.id}`}>
+                <Link href={`/${posts.cat_slug}/${posts.sub_slug}/${posts.slug}`}>
                   <Image
                     src={imageUrl}
                     alt={getAltText(index)}
