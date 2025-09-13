@@ -17,7 +17,7 @@ const DashboarOverview = () => {
         </div>
 
         {/* Bottom row - Revenue Report (full width) */}
-        <div className="pb-[50px]">
+        <div className="pb-10 md:pb-[50px]">
           <RevenueReport />
         </div>
       </div>

@@ -92,11 +92,13 @@ const RecentArticles = () => {
     return <div>{error?.message || "Somethings went wrong"}</div>;
   }
   return (
-    <div className="bg-white dark:bg-[#1C1C1C] rounded-lg p-6 shadow-sm">
-      <div className="w-full flex items-center justify-between">
-        <h2 className="text-lg font-light text-gray-900 dark:text-white mb-6">
+    <div className="bg-white dark:bg-[#1C1C1C] rounded-lg p-3 md:p-4 lg:p-6 shadow-lg">
+      <div className="w-full h-auto flex items-center justify-between gap-2 mb-4 md:mb-6">
+        <div>
+          <h2 className="text-lg font-semibold  text-gray-900 dark:text-white">
           Recent Articles
         </h2>
+        </div>
         <div>
           <SplurjjDropDownSelector
             list={numberList}
@@ -116,7 +118,7 @@ const RecentArticles = () => {
                 return (
                   <tr
                     key={content?.id}
-                    className="w-full flex items-center justify-between pb-4 "
+                    className="w-full flex items-center justify-between gap-2 pb-4 "
                   >
                     <td className="flex items-center gap-4">
                       <div className="w-[120px] h-full">
@@ -128,9 +130,9 @@ const RecentArticles = () => {
                           //     : "/assets/images/no-images.jpg"
                           // }
                           alt={content?.heading}
-                          width={120}
-                          height={60}
-                          className="w-[120px] h-[60px] rounded-[8px] object-cover"
+                          width={420}
+                          height={160}
+                          className="w-[60px] md:w-[120px] h-[60px] rounded-[8px] object-cover"
                         />
                       </div>
                       <Link className="" href={`/dashboard/${content?.id}`}>
