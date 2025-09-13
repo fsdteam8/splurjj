@@ -10,8 +10,8 @@ import { Roboto } from "next/font/google";
 
 const roboto = Roboto({
   subsets: ["latin"],
-  weight: ["400", "500", "700"], 
-  variable: "--font-roboto", 
+  weight: ["400", "500", "700"],
+  variable: "--font-roboto",
   display: "swap",
 });
 
@@ -31,6 +31,9 @@ export default function RootLayout({
       className={`${roboto.className} antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <meta charSet="UTF-8" />
+      </head>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
