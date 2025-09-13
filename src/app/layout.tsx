@@ -16,7 +16,6 @@ const roboto = Roboto({
   display: "swap",
 });
 
-// ✅ Centralized metadata for SEO
 export const metadata: Metadata = {
   title: {
     default: "Splurjj | Home",
@@ -39,20 +38,11 @@ export default function RootLayout({
       className={`${roboto.variable} antialiased`}
       suppressHydrationWarning
     >
-      <head>
-        {/* ✅ Charset for Lighthouse best practice */}
-        <meta charSet="UTF-8" />
-        {/* ✅ Viewport for responsive layout */}
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-      </head>
       <body>
-        {/* ✅ Theme Provider for dark/light system support */}
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
             <AppProvider>
               {children}
-              {/* ✅ Notifications */}
               <Toaster position="top-right" />
               <ToastContainer />
             </AppProvider>
@@ -62,9 +52,6 @@ export default function RootLayout({
     </html>
   );
 }
-
-
-
 
 // import type { Metadata } from "next";
 // import "./globals.css";
