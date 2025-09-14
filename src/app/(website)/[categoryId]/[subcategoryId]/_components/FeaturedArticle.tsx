@@ -193,6 +193,7 @@ const FirstContents: React.FC<FirstContentsProps> = ({
                   </p>
                 </div>
                 <SocialShareContent
+                  id={firstPost.id}
                   postId={firstPost.slug}
                   categoryId={firstPost.cat_slug}
                   subcategoryId={firstPost.sub_slug}
@@ -293,6 +294,7 @@ const FirstContents: React.FC<FirstContentsProps> = ({
                   </p>
                 </div>
                 <SocialShareContent
+                  id={secondPost.id}
                   postId={secondPost.slug}
                   categoryId={secondPost.cat_slug}
                   subcategoryId={secondPost.sub_slug}
@@ -393,6 +395,7 @@ const FirstContents: React.FC<FirstContentsProps> = ({
                   </p>
                 </div>
                 <SocialShareContent
+                  id={thirdPost.id}
                   postId={thirdPost.slug}
                   categoryId={thirdPost.cat_slug}
                   subcategoryId={thirdPost.sub_slug}
@@ -447,6 +450,7 @@ const FirstContents: React.FC<FirstContentsProps> = ({
                   </p>
                 </div>
                 <SocialShareContent
+                  id={fourthPost.id}
                   postId={fourthPost.slug}
                   categoryId={fourthPost.cat_slug}
                   subcategoryId={fourthPost.sub_slug}
@@ -527,6 +531,7 @@ const FirstContents: React.FC<FirstContentsProps> = ({
                   </p>
                 </div>
                 <SocialShareContent
+                id={fifthPost.id}
                   postId={fifthPost.slug}
                   categoryId={fifthPost.cat_slug}
                   subcategoryId={fifthPost.sub_slug}

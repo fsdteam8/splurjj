@@ -451,6 +451,7 @@ const ContentBlogDetails = ({
                   </p>
                 </div>
                 <SocialShareContent
+                  id={blogData.id}
                   postId={blogData.slug}
                   categoryId={blogData.cat_slug}
                   subcategoryId={blogData.sub_slug}
