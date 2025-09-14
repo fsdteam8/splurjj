@@ -148,7 +148,7 @@ useEffect(() => {
                   <FormControl>
                     <Input {...field} className="w-full h-[56px] border border-[#645949] rounded-[8px] text-base font-normal  leading-[150%] tracking-[0%] text-[#131313] placeholder:text-[#616161] dark:text-white" />
                   </FormControl>
-                  <FormMessage />
+               <FormMessage  className="text-red-500 dark:text-red-500"/>
                 </FormItem>
               )}
             />
@@ -161,7 +161,7 @@ useEffect(() => {
                   <FormControl>
                     <Input {...field} className="w-full h-[56px] border border-[#645949] rounded-[8px] text-base font-normal  leading-[150%] tracking-[0%] text-[#131313] placeholder:text-[#616161] dark:text-white" />
                   </FormControl>
-                  <FormMessage />
+               <FormMessage  className="text-red-500 dark:text-red-500"/>
                 </FormItem>
               )}
             />
@@ -177,7 +177,7 @@ useEffect(() => {
                   <FormControl>
                     <Input type="email" {...field} className="w-full h-[56px] border border-[#645949] rounded-[8px] text-base font-normal  leading-[150%] tracking-[0%] text-[#131313] placeholder:text-[#616161] dark:text-white" />
                   </FormControl>
-                  <FormMessage />
+               <FormMessage  className="text-red-500 dark:text-red-500"/>
                 </FormItem>
               )}
             />
@@ -190,7 +190,7 @@ useEffect(() => {
                   <FormControl>
                     <Input {...field} className="w-full h-[56px] border border-[#645949] rounded-[8px] text-base font-normal  leading-[150%] tracking-[0%] text-[#131313] placeholder:text-[#616161] dark:text-white" />
                   </FormControl>
-                  <FormMessage />
+               <FormMessage  className="text-red-500 dark:text-red-500"/>
                 </FormItem>
               )}
             />
@@ -206,7 +206,7 @@ useEffect(() => {
                   <FormControl>
                     <Input {...field} className="w-full h-[56px] border border-[#645949] rounded-[8px] text-base font-normal  leading-[150%] tracking-[0%] text-[#131313] placeholder:text-[#616161] dark:text-white" />
                   </FormControl>
-                  <FormMessage />
+               <FormMessage  className="text-red-500 dark:text-red-500"/>
                 </FormItem>
               )}
             />
@@ -219,7 +219,7 @@ useEffect(() => {
                   <FormControl>
                     <Input {...field} className="w-full h-[56px] border border-[#645949] rounded-[8px] text-base font-normal  leading-[150%] tracking-[0%] text-[#131313] placeholder:text-[#616161] dark:text-white" />
                   </FormControl>
-                  <FormMessage />
+               <FormMessage  className="text-red-500 dark:text-red-500"/>
                 </FormItem>
               )}
             />
@@ -234,7 +234,7 @@ useEffect(() => {
                 <FormControl>
                    <Input {...field} className="w-full h-[56px] border border-[#645949] rounded-[8px] text-base font-normal  leading-[150%] tracking-[0%] text-[#131313] placeholder:text-[#616161] dark:text-white" />
                 </FormControl>
-                <FormMessage />
+             <FormMessage  className="text-red-500 dark:text-red-500"/>
               </FormItem>
             )}
           />
@@ -248,7 +248,7 @@ useEffect(() => {
                 <FormControl>
                   <Input {...field} className="w-full h-[56px] border border-[#645949] rounded-[8px] text-base font-normal  leading-[150%] tracking-[0%] text-[#131313] placeholder:text-[#616161] dark:text-white" />
                 </FormControl>
-                <FormMessage />
+             <FormMessage  className="text-red-500 dark:text-red-500"/>
               </FormItem>
             )}
           />
