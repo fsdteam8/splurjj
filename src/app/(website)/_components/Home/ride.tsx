@@ -252,6 +252,7 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                     </p>
                   </div>
                   <SocialShareContent
+                    id={firstPost.id}
                     postId={firstPost.slug}
                     categoryId={firstPost.cat_slug}
                     subcategoryId={firstPost.sub_slug}
@@ -364,6 +365,7 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                     </p>
                   </div>
                   <SocialShareContent
+                    id={secondPost.id}
                     postId={secondPost.slug}
                     categoryId={secondPost.cat_slug}
                     subcategoryId={secondPost.sub_slug}

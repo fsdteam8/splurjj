@@ -244,6 +244,7 @@ const AllContents: React.FC = () => {
                   </p>
                 </div>
                 <SocialShareContent
+                  id={firstPost.id}
                   postId={firstPost?.slug}
                   categoryId={firstPost.cat_slug}
                   subcategoryId={firstPost.sub_slug}
@@ -309,7 +310,7 @@ const AllContents: React.FC = () => {
                   width={900}
                   height={800}
                   className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
-                    loading="lazy"
+                  loading="lazy"
                   // priority
                 />
               </Link>
@@ -354,6 +355,7 @@ const AllContents: React.FC = () => {
                   </p>
                 </div>
                 <SocialShareContent
+                  id={secondPost.id}
                   postId={secondPost.slug}
                   categoryId={secondPost.cat_slug}
                   subcategoryId={secondPost.sub_slug}
@@ -444,6 +446,7 @@ const AllContents: React.FC = () => {
                   </p>
                 </div>
                 <SocialShareContent
+                  id={thirdPost.id}
                   postId={thirdPost.slug}
                   categoryId={thirdPost.cat_slug}
                   subcategoryId={thirdPost.sub_slug}
@@ -533,6 +536,7 @@ const AllContents: React.FC = () => {
                   </p>
                 </div>
                 <SocialShareContent
+                  id={fourthPost.id}
                   postId={fourthPost.slug}
                   categoryId={fourthPost.cat_slug}
                   subcategoryId={fourthPost.sub_slug}
@@ -565,5 +569,3 @@ const AllContents: React.FC = () => {
 };
 
 export default AllContents;
-
-

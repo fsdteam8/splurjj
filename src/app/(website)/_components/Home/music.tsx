@@ -227,6 +227,7 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 </p>
               </div>
               <SocialShareContent
+                id={firstPost.id}
                 postId={firstPost.slug}
                 categoryId={firstPost.cat_slug}
                 subcategoryId={firstPost.sub_slug}
@@ -341,6 +342,7 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                       </p>
                     </div>
                     <SocialShareContent
+                      id={secondPost.id}
                       postId={secondPost.slug}
                       categoryId={secondPost.cat_slug}
                       subcategoryId={secondPost.sub_slug}
@@ -426,6 +428,7 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                       </p>
                     </div>
                     <SocialShareContent
+                      id={thirdPost.id}
                       postId={thirdPost.slug}
                       categoryId={thirdPost.cat_slug}
                       subcategoryId={thirdPost.sub_slug}

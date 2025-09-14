@@ -342,6 +342,7 @@ function Contents({ initialSearchQuery }: ContentsProps) {
                   </p>
                 </div>
                 <SocialShareContent
+                  id={post.id}
                   postId={post.slug}
                   categoryId={post.cat_slug}
                   subcategoryId={post.sub_slug}
