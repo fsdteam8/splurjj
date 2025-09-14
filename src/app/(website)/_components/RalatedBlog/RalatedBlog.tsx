@@ -248,11 +248,11 @@ const RelatedContent = ({
                     >
                       <Image
                         src={getImageUrl(post.image2?.[0] || "")}
-                        alt={post.heading || "Blog Image"}
+                        alt={post.slug || "Blog Image"}
                         width={888}
                         height={552}
                         className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
-                        priority
+                        loading="lazy"
                       />
                     </Link>
                   </div>
@@ -296,7 +296,7 @@ const RelatedContent = ({
                       <Link
                         href={`/${post.cat_slug}/${post.sub_slug}/${post.slug}#comment`}
                       >
-                        <button className="cursor-pointer">
+                        <button type="button" className="cursor-pointer">
                           <FaRegCommentDots className="w-6 h-6 cursor-pointer mt-1" />
                         </button>
                       </Link>

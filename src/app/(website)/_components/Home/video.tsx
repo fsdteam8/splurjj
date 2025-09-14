@@ -220,11 +220,11 @@ const Video: React.FC<ArtCultureProps> = ({ categoryName }) => {
               >
                 <Image
                   src={getImageUrl(firstPost.image2?.[0] || "")}
-                  alt={firstPost.heading || "Blog Image"}
+                  alt={firstPost.slug || "Blog Image"}
                   width={600}
                   height={455}
                   className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
-                  priority
+                  loading="lazy"
                 />
               </Link>
             </div>
@@ -253,7 +253,7 @@ const Video: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   <Link
                     href={`/${firstPost.cat_slug}/${firstPost.sub_slug}/${firstPost.slug}#comment`}
                   >
-                    <button className="cursor-pointer">
+                    <button type="button" className="cursor-pointer">
                       <FaRegCommentDots className="w-6 h-6 mt-1 cursor-pointer" />
                     </button>
                   </Link>
@@ -310,11 +310,11 @@ const Video: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 >
                   <Image
                     src={getImageUrl(thirdPost.image2?.[0] || "")}
-                    alt={thirdPost.heading || "Blog Image"}
+                    alt={thirdPost.slug || "Blog Image"}
                     width={400}
                     height={455}
                     className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
-                    priority
+                    loading="lazy"
                   />
                 </Link>
               </div>
@@ -343,7 +343,7 @@ const Video: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   <Link
                     href={`/${thirdPost.cat_slug}/${thirdPost.sub_slug}/${thirdPost.slug}#comment`}
                   >
-                    <button className="cursor-pointer">
+                    <button type="button" className="cursor-pointer">
                       <FaRegCommentDots className="w-6 h-6 mt-1 cursor-pointer" />
                     </button>
                   </Link>
@@ -393,11 +393,11 @@ const Video: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 >
                   <Image
                     src={getImageUrl(fourthPost.image2?.[0] || "")}
-                    alt={fourthPost.heading || "Blog Image"}
+                    alt={fourthPost.slug || "Blog Image"}
                     width={400}
                     height={455}
                     className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
-                    priority
+                    loading="lazy"
                   />
                 </Link>
               </div>
@@ -425,7 +425,7 @@ const Video: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   <Link
                     href={`/${fourthPost.cat_slug}/${fourthPost.sub_slug}/${fourthPost.slug}#comment`}
                   >
-                    <button className="cursor-pointer">
+                    <button type="button" className="cursor-pointer">
                       <FaRegCommentDots className="w-6 h-6 mt-1 cursor-pointer" />
                     </button>
                   </Link>
@@ -475,11 +475,11 @@ const Video: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 >
                   <Image
                     src={getImageUrl(fifthPost.image2?.[0] || "")}
-                    alt={fifthPost.heading || "Blog Image"}
+                    alt={fifthPost.slug || "Blog Image"}
                     width={400}
                     height={455}
                     className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
-                    priority
+                    loading="lazy"
                   />
                 </Link>
               </div>
@@ -502,7 +502,7 @@ const Video: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   <Link
                     href={`/${fifthPost.cat_slug}/${fifthPost.sub_slug}/${fifthPost.slug}#comment`}
                   >
-                    <button className="cursor-pointer">
+                    <button type="button" className="cursor-pointer">
                       <FaRegCommentDots className="w-6 h-6 mt-1 cursor-pointer" />
                     </button>
                   </Link>

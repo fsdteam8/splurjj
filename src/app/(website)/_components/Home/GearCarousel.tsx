@@ -90,6 +90,7 @@ export default function GearCarousel({
                           style={{
                             backgroundImage: `url(${getImageUrl(image)})`,
                             height: "433px",
+                            width: "100%",
                           }}
                           className="flex items-center justify-center object-contain aspect-[2/1] w-full bg-contain bg-no-repeat bg-center"
                         >
@@ -129,6 +130,7 @@ export default function GearCarousel({
                           style={{
                             backgroundImage: `url(${getImageUrl(post.image1)})`,
                             height: "433px",
+                            width: "100%",
                           }}
                           className="flex items-center justify-center aspect-[2/1] w-full bg-contain bg-no-repeat bg-center"
                         >
