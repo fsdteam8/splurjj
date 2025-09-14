@@ -160,11 +160,11 @@ function CategoryContents({ posts, loading, error }: CategoryContentsProps) {
               >
                 <Image
                   src={getImageUrl(post.image2)}
-                  alt={post.heading}
+                  alt={post.slug}
                   width={400}
                   height={300}
                   className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
-                  priority
+                  loading="lazy"
                 />
               </Link>
             </div>
@@ -209,7 +209,7 @@ function CategoryContents({ posts, loading, error }: CategoryContentsProps) {
                   <Link
                     href={`/${post?.cat_slug}/${post?.sub_slug}/${post?.slug}#comment`}
                   >
-                    <button className="cursor-pointer">
+                    <button type="button" className="cursor-pointer">
                       <FaRegCommentDots className="w-6 h-6 cursor-pointer mt-1" />
                     </button>
                   </Link>

@@ -442,7 +442,7 @@ const ContentBlogDetails = ({
                   <Link
                     href={`/${blogData.cat_slug}/${blogData.sub_slug}/${blogData.slug}#comment`}
                   >
-                    <button className="cursor-pointer">
+                    <button type="button" className="cursor-pointer">
                       <FaRegCommentDots className="w-6 h-6 cursor-pointer mt-1" />
                     </button>
                   </Link>

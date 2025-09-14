@@ -218,7 +218,7 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 <Link
                   href={`/${firstPost.cat_slug}/${firstPost.sub_slug}/${firstPost.slug}#comment`}
                 >
-                  <button className="cursor-pointer">
+                  <button type="button" className="cursor-pointer">
                     <FaRegCommentDots className="w-6 h-6 mt-1 cursor-pointer" />
                   </button>
                 </Link>
@@ -250,6 +250,7 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                     firstPost.image2?.[0] || ""
                   )})`,
                   height: "433px",
+                  width: "100%",
                 }}
                 className="flex items-center justify-center bg-contain bg-no-repeat bg-center aspect-[1.5/1] w-full duration-500 ease-in-out hover:scale-110 "
               >
@@ -286,9 +287,10 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                   >
                     <Image
                       src={getImageUrl(secondPost.image2?.[0] || "")}
-                      alt={secondPost.heading || "Blog Image"}
+                      alt={secondPost.slug || "Blog Image"}
                       width={300}
                       height={200}
+                      loading="lazy"
                       className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
                     />
                   </Link>
@@ -330,7 +332,7 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                       <Link
                         href={`/${secondPost.cat_slug}/${secondPost.sub_slug}/${secondPost.slug}#comment`}
                       >
-                        <button className="cursor-pointer">
+                        <button type="button" className="cursor-pointer">
                           <FaRegCommentDots className="w-6 h-6 mt-1 cursor-pointer" />
                         </button>
                       </Link>
@@ -371,9 +373,10 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                 >
                   <Image
                     src={getImageUrl(thirdPost.image2?.[0] || "")}
-                    alt={thirdPost.heading || "Blog Image"}
+                    alt={thirdPost.slug || "Blog Image"}
                     width={300}
                     height={200}
+                    loading="lazy"
                     className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
                   />
                 </Link>
@@ -414,7 +417,7 @@ const Music: React.FC<ArtCultureProps> = ({ categoryName }) => {
                       <Link
                         href={`/${thirdPost.cat_slug}/${thirdPost.sub_slug}/${thirdPost.slug}#comment`}
                       >
-                        <button className="cursor-pointer">
+                        <button type="button" className="cursor-pointer">
                           <FaRegCommentDots className="w-6 h-6 mt-1 cursor-pointer" />
                         </button>
                       </Link>
