@@ -23,7 +23,8 @@ interface ShareComponentProps {
   heading: string;
   subHeading?: string;
   initialSharesCount?: number;
-  token?: string; // Add token prop
+  token?: string; 
+  id: number;
 }
 
 const SocialShare = ({
@@ -82,14 +83,14 @@ const SocialShare = ({
   );
 };
 
-const useSharePost = (postId: string, token?: string) => {
+const useSharePost = (id: number, token?: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: ["share-post", postId],
+    mutationKey: ["share-post", id],
     mutationFn: async () =>
       await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${postId}/share`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${id}/share`,
         {
           method: "POST",
           headers: {
@@ -100,7 +101,7 @@ const useSharePost = (postId: string, token?: string) => {
       ).then((res) => res.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["home-hero-section"] });
-      queryClient.invalidateQueries({ queryKey: ["share-count", postId] });
+      queryClient.invalidateQueries({ queryKey: ["share-count", id] });
     },
     onError: (error) => {
       console.error("Error sharing post:", error);
@@ -108,12 +109,12 @@ const useSharePost = (postId: string, token?: string) => {
   });
 };
 
-const useShareCount = (postId: string, token?: string) => {
+const useShareCount = (id: number, token?: string) => {
   return useQuery({
-    queryKey: ["share-count", postId],
+    queryKey: ["share-count", id],
     queryFn: async () =>
       await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${postId}/share`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contents/${id}/share`,
         {
           method: "GET",
           headers: {
@@ -122,7 +123,7 @@ const useShareCount = (postId: string, token?: string) => {
           },
         }
       ).then((res) => res.json()),
-    enabled: !!postId && !!token, // Only fetch if postId and token are valid
+    enabled: !!id && !!token, // Only fetch if postId and token are valid
   });
 };
 
@@ -134,12 +135,13 @@ const SocialShareContent: React.FC<ShareComponentProps> = ({
   subHeading,
   initialSharesCount = 0,
   token,
+  id,
 }) => {
   const [activeSharePostId, setActiveSharePostId] = useState<string | null>(
     null
   );
-  const { mutate: sharePost } = useSharePost(postId, token);
-  const { data: shareCountData } = useShareCount(postId, token);
+  const { mutate: sharePost } = useSharePost(id, token);
+  const { data: shareCountData } = useShareCount(id, token);
 
   const toggleShare = () => {
     setActiveSharePostId(activeSharePostId === postId ? null : postId);
