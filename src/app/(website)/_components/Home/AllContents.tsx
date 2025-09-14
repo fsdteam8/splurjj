@@ -244,7 +244,7 @@ const AllContents: React.FC = () => {
                   </p>
                 </div>
                 <SocialShareContent
-                  postId={firstPost.slug}
+                  postId={firstPost?.slug}
                   categoryId={firstPost.cat_slug}
                   subcategoryId={firstPost.sub_slug}
                   heading={firstPost.heading}
