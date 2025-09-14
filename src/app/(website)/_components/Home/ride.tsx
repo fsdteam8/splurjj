@@ -243,7 +243,7 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                     <Link
                       href={`/${firstPost.cat_slug}/${firstPost.sub_slug}/${firstPost.slug}#comment`}
                     >
-                      <button className="cursor-pointer">
+                      <button type="button" className="cursor-pointer">
                         <FaRegCommentDots className="w-6 h-6 mt-1 cursor-pointer" />
                       </button>
                     </Link>
@@ -290,9 +290,10 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
               >
                 <Image
                   src={getImageUrl(firstPost.image2?.[0] || "")}
-                  alt={firstPost.heading || "Blog Image"}
+                  alt={firstPost.slug || "Blog Image"}
                   width={1200}
                   height={800}
+                  loading="lazy"
                   className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out bg-contain bg-no-repeat bg-center"
                 />
               </Link>
@@ -310,9 +311,10 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
               >
                 <Image
                   src={getImageUrl(secondPost.image2?.[0] || "")}
-                  alt={secondPost.heading || "Blog Image"}
+                  alt={secondPost.slug || "Blog Image"}
                   width={1200}
                   height={800}
+                  loading="lazy"
                   className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out bg-contain bg-no-repeat bg-center"
                 />
               </Link>
@@ -353,7 +355,7 @@ const Ride: React.FC<ArtCultureProps> = ({ categoryName }) => {
                     <Link
                       href={`/${secondPost.cat_slug}/${secondPost.sub_slug}/${secondPost.slug}#comment`}
                     >
-                      <button className="cursor-pointer">
+                      <button type="button" className="cursor-pointer">
                         <FaRegCommentDots className="w-6 h-6 mt-1 cursor-pointer" />
                       </button>
                     </Link>

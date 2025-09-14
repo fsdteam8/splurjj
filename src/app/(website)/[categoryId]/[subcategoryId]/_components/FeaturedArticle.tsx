@@ -184,7 +184,7 @@ const FirstContents: React.FC<FirstContentsProps> = ({
                   <Link
                     href={`/${firstPost?.cat_slug}/${firstPost?.sub_slug}/${firstPost?.slug}#comment`}
                   >
-                    <button className="cursor-pointer">
+                    <button type="button" className="cursor-pointer">
                       <FaRegCommentDots className="w-6 h-6 cursor-pointer mt-1" />
                     </button>
                   </Link>
@@ -284,7 +284,7 @@ const FirstContents: React.FC<FirstContentsProps> = ({
                   <Link
                     href={`/${secondPost?.cat_slug}/${secondPost?.sub_slug}/${secondPost?.slug}#comment`}
                   >
-                    <button className="cursor-pointer">
+                    <button type="button" className="cursor-pointer">
                       <FaRegCommentDots className="w-6 h-6 cursor-pointer mt-1" />
                     </button>
                   </Link>
@@ -316,11 +316,11 @@ const FirstContents: React.FC<FirstContentsProps> = ({
             >
               <Image
                 src={getImageUrl(secondPost.image2?.[0] || "")}
-                alt={secondPost.heading.replace(/<[^>]+>/g, "")}
+                alt={secondPost.slug || "blog"}
                 width={400}
                 height={315}
                 className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
-                priority
+                loading="lazy"
               />
             </Link>
           </div>
@@ -335,11 +335,11 @@ const FirstContents: React.FC<FirstContentsProps> = ({
             >
               <Image
                 src={getImageUrl(thirdPost.image2?.[0] || "")}
-                alt={thirdPost.heading.replace(/<[^>]+>/g, "")}
+                alt={thirdPost.slug || "blog"}
                 width={400}
                 height={443}
                 className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
-                priority
+                loading="lazy"
               />
             </Link>
           </div>
@@ -384,7 +384,7 @@ const FirstContents: React.FC<FirstContentsProps> = ({
                   <Link
                     href={`/${thirdPost?.cat_slug}/${thirdPost?.sub_slug}/${thirdPost?.slug}#comment`}
                   >
-                    <button className="cursor-pointer">
+                    <button type="button" className="cursor-pointer">
                       <FaRegCommentDots className="w-6 h-6 cursor-pointer mt-1" />
                     </button>
                   </Link>
@@ -438,7 +438,7 @@ const FirstContents: React.FC<FirstContentsProps> = ({
                   <Link
                     href={`/${fourthPost?.cat_slug}/${fourthPost?.sub_slug}/${fourthPost?.slug}#comment`}
                   >
-                    <button className="cursor-pointer">
+                    <button type="button" className="cursor-pointer">
                       <FaRegCommentDots className="w-6 h-6 cursor-pointer mt-1" />
                     </button>
                   </Link>
@@ -484,11 +484,11 @@ const FirstContents: React.FC<FirstContentsProps> = ({
               >
                 <Image
                   src={getImageUrl(fourthPost.image2?.[0] || "")}
-                  alt={fourthPost.heading.replace(/<[^>]+>/g, "")}
+                  alt={fourthPost.slug || "blog image"}
                   width={400}
                   height={300}
                   className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
-                  priority
+                  loading="lazy"
                 />
               </Link>
             </div>
@@ -518,7 +518,7 @@ const FirstContents: React.FC<FirstContentsProps> = ({
                   <Link
                     href={`/${fifthPost?.cat_slug}/${fifthPost?.sub_slug}/${fifthPost?.slug}#comment`}
                   >
-                    <button className="cursor-pointer">
+                    <button type="button" className="cursor-pointer">
                       <FaRegCommentDots className="w-6 h-6 cursor-pointer mt-1" />
                     </button>
                   </Link>
@@ -564,11 +564,11 @@ const FirstContents: React.FC<FirstContentsProps> = ({
               >
                 <Image
                   src={getImageUrl(fifthPost.image2?.[0] || "")}
-                  alt={fifthPost.heading.replace(/<[^>]+>/g, "")}
+                  alt={fifthPost.slug || "blog image"}
                   width={400}
                   height={300}
                   className="aspect-[1.5/1] w-full object-contain hover:scale-150 transition-all duration-500 ease-in-out"
-                  priority
+                  loading="lazy"
                 />
               </Link>
             </div>

@@ -1,129 +1,129 @@
 import React from "react";
 import ContentBlogDetails from "./_components/content-detatils";
 
-// ✅ Safe fetch with proper error handling
-async function fetchData(id: string) {
-  try {
-    const apiUrl =
-      process.env.NEXT_PUBLIC_BACKEND_URL ||
-      "https://dynamic-splurjj.scaleupdevagency.com";
 
-    const res = await fetch(`${apiUrl}/api/details/${id}`, {
-      // Prevent stale data in SSR
-      cache: "no-store",
-      // Add timeout protection (optional)
-      next: { revalidate: 0 },
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  "https://dynamic-splurjj.scaleupdevagency.com";
+
+async function fetchBlogDetails(id: string) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/details/${id}`, {
+      cache: "no-store", 
     });
 
-    if (!res.ok) {
-      console.error("❌ Fetch failed:", res.status, res.statusText);
-      return null; // Return fallback instead of throwing
+    if (!response.ok) {
+      console.error("❌ Failed to fetch blog details:", {
+        status: response.status,
+        statusText: response.statusText,
+      });
+      return null;
     }
 
-    return res.json();
-  } catch (err) {
-    console.error("❌ API request error:", err);
+    return await response.json();
+  } catch (error) {
+    console.error("❌ API request error:", error);
     return null;
   }
 }
 
-// ✅ Generate dynamic metadata for SEO
+
 export async function generateMetadata({
   params,
 }: {
   params: { categoryId: string; subcategoryId: string; id: string };
 }) {
-  const data = await fetchData(params.id);
+  const data = await fetchBlogDetails(params.id);
   const meta = data?.data || {};
 
-  return {
-    title:
-      typeof meta.meta_title === "string" && meta.meta_title.trim()
-        ? `${meta.meta_title} | Splurjj`
-        : "Splurjj",
-    description:
-      typeof meta.meta_description === "string" &&
-      meta.meta_description.trim()
-        ? meta.meta_description
-        : "splurjj description",
-  };
+  const title =
+    typeof meta.meta_title === "string" && meta.meta_title.trim()
+      ? `${meta.meta_title} | Splurjj`
+      : "Splurjj";
+
+  const description =
+    typeof meta.meta_description === "string" && meta.meta_description.trim()
+      ? meta.meta_description
+      : "Discover the latest stories, blogs, and updates on Splurjj.";
+
+  return { title, description };
 }
 
-// ✅ Page Component
-const Page = ({
+
+const BlogDetailsPage = ({
   params,
 }: {
   params: { categoryId: string; subcategoryId: string; id: string };
 }) => {
+  const { categoryId, subcategoryId, id } = params;
+
   return (
-    <div>
+    <main className="container mx-auto px-4 py-8">
       <ContentBlogDetails
-        categoryId={params.categoryId}
-        subcategoryId={params.subcategoryId}
-        id={params.id}
+        categoryId={categoryId}
+        subcategoryId={subcategoryId}
+        id={id}
       />
-    </div>
+    </main>
   );
 };
 
-export default Page;
-
-
+export default BlogDetailsPage;
 
 
 
 // import React from "react";
 // import ContentBlogDetails from "./_components/content-detatils";
 
-// // Fetch data from API
+// // ✅ Safe fetch with proper error handling
 // async function fetchData(id: string) {
-//   const apiUrl =
-//     process.env.NEXT_PUBLIC_BACKEND_URL ||
-//     "https://dynamic-splurjj.scaleupdevagency.com";
+//   try {
+//     const apiUrl =
+//       process.env.NEXT_PUBLIC_BACKEND_URL ||
+//       "https://dynamic-splurjj.scaleupdevagency.com";
 
-//   const res = await fetch(`${apiUrl}/api/details/${id}`, {
-//     cache: "no-store",
-//   });
+//     const res = await fetch(`${apiUrl}/api/details/${id}`, {
+//       // Prevent stale data in SSR
+//       cache: "no-store",
+//       // Add timeout protection (optional)
+//       next: { revalidate: 0 },
+//     });
 
-//   if (!res.ok) {
-//     throw new Error("Failed to fetch data");
+//     if (!res.ok) {
+//       console.error("❌ Fetch failed:", res.status, res.statusText);
+//       return null; // Return fallback instead of throwing
+//     }
+
+//     return res.json();
+//   } catch (err) {
+//     console.error("❌ API request error:", err);
+//     return null;
 //   }
-
-//   return res.json();
 // }
 
-// // Generate dynamic metadata for SEO
+// // ✅ Generate dynamic metadata for SEO
 // export async function generateMetadata({
 //   params,
 // }: {
 //   params: { categoryId: string; subcategoryId: string; id: string };
 // }) {
-//   try {
-//     const data = await fetchData(params.id);
+//   const data = await fetchData(params.id);
+//   const meta = data?.data || {};
 
-//     // Adjust according to your API response shape
-//     const meta = data?.data || {};
-
-//     return {
-//       title:
-//         typeof meta.meta_title === "string" && meta.meta_title.trim()
-//           ? ` ${meta.meta_title} | Splurjj`
-//           : "Splurjj",
-//       description:
-//         typeof meta.meta_description === "string" &&
-//         meta.meta_description.trim()
-//           ? meta.meta_description
-//           : "splurjj description",
-//     };
-//   } catch (error) {
-//     console.error("Error generating metadata:", error);
-//     return {
-//       title: "Splurjj",
-//       description: "splurjj description",
-//     };
-//   }
+//   return {
+//     title:
+//       typeof meta.meta_title === "string" && meta.meta_title.trim()
+//         ? `${meta.meta_title} | Splurjj`
+//         : "Splurjj",
+//     description:
+//       typeof meta.meta_description === "string" &&
+//       meta.meta_description.trim()
+//         ? meta.meta_description
+//         : "splurjj description",
+//   };
 // }
 
+// // ✅ Page Component
 // const Page = ({
 //   params,
 // }: {
@@ -141,5 +141,3 @@ export default Page;
 // };
 
 // export default Page;
-
-
