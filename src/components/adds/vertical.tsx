@@ -70,6 +70,7 @@ function Vertical() {
             height={1000}
             style={{ maxWidth: "100%" }}
             className="w-full h-[400px] md:h-[500px] lg:h-[600px] "
+            loading="lazy"
           />
         </a>
       ) : (

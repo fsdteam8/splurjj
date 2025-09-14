@@ -68,6 +68,7 @@ function Horizontal() {
             className="w-full h-[300px]"
             width={2600}
             height={600}
+            loading="lazy"
           />
         </a>
       ) : (
