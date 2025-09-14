@@ -83,7 +83,7 @@ else if(isError){
                 alt="blog1"
                 width={888}
                 height={552}
-                className="w-full h-[529px] object-cover object-contain rounded-[8px]"
+                className="w-full h-[529px] object-contain rounded-[8px]"
               />
             </div>
             <p
@@ -102,7 +102,7 @@ else if(isError){
                   alt="blogSide1"
                   width={336}
                   height={700}
-                  className="w-full h-[700px] object-cover object-contain rounded-[8px]"
+                  className="w-full h-[700px] object-contain rounded-[8px]"
                 />
               </div>
             </aside>
