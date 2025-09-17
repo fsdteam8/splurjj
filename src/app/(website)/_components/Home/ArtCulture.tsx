@@ -593,7 +593,7 @@ const ArtCulture: React.FC<ArtCultureProps> = ({ categoryName }) => {
 
       <div className="flex justify-end py-4">
         <Link
-          href={`/blogs/${firstPost?.category_name}`}
+          href={`/blogs/${firstPost?.cat_slug}`}
           className="bg-primary dark:bg-black  hover:bg-black dark:border dark:border-primary dark:border-rounded hover:dark:bg-primary hover:text-white  dark:text-white transition-all duration-200 ease-in-out py-2 px-4 rounded text-sm font-extrabold uppercase text-white flex items-center gap-2"
         >
           EXPLORE MORE <ArrowRight size={16} />
