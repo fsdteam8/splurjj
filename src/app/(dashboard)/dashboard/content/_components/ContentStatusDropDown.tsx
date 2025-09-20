@@ -7,8 +7,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import useAuthToken from "@/hooks/useAuthToken";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "react-toastify";
+
 type StatusDropdownProps = {
   contentId: number;
   initialStatus:
@@ -25,6 +27,9 @@ const ContentStatusDropDown = ({
   contentId,
   initialStatus,
 }: StatusDropdownProps) => {
+
+  const queryClient = useQueryClient();
+
   const [status, setStatus] = useState<
     | "Draft"
     | "Review"
@@ -70,6 +75,7 @@ const ContentStatusDropDown = ({
       }
 
       toast.success(data.message || "role updated successfully");
+      queryClient.invalidateQueries({ queryKey: ["dashboard-overview"] });
     } catch (err) {
       console.error("Error updating role:", err);
       toast.error("Network error");
