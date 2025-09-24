@@ -166,7 +166,7 @@ export default function Header() {
   });
 
   const header = headerData && headerData?.data; 
-  console.log(header)
+  // console.log(header)
 
   // footer get api call
   const {
@@ -197,7 +197,7 @@ export default function Header() {
   });
   const categories = categoriesData && categoriesData?.data || [];
 
-  console.log(categories);
+  // console.log(categories);
 
   const isCategoryActive = (categoryId: number) => {
     return (
