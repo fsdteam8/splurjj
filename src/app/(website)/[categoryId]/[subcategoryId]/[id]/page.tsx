@@ -33,8 +33,9 @@ export async function generateMetadata({
 }: {
   params: { categoryId: string; subcategoryId: string; id: string };
 }) {
-  const data = await fetchBlogDetails(params.id);
+  const data = await fetchBlogDetails(params?.id);
   const meta = data?.data || {};
+  console.log("meta", meta)
 
   const title =
     typeof meta.meta_title === "string" && meta.meta_title.trim()
