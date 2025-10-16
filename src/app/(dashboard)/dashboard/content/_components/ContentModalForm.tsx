@@ -919,7 +919,11 @@ const formSchema = z.object({
     .array(z.string().min(1, "Image name or URL is required"))
     .min(1, "At least one image is required")
     .max(10, "Maximum 10 images allowed"),
-  tags: z.array(z.string().min(1)).max(10, "Max 10 tags"),
+  // tags: z.array(z.string().min(1)).max(10, "Max 10 tags"),
+  tags: z
+    .array(z.string().min(1, "Tag cannot be empty"))
+    .min(1, "At least one tag is required")
+    .max(10, "Max 10 tags"),
   author: z.string().min(2, "Author must be at least 2 characters"),
   meta_title: z.string().min(2, "Meta title must be at least 2 characters"),
   meta_description: z
@@ -1048,7 +1052,7 @@ export default function ContentAddEditForm({
     };
   }, [initialContent, form]);
 
-  const { watch, setValue } = form;
+  const { watch, setValue, trigger } = form;
   const tags = watch("tags");
 
   const handleFileUpload = (files: FileList | null) => {
@@ -1145,15 +1149,17 @@ export default function ContentAddEditForm({
         toast.error("Maximum 10 tags allowed");
       }
   
-      const updatedTags = [...currentTags, ...tagsToAdd].slice(0, 10); // Limit to 10 tags
+      const updatedTags = [...currentTags, ...tagsToAdd].slice(0, 10); 
       setValue("tags", updatedTags);
       setTagInput(""); // Clear input after adding tags
+      trigger("tags");
     };
   
     const removeTag = (index: number) => {
       const currentTags = watch("tags");
       const updatedTags = currentTags.filter((_, i) => i !== index);
       setValue("tags", updatedTags);
+      trigger("tags");
     };
 
   const handleCloseForm = () => {
@@ -1403,7 +1409,7 @@ export default function ContentAddEditForm({
                 />
 
                 {/* Tags */}
-                <div>
+                {/* <div>
                   <FormLabel className="text-lg font-bold text-black">
                     Tags
                   </FormLabel>
@@ -1448,7 +1454,64 @@ export default function ContentAddEditForm({
                       </div>
                     ))}
                   </div>
-                </div>
+                   <FormMessage className="text-red-500 border border-red-500" />
+                </div> */}
+
+                 {/* Tags */}
+                <FormField
+                  control={form.control}
+                  name="tags"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel className="text-lg font-bold text-black">
+                        Tags
+                      </FormLabel>
+                      <FormControl>
+                        <div className="flex items-center gap-2 mb-3 mt-2 relative">
+                          <Input
+                            className="text-black bg-white border border-gray-300 rounded-lg p-4"
+                            placeholder="Add a tag"
+                            value={tagInput}
+                            onChange={(e) => setTagInput(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                addTag();
+                              }
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={addTag}
+                            className="shrink-0 absolute top-1/2 right-3 -translate-y-1/2 bg-none"
+                          >
+                            <Plus className="h-6 w-6 text-gray-500" />
+                          </button>
+                        </div>
+                      </FormControl>
+                      <div className="flex flex-wrap gap-2">
+                        {tags?.map((tag, i) => (
+                          <div
+                            key={i}
+                            className="h-[30px] flex items-center gap-1 bg-gray-200 text-black pl-4 pr-1 py-1 rounded-full text-sm"
+                          >
+                            {tag}
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="p-0.5"
+                              onClick={() => removeTag(i)}
+                              type="button"
+                            >
+                              <X className="h-3 w-3 text-black" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
 
                 {/* Meta Title */}
                 <FormField
