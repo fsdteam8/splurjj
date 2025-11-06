@@ -921,8 +921,8 @@ const formSchema = z.object({
     .max(10, "Maximum 10 images allowed"),
   // tags: z.array(z.string().min(1)).max(10, "Max 10 tags"),
   tags: z
-    .array(z.string().min(1, "Tag cannot be empty"))
-    .min(1, "At least one tag is required")
+    .array(z.string().min(3, "Tag cannot be empty"))
+    .min(3, "At least three tag is required")
     .max(10, "Max 10 tags"),
   author: z.string().min(2, "Author must be at least 2 characters"),
   meta_title: z.string().min(2, "Meta title must be at least 2 characters"),
