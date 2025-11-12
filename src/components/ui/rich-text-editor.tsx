@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import {
   Bold,
   Italic,
@@ -26,12 +26,20 @@ interface RichTextEditorProps {
   onChange: (content: string) => void;
   placeholder?: string;
   height?: string;
+  uploadEndpoint?: string;
+  uploadHeaders?: Record<string, string>;
+  maxImageSizeBytes?: number;
+  withCredentials?: boolean;
 }
 
 export function RichTextEditor({
   content,
   onChange,
   placeholder = "Start writing...",
+  uploadEndpoint = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/uploads/images`,
+  uploadHeaders,
+  maxImageSizeBytes = 5 * 1024 * 1024,
+  withCredentials = false,
 }: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -89,6 +97,32 @@ export function RichTextEditor({
     }
   };
 
+  const uploadToApi = useCallback(
+    async (file: File): Promise<string> => {
+      if (!file) throw new Error("No file selected");
+      if (!file.type.startsWith("image/")) throw new Error("Only image uploads are allowed");
+
+      const form = new FormData();
+      form.append("image", file);
+
+      const res = await fetch(uploadEndpoint, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          ...(uploadHeaders || {}),
+        } as HeadersInit,
+        body: form,
+        credentials: withCredentials ? "include" : "omit",
+      });
+
+      if (!res.ok) throw new Error((await res.text()) || "Upload failed");
+      const data = (await res.json()) as { url?: string };
+      if (!data?.url) throw new Error("No URL returned from upload API");
+      return data.url;
+    },
+    [uploadEndpoint, uploadHeaders, maxImageSizeBytes, withCredentials]
+  );
+
   // Handle image upload
   const handleImageUpload = () => {
     if (imageInputRef.current) {
@@ -97,22 +131,22 @@ export function RichTextEditor({
   };
 
   // Process selected image
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      const reader = new FileReader();
-
-      reader.onload = (readerEvent) => {
-        const imageUrl = readerEvent.target?.result as string;
-        execCommand("insertImage", imageUrl);
-
-        // Reset the input
+      try {
+        const url = await uploadToApi(file);
+        execCommand("insertImage", url);
+      } catch (error) {
+        console.error(error);
+        const message =
+          error instanceof Error ? error.message : "Image upload failed";
+        alert(message);
+      } finally {
         if (imageInputRef.current) {
           imageInputRef.current.value = "";
         }
-      };
-
-      reader.readAsDataURL(file);
+      }
     }
   };
 
